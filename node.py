@@ -26,12 +26,13 @@ class Node(object):
         self.s = PropsSI("S", "P", self.p, "T", self.t, self.fluid)
         self.d = PropsSI("D", "P", self.p, "T", self.t, self.fluid)
         self.q = PropsSI("Q", "P", self.p, "T", self.t, self.fluid)
-        if self.q >= 1:
-            self.q = 'supderheat'
-        elif self.q <= 0:
+        if self.q < 0:
             self.q = 'subcool'
-        else:
+        elif 0 <= self.q <= 1:
             self.q = self.q
+        else:
+            self.q = 'supderheat'
+
     
     # print all of Props of the node
     def __str__(self):
@@ -39,12 +40,13 @@ class Node(object):
         .format(self.p, self.t, self.h, self.s, self.d, self.q)
         return result
     
-#   test
+#   testk
 if __name__ == '__main__':
     # 配合課本或 NIST檢查
+    # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     nodes = Node()
-    nodes.p = 10000
-    nodes.t = 273.15 + 300
+    nodes.p = 20000
+    nodes.t = 273.15 + 800
     nodes.pt()
     msg = nodes.__str__()
     print(' {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
