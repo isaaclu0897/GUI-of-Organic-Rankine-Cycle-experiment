@@ -64,6 +64,9 @@ class Node(object):
         .format(self.p, self.t, self.h, self.s, self.d, self.q)
         return result
     
+    def statusProps(self):
+        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q]
+    
     def show_ORCProps(self):
         try:
             self.h = pps.Kilo(self.h)

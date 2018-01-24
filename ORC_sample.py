@@ -97,7 +97,7 @@ if __name__ == '__main__':
     
     for i in range(7):
         nodes[i].pt()
-        nodes[i].show_ORCProps()
+        nodes[i].
         
         
     
