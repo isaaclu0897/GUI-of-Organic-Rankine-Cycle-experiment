@@ -31,63 +31,77 @@ P (bar)	2.01	   6.44	   6.11	   6.27	   2.05	   1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-def Bar2Pa(P):
-    return P * 1e5
-
-def C2K(T):
-    return T + 273.15
     
 if __name__ == '__main__':
+#    明天來做texttacle 跟單位換算界面
     import node
+#    from unit import P, T
     
     # define the status of all point
-    pumpi_P = Bar2Pa(2.01)
-    pumpi_T = C2K(21.86)
     
-    pumpo_P = Bar2Pa(6.44)
-    pumpo_T = C2K(22.55)
+    pumpi_P = 2.01
+    pumpi_T = 21.86
     
-    HXo_P = Bar2Pa(6.11)
-    HXo_T = C2K(88.31)
+    pumpo_P = 6.44
+    pumpo_T = 22.55
     
-    EVPi_P = Bar2Pa(6.27)
-    EVPi_T = C2K(88.28)
+    HXo_P = 6.11
+    HXo_T = 88.31
     
-    EVPo_P = Bar2Pa(2.05)
-    EVPo_T = C2K(64.03)
+    EVPi_P = 6.27
+    EVPi_T = 88.28
     
-    CDSi_P = Bar2Pa(1.99)
-    CDSi_T = C2K(59.68)
+    EVPo_P = 2.05
+    EVPo_T = 64.03
     
-    CDSo_P = Bar2Pa(1.98)
-    CDSo_T = C2K(22.12)
+    CDSi_P = 1.99
+    CDSi_T = 59.68
+    
+    CDSo_P = 1.98
+    CDSo_T = 22.12
+    '''
+    pumpi_P = P.Bar2Pa(2.01)
+    pumpi_T = T.C2K(21.86)
+    
+    pumpo_P = P.Bar2Pa(6.44)
+    pumpo_T = T.C2K(22.55)
+    
+    HXo_P = P.Bar2Pa(6.11)
+    HXo_T = T.C2K(88.31)
+    
+    EVPi_P = P.Bar2Pa(6.27)
+    EVPi_T = T.C2K(88.28)
+    
+    EVPo_P = P.Bar2Pa(2.05)
+    EVPo_T = T.C2K(64.03)
+    
+    CDSi_P = P.Bar2Pa(1.99)
+    CDSi_T = T.C2K(59.68)
+    
+    CDSo_P = P.Bar2Pa(1.98)
+    CDSo_T = T.C2K(22.12)
+    '''
         
     # init all node
     nodes = []
     for i in range(7):
         nodes.append(node.Node())
     
-    nodes[0].p = pumpi_P
-    nodes[0].t = pumpi_T
-    nodes[1].p = pumpo_P
-    nodes[1].t = pumpi_T
-    nodes[2].p = HXo_P
-    nodes[2].t = HXo_T
-    nodes[3].p = EVPi_P
-    nodes[3].t = EVPi_T
-    nodes[4].p = EVPo_P
-    nodes[4].t = EVPo_T
-    nodes[5].p = CDSi_P
-    nodes[5].t = CDSi_T
-    nodes[6].p = CDSo_P
-    nodes[6].t = CDSo_T
+    nodes[0].set_tp(pumpi_T, pumpi_P)
+    nodes[1].set_tp(pumpo_T, pumpo_P)
+    nodes[2].set_tp(HXo_T, HXo_P)
+    nodes[3].set_tp(EVPi_T, EVPi_P)
+    nodes[4].set_tp(EVPo_T, EVPo_P)
+    nodes[5].set_tp(CDSi_T, CDSi_P)
+    nodes[6].set_tp(CDSo_T, CDSo_P)
     
     for i in range(7):
         nodes[i].pt()
-        msg = nodes[i].__str__()
-        print(' {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
-              .format('p (Pa)', 't (K)', 'h (J/Kg)',  's ((J/Kg) * K)', 'd (Kg/m^3)', 'q'), msg)
-        print()
+        nodes[i].show_ORCProps()
+        
+        
+    
+        
 
 
 

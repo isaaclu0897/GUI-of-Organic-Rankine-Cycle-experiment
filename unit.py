@@ -29,3 +29,11 @@ class T():
     
     def K2C(T):
         return T - 273.15
+
+class pps():
+    
+    def Kilo(S):
+        return S / 1000
+    
+    def Millim(S):
+        return S * 1000
