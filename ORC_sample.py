@@ -33,54 +33,19 @@ P (bar)	2.01	   6.44	   6.11	   6.27	   2.05	   1.99	   1.98
 """
     
 if __name__ == '__main__':
-#    明天來做texttacle 跟單位換算界面
     import node
+    import tabulate_text
 #    from unit import P, T
     
     # define the status of all point
     
-    pumpi_P = 2.01
-    pumpi_T = 21.86
-    
-    pumpo_P = 6.44
-    pumpo_T = 22.55
-    
-    HXo_P = 6.11
-    HXo_T = 88.31
-    
-    EVPi_P = 6.27
-    EVPi_T = 88.28
-    
-    EVPo_P = 2.05
-    EVPo_T = 64.03
-    
-    CDSi_P = 1.99
-    CDSi_T = 59.68
-    
-    CDSo_P = 1.98
-    CDSo_T = 22.12
-    '''
-    pumpi_P = P.Bar2Pa(2.01)
-    pumpi_T = T.C2K(21.86)
-    
-    pumpo_P = P.Bar2Pa(6.44)
-    pumpo_T = T.C2K(22.55)
-    
-    HXo_P = P.Bar2Pa(6.11)
-    HXo_T = T.C2K(88.31)
-    
-    EVPi_P = P.Bar2Pa(6.27)
-    EVPi_T = T.C2K(88.28)
-    
-    EVPo_P = P.Bar2Pa(2.05)
-    EVPo_T = T.C2K(64.03)
-    
-    CDSi_P = P.Bar2Pa(1.99)
-    CDSi_T = T.C2K(59.68)
-    
-    CDSo_P = P.Bar2Pa(1.98)
-    CDSo_T = T.C2K(22.12)
-    '''
+    pumpi_P, pumpi_T = 2.01, 21.86
+    pumpo_P, pumpo_T = 6.44, 22.55
+    HXo_P, HXo_T = 6.11, 88.31
+    EVPi_P, EVPi_T = 6.27, 88.28
+    EVPo_P, EVPo_T = 2.05, 64.03
+    CDSi_P, CDSi_T  = 1.99, 59.68
+    CDSo_P, CDSo_T = 1.98, 22.12
         
     # init all node
     nodes = []
@@ -95,9 +60,12 @@ if __name__ == '__main__':
     nodes[5].set_tp(CDSi_T, CDSi_P)
     nodes[6].set_tp(CDSo_T, CDSo_P)
     
+    # calc the Props of point
     for i in range(7):
-        nodes[i].pt()
-        nodes[i].
+        nodes[i].pt() 
+    
+    # print pretty ORC_status table
+    tabulate_text.ORC_status([nodes[i] for i in range(7)])
         
         
     
