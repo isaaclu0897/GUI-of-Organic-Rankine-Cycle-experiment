@@ -7,13 +7,15 @@ Created on Sun Jan 21 23:18:15 2018
 """
 
 from CoolProp.CoolProp import PropsSI
-from unit import P, T, pps
+from unit import P, T
 
 class Node(object):
     
     # define the Props of the node
-    def __init__(self, fluid="REFPROP::R245FA"):
+    def __init__(self, name, nid, fluid="REFPROP::R245FA"):
         self.fluid = fluid
+        self.name = name
+        self.nid = nid
         self.p = None
         self.t = None
         self.h = None
@@ -45,8 +47,8 @@ class Node(object):
 
     # print all of Props of the node
     def __str__(self):
-        result = '{:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16}' \
-        .format(self.p, self.t, self.h, self.s, self.d, self.q)
+        result = '{:^20}, {:^5}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16}' \
+        .format(self.name, self.nid, self.p, self.t, self.h/1000, self.s/1000, self.d, self.q)
         return result
     
     # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
@@ -74,11 +76,11 @@ class Node(object):
 if __name__ == '__main__':
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
-    nodes = Node("REFPROP::Water")
+    nodes = Node('point1', 1, "REFPROP::Water")
     nodes.p = 20
     nodes.t = 800
     nodes.pt()
     msg = nodes.__str__()
-    print(' {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
-          .format('p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q'), msg)
+    print('{:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
+          .format('name', 'nodeid', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q'), msg)
     
