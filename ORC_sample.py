@@ -16,14 +16,14 @@
  Node 0                                  Node 4
     │                                       │ 
     │                                       │
-    └─── Node 0 ───  Condenser ─── Node 5 ──┘  
+    └─── Node 6 ───  Condenser ─── Node 5 ──┘  
 
  each on status of point as
  
-	      Node 0	   Node 1	   Node 2 	Node 3  	Node 4 	Node 5 	Node 6
-	      pump in	pump out	HX out	   EVP in	   EVP out	CDS in	   CDS out
-T (C)	   21.86	   22.55	   88.31	   88.28	   64.03	   59.68	   22.12
-P (bar)	2.01	   6.44	   6.11	   6.27	   2.05	   1.99	   1.98
+	      Node 0	   Node 1	   Node 2 	Node 3  	Node 4 	 Node 5 	Node 6
+	      pump in	pump out	HX out	   EVP in	   EVP out	 CDS in	   CDS out
+T (C)	   21.86	   22.55	   88.31   88.28	    64.03	  59.68	   22.12
+P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  
  we can use the CoolProp & REFPROP to find the status of point,
  just for use with node.py
@@ -31,63 +31,68 @@ P (bar)	2.01	   6.44	   6.11	   6.27	   2.05	   1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-def Bar2Pa(P):
-    return P * 1e5
-
-def C2K(T):
-    return T + 273.15
     
 if __name__ == '__main__':
     import node
+    from tabulate import tabulate
+    # define the  of all point
     
-    # define the status of all point
-    pumpi_P = Bar2Pa(2.01)
-    pumpi_T = C2K(21.86)
+    pumpi = {'name' : 'pump_inlet',
+             'nid' : 1,
+             'P' : 2.01,
+             'T' : 21.86}
+    pumpo = {'name' : 'pump_ioutlet',
+             'nid' : 2,
+             'P' : 6.44,
+             'T' : 22.55}
+    EVPo = {'name' : 'evaparator_outlet',
+            'nid' : 3,
+            'P' : 6.11,
+            'T' : 8.31}
+    EXPi = {'name' : 'expander_inlet',
+            'nid' : 4,
+            'P' : 6.27,
+            'T' : 8.28}
+    EXPo = {'name' : 'expander_outlet',
+            'nid' : 5,
+            'P' : 2.05,
+            'T' : 64.03}
+    CDSi = {'name' : 'condenser_inlet',
+            'nid' : 6,
+            'P' : 1.99,
+            'T' : 56.68}
+    CDSo = {'name' : 'condenser_outlet',
+            'nid' : 7,
+            'P' : 1.98,
+            'T' : 22.12}
     
-    pumpo_P = Bar2Pa(6.44)
-    pumpo_T = C2K(22.55)
+    dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
     
-    HXo_P = Bar2Pa(6.11)
-    HXo_T = C2K(88.31)
-    
-    EVPi_P = Bar2Pa(6.27)
-    EVPi_T = C2K(88.28)
-    
-    EVPo_P = Bar2Pa(2.05)
-    EVPo_T = C2K(64.03)
-    
-    CDSi_P = Bar2Pa(1.99)
-    CDSi_T = C2K(59.68)
-    
-    CDSo_P = Bar2Pa(1.98)
-    CDSo_T = C2K(22.12)
-        
     # init all node
     nodes = []
-    for i in range(7):
-        nodes.append(node.Node())
+    for i in dev_list:
+        nodes.append(node.Node(i['name'], i['nid']))
+#        print(i)
     
-    nodes[0].p = pumpi_P
-    nodes[0].t = pumpi_T
-    nodes[1].p = pumpo_P
-    nodes[1].t = pumpi_T
-    nodes[2].p = HXo_P
-    nodes[2].t = HXo_T
-    nodes[3].p = EVPi_P
-    nodes[3].t = EVPi_T
-    nodes[4].p = EVPo_P
-    nodes[4].t = EVPo_T
-    nodes[5].p = CDSi_P
-    nodes[5].t = CDSi_T
-    nodes[6].p = CDSo_P
-    nodes[6].t = CDSo_T
-    
-    for i in range(7):
+    # set & calc Prop of point 
+    for i, obj in enumerate(dev_list):
+        nodes[i].set_tp(obj['T'], obj['P'])
         nodes[i].pt()
-        msg = nodes[i].__str__()
-        print(' {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
-              .format('p (Pa)', 't (K)', 'h (J/Kg)',  's ((J/Kg) * K)', 'd (Kg/m^3)', 'q'), msg)
-        print()
+   
+#    for i in range(7):
+#        print(nodes[i])
+
+    # print pretty ORC_status table
+    table = []
+    for nodei in [nodes[i] for i in range(7)]:
+        table.append([nodei.nid, nodei.name, nodei.p, round(nodei.t, 3), round(nodei.h/1000, 3), 
+                  round(nodei.s/1000, 4), round(nodei.d, 3), nodei.q])
+    headers=['nodeID', 'name', 'p (bar)', 't (c)','h (KJ/Kg)', 's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q']
+    print(tabulate(table, headers))
+
+        
+    
+        
 
 
 
