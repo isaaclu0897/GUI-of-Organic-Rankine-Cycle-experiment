@@ -89,6 +89,8 @@ if __name__ == '__main__':
                   round(nodei.s/1000, 4), round(nodei.d, 3), nodei.q])
     headers=['nodeID', 'name', 'p (bar)', 't (c)','h (KJ/Kg)', 's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q']
     print(tabulate(table, headers))
+    
+    
 
         
     

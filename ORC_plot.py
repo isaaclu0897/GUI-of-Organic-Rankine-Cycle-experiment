@@ -46,7 +46,11 @@ class ProcessPlot(Node):
 
     def plot_iso(self):
         plt.plot(pps.J2KJ(self.si), T.K2C(self.ti), 'grey')
+#        plt.pause(0.00000001) 
+
         plt.plot(pps.J2KJ(self.sa), T.K2C(self.ta), 'b')
+#        plt.pause(0.00000000001) 
+
         
 if __name__=='__main__':
     
@@ -56,11 +60,19 @@ if __name__=='__main__':
     yAxis = "T" 
     title = {"T": "T, °C", "s": "s, kJ/kgK"} 
     plt.title("%s-%s Diagram" % (yAxis, xAxis)) 
+#    plt.pause(0.5) 
+
     plt.xlabel(title[xAxis]) 
     plt.ylabel(title[yAxis]) 
-    plt.ylim(15, 90)
-    plt.xlim(1.05, 1.88)
-    plt.grid() 
+#    plt.ylim(15, 90)
+#    plt.pause(1) 
+
+#    plt.xlim(1.05, 1.88)
+#    plt.pause(1) 
+    
+    plt.grid()
+#    plt.pause(1) 
+
     
     
     
@@ -70,7 +82,9 @@ if __name__=='__main__':
     
     for x in np.array([0, 1.0]): 
         S = np.array([PropsSI("S", "Q", x, "T", t, 'REFPROP::R245FA') for t in Ti]) 
-        plt.plot(S / 1000, Ti - 273.15, 'r', lw=2.0) 
+        plt.plot(S / 1000, Ti - 273.15, 'r', lw=2.0)
+#        plt.pause(0.5) 
+
     
     pumpi = {'name' : 'pump_inlet', 
              'nid' : 1, 
@@ -118,6 +132,8 @@ if __name__=='__main__':
         s.append(nodes[i].s / 1000)
     
     plt.plot(s, t, 'o')
+#    plt.pause(1) 
+
     
     plot1 = ProcessPlot(0, 1, 'isos')
     plot1.iso_line(nodes)
