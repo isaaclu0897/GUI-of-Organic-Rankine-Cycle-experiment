@@ -32,8 +32,8 @@ class T():
 
 class pps():
     
-    def Kilo(S):
+    def J2KJ(S):
         return S / 1000
     
-    def Millim(S):
+    def KJ2J(S):
         return S * 1000

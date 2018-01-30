@@ -31,42 +31,24 @@ P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-    
+ 
+def data():
+    pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
+    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2, 'P' : 6.44, 'T' : 22.55}
+    EVPo  = {'name' : 'evaparator_outlet',  'nid' : 3, 'P' : 6.11, 'T' : 88.31}
+    EXPi  = {'name' : 'expander_inlet',     'nid' : 4, 'P' : 6.27, 'T' : 88.28}
+    EXPo  = {'name' : 'expander_outlet',    'nid' : 5, 'P' : 2.05, 'T' : 64.03}
+    CDSi  = {'name' : 'condenser_inlet',    'nid' : 6, 'P' : 1.99, 'T' : 56.68}
+    CDSo  = {'name' : 'condenser_outlet',   'nid' : 7, 'P' : 1.98, 'T' : 22.12}
+   
+    return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
+
 if __name__ == '__main__':
     import node
     from tabulate import tabulate
     # define the  of all point
     
-    pumpi = {'name' : 'pump_inlet',
-             'nid' : 1,
-             'P' : 2.01,
-             'T' : 21.86}
-    pumpo = {'name' : 'pump_ioutlet',
-             'nid' : 2,
-             'P' : 6.44,
-             'T' : 22.55}
-    EVPo = {'name' : 'evaparator_outlet',
-            'nid' : 3,
-            'P' : 6.11,
-            'T' : 8.31}
-    EXPi = {'name' : 'expander_inlet',
-            'nid' : 4,
-            'P' : 6.27,
-            'T' : 8.28}
-    EXPo = {'name' : 'expander_outlet',
-            'nid' : 5,
-            'P' : 2.05,
-            'T' : 64.03}
-    CDSi = {'name' : 'condenser_inlet',
-            'nid' : 6,
-            'P' : 1.99,
-            'T' : 56.68}
-    CDSo = {'name' : 'condenser_outlet',
-            'nid' : 7,
-            'P' : 1.98,
-            'T' : 22.12}
-    
-    dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
+    dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
     
     # init all node
     nodes = []
@@ -84,11 +66,14 @@ if __name__ == '__main__':
 
     # print pretty ORC_status table
     table = []
-    for nodei in [nodes[i] for i in range(7)]:
+#    for nodei in [nodes[i] for i in range(len(nodes))]:
+    for nodei in nodes:
         table.append([nodei.nid, nodei.name, nodei.p, round(nodei.t, 3), round(nodei.h/1000, 3), 
                   round(nodei.s/1000, 4), round(nodei.d, 3), nodei.q])
     headers=['nodeID', 'name', 'p (bar)', 't (c)','h (KJ/Kg)', 's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q']
     print(tabulate(table, headers))
+    
+    
 
         
     
