@@ -22,6 +22,7 @@ class Node(object):
         self.s = None
         self.d = None
         self.q = None
+        self.over = None
      
     # use pt() to clac Props of the node
     def pt(self):
@@ -33,13 +34,15 @@ class Node(object):
         self.s = PropsSI("S", "P", P.Bar2Pa(self.p), "T", T.C2K(self.t), self.fluid)
         self.d = PropsSI("D", "P", P.Bar2Pa(self.p), "T", T.C2K(self.t), self.fluid)
         self.q = PropsSI("Q", "P", P.Bar2Pa(self.p), "T", T.C2K(self.t), self.fluid)
+        self.over = self.t - T.K2C(PropsSI("T", "P", P.Bar2Pa(self.p), "Q", 0.5, self.fluid))
+
         if self.q < 0:
             self.q = 'subcool'
         elif 0 <= self.q <= 1:
             self.q = self.q
+            self.over = self.t - T.K2C(PropsSI("T", "P", P.Bar2Pa(self.p), "Q", 1, self.fluid))
         else:
             self.q = 'supderheat'
-            
     # set Props of P & T
     def set_tp(self, Temperature, Presspsure):
         self.p = Presspsure
@@ -47,13 +50,13 @@ class Node(object):
 
     # print all of Props of the node
     def __str__(self):
-        result = '{:^20}, {:^5}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16.2f}, {:^16}' \
-        .format(self.name, self.nid, self.p, self.t, self.h/1000, self.s/1000, self.d, self.q)
+        result = '{:^12}, {:^5}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12}' \
+        .format(self.name, self.nid, self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over)
         return result
     
     # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
     def statusProps(self):
-        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q]
+        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over]
     
     ''' use tabulate with replace show_ORCProps
     
@@ -72,15 +75,17 @@ class Node(object):
             self.h = pps.Millim(self.h)
             self.s = pps.Millim(self.s)
     '''
-#   testk
+    
+#   test
 if __name__ == '__main__':
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     nodes = Node('point1', 1, "REFPROP::Water")
-    nodes.p = 20
-    nodes.t = 800
+    nodes.p = 1.01325
+    nodes.t = 120
     nodes.pt()
     msg = nodes.__str__()
-    print('{:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}, {:^16}\n' \
-          .format('name', 'nodeid', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q'), msg)
+    print(nodes, '\n')
+    print('{:^12}, {:^5}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
+          .format('name', 'nodeid', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
     
