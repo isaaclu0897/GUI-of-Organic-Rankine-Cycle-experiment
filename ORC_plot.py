@@ -65,14 +65,23 @@ class ProcessPlot(Node):
         self.calc_iso()
         self.plot_iso()
 def set_windows():
+<<<<<<< HEAD
+=======
+    plt.clf()
+>>>>>>> readcsv
     xAxis = "s" 
     yAxis = "T" 
     title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
     plt.title("%s-%s Diagram" % (yAxis, xAxis))
     plt.xlabel(title[xAxis]) 
     plt.ylabel(title[yAxis]) 
+<<<<<<< HEAD
 #    plt.ylim(15, 90)
 #    plt.xlim(1.05, 1.88)
+=======
+    plt.ylim(10, 135)
+    plt.xlim(1.05, 1.88)
+>>>>>>> readcsv
     plt.grid()
     plt.show()
     

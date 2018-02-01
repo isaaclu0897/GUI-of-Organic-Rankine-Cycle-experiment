@@ -1,1 +1,10 @@
 __pycache__
+<<<<<<< HEAD
+
+*.xlsx
+
+*.csv
+=======
+*.csv
+*.xlsx
+>>>>>>> readcsv
