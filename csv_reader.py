@@ -32,6 +32,7 @@ class Paser_data():
             reader = csv.reader(file, delimiter=',')
             for row in (row for row in reader):
                 yield row
+                
 def csv_data(data, header,
              pumpi_p='112 <pump inlet> (BAR)',       pumpi_t='101 <pump inlet> (C)',
              pumpo_p='113 <pump outlet> (BAR)',      pumpo_t='102 <pump outlet> (C)',
@@ -84,15 +85,7 @@ def main():
         if i[0] == '300':
             for i in data:
                 order = i[0]
-        #            print(type(i))
                 dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data(i, header)
-                dev = {'pumpi' : pumpi,
-                       'pumpo' : pumpo,
-                       'EVPo' : EVPo, 
-                       'EXPi' : EXPi, 
-                       'EXPo' : EXPo, 
-                       'CDSi' : CDSi, 
-                       'CDSo' : CDSo}
                     
                 nodes = []
                 for index, obj in enumerate(dev_list):
@@ -101,12 +94,11 @@ def main():
                     nodes[index].set_tp(float(obj['T']), float(obj['P']))
                     nodes[index].pt()
                     
-                    
                 print(order)
                 ORC_status([nodes[a] for a in range(7)])
                 
                 set_windows()
-                plot_SaturationofCurve()   
+                plot_SaturationofCurve() 
                 plot_StatusofORC(nodes)
         
                 # plot process of ORC
@@ -118,9 +110,21 @@ def main():
                            ProcessPlot(5, 6, 'isop'),
                            ProcessPlot(6, 0, 'isop')]
                 [plot.plot_process(nodes) for plot in process]
+                
+                ''' 測試
+                process = [ProcessPlot(0, 1, 'isos'),
+                           ProcessPlot(1, 2, 'isop'),
+#                           ProcessPlot(2, 3, 'isop'),
+                           ProcessPlot(2, 4, 'isos'),
+#                           ProcessPlot(4, 5, 'isop'),
+                           ProcessPlot(4, 6, 'isop')]
+#                            ProcessPlot(6, 0, 'isop')]
+                [plot.plot_process(nodes) for plot in process]
+                '''
                 plt.pause(0.0000005)
-                if order == '310':
+                if order == '':
                     break
+                
 #    def parser_data(self):
 #        [i for i in range(50) if]
 #

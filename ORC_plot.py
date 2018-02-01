@@ -64,24 +64,19 @@ class ProcessPlot(Node):
         self.iso_line(nodes)
         self.calc_iso()
         self.plot_iso()
+        
 def set_windows():
-<<<<<<< HEAD
-=======
     plt.clf()
->>>>>>> readcsv
     xAxis = "s" 
     yAxis = "T" 
     title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
     plt.title("%s-%s Diagram" % (yAxis, xAxis))
     plt.xlabel(title[xAxis]) 
     plt.ylabel(title[yAxis]) 
-<<<<<<< HEAD
 #    plt.ylim(15, 90)
 #    plt.xlim(1.05, 1.88)
-=======
     plt.ylim(10, 135)
     plt.xlim(1.05, 1.88)
->>>>>>> readcsv
     plt.grid()
     plt.show()
     
@@ -95,17 +90,10 @@ def plot_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
         S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
         plt.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
         
-
-
-
-
-        
 if __name__=="__main__":
-
     from ORC_sample import data
     from node import Node
 
-    
     # set label 
     set_windows()
     
@@ -133,6 +121,7 @@ if __name__=="__main__":
 #        S = np.array([PropsSI("S", "Q", x, "T", t, 'REFPROP::R245FA') for t in Ti]) 
 #        plt.plot(S / 1000, Ti - 273.15, 'r', lw=2.0)
 ##        plt.pause(0.5) 
+    
     # import data
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
     dev = {'pumpi' : pumpi,
@@ -147,7 +136,8 @@ if __name__=="__main__":
     nodes = [Node(i["name"], i["nid"]) for i in dev_list]
     for i, obj in enumerate(dev_list):
         nodes[i].set_tp(obj["T"], obj["P"]) 
-        nodes[i].pt() 
+        nodes[i].pt()
+    
     
     # plot status of ORC
     plot_status = plot_StatusofORC(nodes)

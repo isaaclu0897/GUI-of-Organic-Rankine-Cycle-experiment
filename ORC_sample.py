@@ -45,33 +45,23 @@ def data():
 
 if __name__ == '__main__':
     import node
-    from tabulate import tabulate
-    # define the  of all point
+    from tabulate_text import ORC_status
     
+    # define the  of all point
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
     
     # init all node
     nodes = []
     for i in dev_list:
         nodes.append(node.Node(i['name'], i['nid']))
-#        print(i)
     
     # set & calc Prop of point 
     for i, obj in enumerate(dev_list):
         nodes[i].set_tp(obj['T'], obj['P'])
         nodes[i].pt()
-   
-#    for i in range(7):
-#        print(nodes[i])
 
     # print pretty ORC_status table
-    table = []
-#    for nodei in [nodes[i] for i in range(len(nodes))]:
-    for nodei in nodes:
-        table.append([nodei.nid, nodei.name, nodei.p, round(nodei.t, 3), round(nodei.h/1000, 3), 
-                  round(nodei.s/1000, 4), round(nodei.d, 3), nodei.q])
-    headers=['nodeID', 'name', 'p (bar)', 't (c)','h (KJ/Kg)', 's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q']
-    print(tabulate(table, headers))
+    ORC_status([nodes[i] for i in range(len(nodes))])
     
     
 
