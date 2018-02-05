@@ -5,9 +5,11 @@ Created on Mon Feb  5 23:03:37 2018
 
 @author: wei
 """
+
 import tkinter as Tk
 import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 matplotlib.use('TkAgg')
 
@@ -76,8 +78,26 @@ for b in process:
     a.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
 
 # push figure to tkinter window
-canvas = FigureCanvasTkAgg(f, master=root)
+canvas =FigureCanvasTkAgg(f, master=root)
 canvas.show()
 canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+
+# push tool of matplotlib into tkinter window
+toolbar =NavigationToolbar2TkAgg(canvas, root)
+toolbar.update()
+canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+
+# define keyboard event
+def on_key_event(event):
+    print('you pressed %s'% event.key)
+    key_press_handler(event, canvas, toolbar)
+canvas.mpl_connect('key_press_event', on_key_event)
+
+# define quit button, quit & kill the window
+def _quit():
+    root.quit()
+    root.destroy()
+button =Tk.Button(master=root, text='Quit', command=_quit)
+button.pack(side=Tk.BOTTOM)
 
 Tk.mainloop()
