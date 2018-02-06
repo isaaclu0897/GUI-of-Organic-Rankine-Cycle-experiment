@@ -19,13 +19,38 @@ from unit import  T, pps
 from node import Node
 from ORC_sample import data
 from ORC_plot import ProcessPlot
+from matplotlib.gridspec import GridSpec
 
-root = Tk.Tk()
-root.title("matplotlib into TK")
+window = Tk.Tk()
+window.title("matplotlib into TK")
 
 # set figure
-f = Figure(figsize=(16,9), dpi=100)
-a = f.add_subplot(122, facecolor='w') # projection='polar'
+fig = Figure(figsize=(16,9), dpi=100)
+
+gs = GridSpec(16, 9)
+dia = fig.add_subplot(gs[0:11, 5:], facecolor='w') # projection='polar'
+'''
+b = fig.add_subplot(gs[0, 0])
+r = [1, 2, 3]
+t = [5, 5, 7]
+b.plot(r, t)
+b = fig.add_subplot(gs[1, :-1])
+b.plot(r, t)
+b = fig.add_subplot(gs[:, 1])
+'''
+
+xAxis = "s" 
+yAxis = "T" 
+title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
+
+dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
+dia.set_xlabel(title[xAxis])
+dia.set_ylabel(title[yAxis])
+#    plt.ylim(15, 90)
+#    plt.xlim(1.05, 1.88)
+dia.set_ylim(10, 135)
+dia.set_xlim(1.05, 1.88)
+dia.grid()
 
 # plot figure
 fluid = 'REFPROP::R245FA'
@@ -35,10 +60,10 @@ tmin = PropsSI("Tmin", fluid)
 T_array = np.linspace(tmin, tcrit, num) 
 X_array = np.array([0, 1.0])
 
-for x in X_array: 
+for x in X_array:
     S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
     
-    a.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
+    dia.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
 
 # import data
 dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
@@ -62,7 +87,7 @@ for i in range(len(nodes)):
     t.append(nodes[i].t) 
     s.append(pps.J2KJ(nodes[i].s))
 
-a.plot(s, t, 'bo')
+dia.plot(s, t, 'bo')
 
 process = [ProcessPlot(0, 1, 'isos'),
            ProcessPlot(1, 2, 'isop'),
@@ -75,15 +100,16 @@ for b in process:
     b.iso_line(nodes)
     b.calc_iso()
     
-    a.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
+    dia.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
 
 # push figure to tkinter window
-canvas =FigureCanvasTkAgg(f, master=root)
+canvas =FigureCanvasTkAgg(fig, master=window)
 canvas.show()
 canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+#canvas.get_tk_widget().grid(row=0, columnspan=3)
 
 # push tool of matplotlib into tkinter window
-toolbar =NavigationToolbar2TkAgg(canvas, root)
+toolbar =NavigationToolbar2TkAgg(canvas, window)
 toolbar.update()
 canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
 
@@ -95,9 +121,9 @@ canvas.mpl_connect('key_press_event', on_key_event)
 
 # define quit button, quit & kill the window
 def _quit():
-    root.quit()
-    root.destroy()
-button =Tk.Button(master=root, text='Quit', command=_quit)
+    window.quit()
+    window.destroy()
+button =Tk.Button(master=window, text='Quit', command=_quit)
 button.pack(side=Tk.BOTTOM)
 
-Tk.mainloop()
+window.mainloop()
