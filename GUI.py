@@ -9,7 +9,7 @@ Created on Mon Feb  5 23:03:37 2018
 import tkinter as tk
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-#from matplotlib.backend_bases import key_press_handler
+from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 matplotlib.use('TkAgg')
 
@@ -19,7 +19,7 @@ from unit import  T, pps
 from node import Node
 from ORC_sample import data
 from ORC_plot import ProcessPlot
-#from matplotlib.gridspec import GridSpec
+
 
 window = tk.Tk()
 window.title("matplotlib into tk")
@@ -41,7 +41,6 @@ txt = '''  nodeID  name                 p (bar)    t (c)    h (KJ/Kg)    s ((KJ/
 bg='white',     # 背景颜色
 font=('Helvetica', 12)     # 字体和字体大小
 
-
 frm_left = tk.Frame(frm)
 frm_left.pack(side='left')
 tk.Label(frm_left, text='frame left').pack(side='top')
@@ -50,29 +49,12 @@ tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
 frm_right = tk.Frame(frm)
 frm_right.pack(side='right')
 tk.Label(frm_right, text='frame right').pack()
-'''
-# define quit button, quit & kill the window
-def _quit():
-    window.quit()
-    window.destroy()
-button =tk.Button(master=window, text='Quit', command=_quit)
-button.pack(side=tk.BOTTOM)
-'''
+
+
 # set figure
 fig = Figure(figsize=(8,6), dpi=100)
 
-#gs = GridSpec(4, 3)
-#dia = fig.add_subplot(gs[0:3, :], facecolor='w') # projection='polar'
 dia = fig.add_subplot(111)
-'''
-b = fig.add_subplot(gs[0, 0])
-r = [1, 2, 3]
-t = [5, 5, 7]
-b.plot(r, t)
-b = fig.add_subplot(gs[1, :-1])
-b.plot(r, t)
-b = fig.add_subplot(gs[:, 1])
-'''
 
 xAxis = "s" 
 yAxis = "T" 
@@ -81,11 +63,10 @@ title = {"T": "T, °C", "s": "s, (kJ/kg)*K"}
 dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
 dia.set_xlabel(title[xAxis])
 dia.set_ylabel(title[yAxis])
-#    plt.ylim(15, 90)
-#    plt.xlim(1.05, 1.88)
 dia.set_ylim(10, 135)
 dia.set_xlim(1.05, 1.88)
 dia.grid()
+
 
 # plot figure
 fluid = 'REFPROP::R245FA'
@@ -137,11 +118,13 @@ for b in process:
     
     dia.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
 
+
 # push figure to tkinter window
 canvas = FigureCanvasTkAgg(fig, master=frm_right)
 canvas.show()
 canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1) # side=tk.BOTTOM
 #canvas.get_tk_widget().grid(row=0, columnspan=3)
+
 
 # define quit button, quit & kill the window
 def _quit():
@@ -156,13 +139,11 @@ toolbar =NavigationToolbar2TkAgg(canvas, frm_right)
 toolbar.update()
 canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-'''
 # define keyboard event
 def on_key_event(event):
     print('you pressed %s'% event.key)
     key_press_handler(event, canvas, toolbar)
 canvas.mpl_connect('key_press_event', on_key_event)
-'''
 
 
 window.mainloop()
