@@ -6,10 +6,10 @@ Created on Mon Feb  5 23:03:37 2018
 @author: wei
 """
 
-import tkinter as Tk
+import tkinter as tk
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.backend_bases import key_press_handler
+#from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 matplotlib.use('TkAgg')
 
@@ -19,16 +19,51 @@ from unit import  T, pps
 from node import Node
 from ORC_sample import data
 from ORC_plot import ProcessPlot
-from matplotlib.gridspec import GridSpec
+#from matplotlib.gridspec import GridSpec
 
-window = Tk.Tk()
-window.title("matplotlib into TK")
+window = tk.Tk()
+window.title("matplotlib into tk")
+tk.Label(window, text='this is ORC_GUI, window top').pack()
 
+frm = tk.Frame(window)
+frm.pack()
+tk.Label(frm, text='frame top').pack()
+
+txt = '''  nodeID  name                 p (bar)    t (c)    h (KJ/Kg)    s ((KJ/Kg)*K)    d (Kg/m^3)  q             over
+--------  -----------------  ---------  -------  -----------  ---------------  ------------  ----------  ------
+       1  pump_inlet              2.01    21.86      228.331           1.0994      1347.24   subcool      -11.6
+       2  pump_ioutlet            6.44    22.55      229.373           1.1018      1346.72   subcool      -49.5
+       3  evaparator_outlet       6.11    88.31      475.503           1.8317        30.912  supderheat    18.2
+       4  expander_inlet          6.27    88.28      475.138           1.8293        31.856  supderheat    17.2
+       5  expander_outlet         2.05    64.03      458.841           1.8464        10.309  supderheat    30
+       6  condenser_inlet         1.99    56.68      451.762           1.8269        10.268  supderheat    23.5
+       7  condenser_outlet        1.98    22.12      228.673           1.1005      1346.53   subcool      -10.9'''
+bg='white',     # 背景颜色
+font=('Helvetica', 12)     # 字体和字体大小
+
+
+frm_left = tk.Frame(frm)
+frm_left.pack(side='left')
+tk.Label(frm_left, text='frame left').pack(side='top')
+tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
+
+frm_right = tk.Frame(frm)
+frm_right.pack(side='right')
+tk.Label(frm_right, text='frame right').pack()
+'''
+# define quit button, quit & kill the window
+def _quit():
+    window.quit()
+    window.destroy()
+button =tk.Button(master=window, text='Quit', command=_quit)
+button.pack(side=tk.BOTTOM)
+'''
 # set figure
-fig = Figure(figsize=(16,9), dpi=100)
+fig = Figure(figsize=(8,6), dpi=100)
 
-gs = GridSpec(16, 9)
-dia = fig.add_subplot(gs[0:11, 5:], facecolor='w') # projection='polar'
+#gs = GridSpec(4, 3)
+#dia = fig.add_subplot(gs[0:3, :], facecolor='w') # projection='polar'
+dia = fig.add_subplot(111)
 '''
 b = fig.add_subplot(gs[0, 0])
 r = [1, 2, 3]
@@ -103,27 +138,31 @@ for b in process:
     dia.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
 
 # push figure to tkinter window
-canvas =FigureCanvasTkAgg(fig, master=window)
+canvas = FigureCanvasTkAgg(fig, master=frm_right)
 canvas.show()
-canvas.get_tk_widget().pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
+canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1) # side=tk.BOTTOM
 #canvas.get_tk_widget().grid(row=0, columnspan=3)
-
-# push tool of matplotlib into tkinter window
-toolbar =NavigationToolbar2TkAgg(canvas, window)
-toolbar.update()
-canvas._tkcanvas.pack(side=Tk.TOP, fill=Tk.BOTH, expand=1)
-
-# define keyboard event
-def on_key_event(event):
-    print('you pressed %s'% event.key)
-    key_press_handler(event, canvas, toolbar)
-canvas.mpl_connect('key_press_event', on_key_event)
 
 # define quit button, quit & kill the window
 def _quit():
     window.quit()
     window.destroy()
-button =Tk.Button(master=window, text='Quit', command=_quit)
-button.pack(side=Tk.BOTTOM)
+button =tk.Button(master=frm_right, text='Quit', command=_quit)
+button.pack(side=tk.RIGHT)
+
+
+# push tool of matplotlib into tkinter window
+toolbar =NavigationToolbar2TkAgg(canvas, frm_right)
+toolbar.update()
+canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+'''
+# define keyboard event
+def on_key_event(event):
+    print('you pressed %s'% event.key)
+    key_press_handler(event, canvas, toolbar)
+canvas.mpl_connect('key_press_event', on_key_event)
+'''
+
 
 window.mainloop()
