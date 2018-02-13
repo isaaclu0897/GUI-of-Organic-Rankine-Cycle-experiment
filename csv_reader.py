@@ -20,16 +20,16 @@ class Paser_data():
         
     def parser_csv(self):
         with open(self.file, 'r', newline='', encoding='utf-16') as file:
-            reader = csv.reader(file, delimiter='\t')
-            data = [row for row in reader]
+            reader = csv.reader(file, delimiter=',')
+            data = (row for row in reader)
             for row_index, index in enumerate(data):
-                if index[0] == 'Time':
+                if index[0] == 'Scan':
                     self.header = index
                     self.index = row_index
     
     def read_csv(self):
         with open(self.file, 'r', newline='', encoding='utf-16') as file:
-            reader = csv.reader(file, delimiter='\t')
+            reader = csv.reader(file, delimiter=',')
             for row in (row for row in reader):
                 yield row
                 
@@ -203,8 +203,8 @@ def main():
 
     
 if __name__=='__main__':
-
-    Data = Paser_data('.~lock.Data 8199 2391 2_12_2018 14_23_36.csv#')
+    
+    Data = Paser_data('Data 8199 2391 2_13_2018 09_48_30.csv')
     Data.parser_csv()
     header = Data.header
     data = Data.read_csv()
@@ -214,53 +214,45 @@ if __name__=='__main__':
 #        data = [row for row in reader]
 #        print(data[4][0])
     for i in data:
-        if i[0] == 'Time':
+        if i[0] == 'Scan':
             order = i
 #            print(order)
             break
-        
     for i in data:
-#        print(order)
-        dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data500(i, header)
-        
-        nodes = []
-        for index, obj in enumerate(dev_list):
-            nodes.append(Node(obj['name'], index))
-        for index, obj in enumerate(dev_list):
-            nodes[index].set_tp(float(obj['T']), float(obj['P']))
-            nodes[index].pt()
-            
-        
-        print(i[0])
-        ORC_status([nodes[a] for a in range(7)])
-        
-        set_windows()
-        plot_SaturationofCurve() 
-        test_plot_StatusofORC(nodes, [0, 1, 2, 4, 6])
-        
-        '''
-        # plot process of ORC
-        process = [ProcessPlot(0, 1, 'isos'),
-                   ProcessPlot(1, 2, 'isop'),
-                   ProcessPlot(2, 3, 'isop'),
-                   ProcessPlot(3, 4, 'isos'),
-                   ProcessPlot(4, 5, 'isop'),
-                   ProcessPlot(5, 6, 'isop'),
-                   ProcessPlot(6, 0, 'isop')]
-        [plot.plot_process(nodes) for plot in process]
-        '''
-        process = [ProcessPlot(0, 1, 'isos'),
-                   ProcessPlot(1, 2, 'isop'),
-#                           ProcessPlot(2, 3, 'isop'),
-                   ProcessPlot(2, 4, 'isos'),
-#                           ProcessPlot(4, 5, 'isop'),
-                   ProcessPlot(4, 6, 'isop')]
-#                            ProcessPlot(6, 0, 'isop')]
-        [plot.plot_process(nodes) for plot in process]
-        plt.pause(0.5)
-#        if order == '':
-#            break
-        
+        if i[0] == '1680':
+            for i in data:
+                order = i[0]
+                dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data500(i, header)
+                    
+                nodes = []
+                for index, obj in enumerate(dev_list):
+                    nodes.append(Node(obj['name'], index))
+                for index, obj in enumerate(dev_list):
+                    nodes[index].set_tp(float(obj['T']), float(obj['P']))
+                    nodes[index].pt()
+                    
+#                print(i[0])
+                ORC_status([nodes[a] for a in range(7)])
+                print(((nodes[4].h-nodes[3].h)+(nodes[1].h-nodes[0].h))/(nodes[1].h-nodes[2].h))
+                
+                set_windows()
+                plot_SaturationofCurve() 
+                test_plot_StatusofORC(nodes, [0, 1, 2, 4, 6])
+                
+                
+                # plot process of ORC
+                process = [ProcessPlot(0, 1, 'isos'),
+                           ProcessPlot(1, 2, 'isop'),
+        #                           ProcessPlot(2, 3, 'isop'),
+                           ProcessPlot(2, 4, 'isos'),
+        #                           ProcessPlot(4, 5, 'isop'),
+                           ProcessPlot(4, 6, 'isop')]
+        #                            ProcessPlot(6, 0, 'isop')]
+                [plot.plot_process(nodes) for plot in process]
+                plt.pause(0.000005)
+                if order == '':
+                    break
+                
 '''
 #    for i in data.read_csv():
 #        print(i)
