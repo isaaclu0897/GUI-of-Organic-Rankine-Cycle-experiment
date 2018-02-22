@@ -18,6 +18,14 @@ def plot_StatusofORC(nodes):
         s.append(pps.J2KJ(nodes[i].s))
     
     plt.plot(s, t, 'bo')
+# test 選點打印
+def test_plot_StatusofORC(nodes, point=None):
+    t = []; s = []
+    for i in point: 
+        t.append(nodes[i].t) 
+        s.append(pps.J2KJ(nodes[i].s))
+    
+    plt.plot(s, t, 'bo')
         
 class ProcessPlot(Node):
     
@@ -140,8 +148,8 @@ if __name__=="__main__":
     
     
     # plot status of ORC
-    plot_status = plot_StatusofORC(nodes)
-    
+    test_plot_StatusofORC(nodes, [1, 2])
+    '''
     # plot process of ORC
     process = [ProcessPlot(0, 1, 'isos'),
                ProcessPlot(1, 2, 'isop'),
@@ -151,5 +159,5 @@ if __name__=="__main__":
                ProcessPlot(5, 6, 'isop'),
                ProcessPlot(6, 0, 'isop')]
     [plot.plot_process(nodes) for plot in process]
-
+    '''
 
