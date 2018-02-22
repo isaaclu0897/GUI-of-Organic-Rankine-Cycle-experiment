@@ -5,7 +5,34 @@ Created on Mon Feb  5 23:03:37 2018
 
 @author: wei
 """
+# test to Put a gif image on a canvas with tkinter
+import tkinter as tk
 
+# create the canvas, size in pixels
+canvas = tk.Canvas(width = 1800, height = 1000, bg = 'black')
+# pack the canvas into a frame/form
+canvas.pack(expand = tk.YES, fill = tk.BOTH) #???
+# load the .gif image file, put gif file here
+gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't use
+# put gif image on canvas
+# pic's upper left corner (NW) on the canvas is at x=50 y=10
+canvas.create_image(100, 100, image = gif1, anchor = tk.NW)
+tk.mainloop()
+#%%
+# try to put jpg image on canvas
+import tkinter as tk 
+from PIL import Image, ImageTk  
+ 
+canvas = tk.Canvas(width = 1800, height = 1000, bg = 'black')     
+image = Image.open("500w_P&ID.jpg")  
+jpg = ImageTk.PhotoImage(image)  
+  
+canvas.create_image(300,50,image = jpg, anchor=tk.NW)    
+canvas.create_text(350,120, text = 'Use Canvas', fill = 'gray')
+canvas.create_text(300,75, text = 'Use Canvas', fill = 'blue')  
+canvas.pack()
+tk.mainloop()  
+#%%
 import tkinter as tk
 import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
