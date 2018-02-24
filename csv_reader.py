@@ -111,7 +111,7 @@ def csv_data500(data, header,
     
 
 def main():
-    Data = Paser_data('Data 8199 2391 1_9_2018 08_48_19.csv')
+    Data = Paser_data('Data 0x2007 0x0957 2_22_2018 19_05_07.csv')
     Data.parser_csv()
     header = Data.header
     data = Data.read_csv()
@@ -204,7 +204,7 @@ def main():
     
 if __name__=='__main__':
     
-    Data = Paser_data('Data 8199 2391 2_13_2018 09_48_30.csv')
+    Data = Paser_data('Data 0x2007 0x0957 2_22_2018 18_41_10.csv')
     Data.parser_csv()
     header = Data.header
     data = Data.read_csv()
@@ -213,13 +213,16 @@ if __name__=='__main__':
 #        reader = csv.reader(file, delimiter='\t')
 #        data = [row for row in reader]
 #        print(data[4][0])
+    ''' header
     for i in data:
         if i[0] == 'Scan':
             order = i
 #            print(order)
             break
+    '''
+#    print(header)
     for i in data:
-        if i[0] == '1680':
+        if i[0] == '245':
             for i in data:
                 order = i[0]
                 dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data500(i, header)
@@ -231,13 +234,17 @@ if __name__=='__main__':
                     nodes[index].set_tp(float(obj['T']), float(obj['P']))
                     nodes[index].pt()
                     
-#                print(i[0])
+                print('index:{}'.format(i[0]))
                 ORC_status([nodes[a] for a in range(7)])
-                print(((nodes[4].h-nodes[3].h)+(nodes[1].h-nodes[0].h))/(nodes[1].h-nodes[2].h))
-                
+                if nodes[3].d < 200 and nodes[4].d < 200:
+                    ORC_eff = ((nodes[4].h-nodes[3].h)+(nodes[1].h-nodes[0].h))/(nodes[1].h-nodes[2].h)
+                    print('eff:{}'.format(ORC_eff))
+                else:
+                    print('None')
+                    
                 set_windows()
                 plot_SaturationofCurve() 
-                test_plot_StatusofORC(nodes, [0, 1, 2, 4, 6])
+                test_plot_StatusofORC(nodes, [0, 1, 3, 4, 6])
                 
                 
                 # plot process of ORC
@@ -249,7 +256,8 @@ if __name__=='__main__':
                            ProcessPlot(4, 6, 'isop')]
         #                            ProcessPlot(6, 0, 'isop')]
                 [plot.plot_process(nodes) for plot in process]
-                plt.pause(0.000005)
+                plt.pause(0.0005)
+#                plt.show()
                 if order == '':
                     break
                 

@@ -6,11 +6,11 @@ Created on Mon Feb  5 23:03:37 2018
 @author: wei
 """
 import tkinter as tk
-import matplotlib
+#import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 #from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
-matplotlib.use('TkAgg')
+#matplotlib.use('TkAgg')
 
 from CoolProp.CoolProp import PropsSI
 import numpy as np
@@ -53,7 +53,8 @@ gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't 
 # put gif image on canvas
 # pic's upper left corner (NW) on the canvas is at x=50 y=10
 canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
-canvas.create_text(100,110, text = 'Use Canvas', fill = 'blue', font=("times new roman", 12))  
+canvas.create_text(100,110, text = '1_T', fill = 'blue', font=("Arial", 12))  
+canvas.create_text(100,126,text = '1_P', fill = 'blue', font=("times new roman", 12))  
 canvas.pack(expand = 1, fill = tk.BOTH) #???
 #tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
 
@@ -84,8 +85,6 @@ title = {"T": "T, °C", "s": "s, (kJ/kg)*K"}
 dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
 dia.set_xlabel(title[xAxis])
 dia.set_ylabel(title[yAxis])
-#    plt.ylim(15, 90)
-#    plt.xlim(1.05, 1.88)
 dia.set_ylim(10, 135)
 dia.set_xlim(1.05, 1.88)
 dia.grid()
@@ -126,6 +125,7 @@ for i in range(len(nodes)):
     s.append(pps.J2KJ(nodes[i].s))
 
 dia.plot(s, t, 'bo')
+
 
 process = [ProcessPlot(0, 1, 'isos'),
            ProcessPlot(1, 2, 'isop'),
