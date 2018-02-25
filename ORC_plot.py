@@ -86,6 +86,18 @@ def set_windows():
     dia.set_xlim(1.05, 1.88)
     dia.grid()
     return dia
+def set_windows2():
+    plt.clf()
+    xAxis = "s" 
+    yAxis = "T" 
+    title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
+    plt.title("%s-%s Diagram" %(yAxis, xAxis))
+    plt.xlabel(title[xAxis])
+    plt.ylabel(title[yAxis])
+    plt.ylim(10, 135)
+    plt.xlim(1.05, 1.88)
+    plt.grid()
+
     
 #    dia.show()
     
@@ -100,15 +112,20 @@ def plot_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
         S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
         line.append(plt.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0))
     return line
+
+def clear_plot(dia):
+    times = range(len(dia.lines)-2)
+    for i in times:
+        dia.lines.pop()
         
 if __name__=="__main__":
     from ORC_sample import data
     from node import Node
 
     # set label 
-    a = set_windows()
+    set_windows2()
 #     plot Saturation of Curve
-    sat = plot_SaturationofCurve()
+    plot_SaturationofCurve()
 #    line = plot_SaturationofCurve()
 #    fig = plt.figure()
 #    dia = fig.add_subplot(1,1,1)
@@ -137,34 +154,34 @@ if __name__=="__main__":
 #        plt.plot(S / 1000, Ti - 273.15, 'r', lw=2.0)
 ##        plt.pause(0.5) 
     
-#    # import data
-#    dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-#    dev = {'pumpi' : pumpi,
-#           'pumpo' : pumpo,
-#           'EVPo' : EVPo, 
-#           'EXPi' : EXPi, 
-#           'EXPo' : EXPo, 
-#           'CDSi' : CDSi, 
-#           'CDSo' : CDSo}
-#
-#    # init node
-#    nodes = [Node(i["name"], i["nid"]) for i in dev_list]
-#    for i, obj in enumerate(dev_list):
-#        nodes[i].set_tp(obj["T"], obj["P"]) 
-#        nodes[i].pt()
-#    
-#    
-#    # plot status of ORC
-#    test_plot_StatusofORC(nodes, [1, 2])
-#    
-#    # plot process of ORC
-#    process = [ProcessPlot(0, 1, 'isos'),
-#               ProcessPlot(1, 2, 'isop'),
-#               ProcessPlot(2, 3, 'isop'),
-#               ProcessPlot(3, 4, 'isos'),
-#               ProcessPlot(4, 5, 'isop'),
-#               ProcessPlot(5, 6, 'isop'),
-#               ProcessPlot(6, 0, 'isop')]
-#    [plot.plot_process(nodes) for plot in process]
+    # import data
+    dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
+    dev = {'pumpi' : pumpi,
+           'pumpo' : pumpo,
+           'EVPo' : EVPo, 
+           'EXPi' : EXPi, 
+           'EXPo' : EXPo, 
+           'CDSi' : CDSi, 
+           'CDSo' : CDSo}
+
+    # init node
+    nodes = [Node(i["name"], i["nid"]) for i in dev_list]
+    for i, obj in enumerate(dev_list):
+        nodes[i].set_tp(obj["T"], obj["P"]) 
+        nodes[i].pt()
+    
+    
+    # plot status of ORC
+    test_plot_StatusofORC(nodes, [1, 2])
+    
+    # plot process of ORC
+    process = [ProcessPlot(0, 1, 'isos'),
+               ProcessPlot(1, 2, 'isop'),
+               ProcessPlot(2, 3, 'isop'),
+               ProcessPlot(3, 4, 'isos'),
+               ProcessPlot(4, 5, 'isop'),
+               ProcessPlot(5, 6, 'isop'),
+               ProcessPlot(6, 0, 'isop')]
+    [plot.plot_process(nodes) for plot in process]
 #    
 #
