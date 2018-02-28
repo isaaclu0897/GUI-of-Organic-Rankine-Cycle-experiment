@@ -74,19 +74,32 @@ class ProcessPlot(Node):
         self.plot_iso()
         
 def set_windows():
+    fig = plt.figure()
+    dia =  fig.add_subplot(1,1,1)
+    xAxis = "s" 
+    yAxis = "T" 
+    title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
+    dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
+    dia.set_xlabel(title[xAxis])
+    dia.set_ylabel(title[yAxis])
+    dia.set_ylim(10, 135)
+    dia.set_xlim(1.05, 1.88)
+    dia.grid()
+    return dia
+def set_windows2():
     plt.clf()
     xAxis = "s" 
     yAxis = "T" 
     title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
-    plt.title("%s-%s Diagram" % (yAxis, xAxis))
-    plt.xlabel(title[xAxis]) 
-    plt.ylabel(title[yAxis]) 
-#    plt.ylim(15, 90)
-#    plt.xlim(1.05, 1.88)
+    plt.title("%s-%s Diagram" %(yAxis, xAxis))
+    plt.xlabel(title[xAxis])
+    plt.ylabel(title[yAxis])
     plt.ylim(10, 135)
     plt.xlim(1.05, 1.88)
     plt.grid()
-    plt.show()
+
+    
+#    dia.show()
     
 def plot_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
     tcrit = PropsSI("Tcrit", fluid) - 0.00007 
@@ -94,19 +107,30 @@ def plot_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
     T_array = np.linspace(tmin, tcrit, num) 
     X_array = np.array([0, 1.0])
     
+    line = []
     for x in X_array: 
         S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
-        plt.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
+        line.append(plt.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0))
+    return line
+
+def clear_plot(dia):
+    times = range(len(dia.lines)-2)
+    for i in times:
+        dia.lines.pop()
         
 if __name__=="__main__":
     from ORC_sample import data
     from node import Node
 
     # set label 
-    set_windows()
-    
-    # plot Saturation of Curve
-    plot_SaturationofCurve(fluid="REFPROP::R245FA", num=50)
+    set_windows2()
+#     plot Saturation of Curve
+    plot_SaturationofCurve()
+#    line = plot_SaturationofCurve()
+#    fig = plt.figure()
+#    dia = fig.add_subplot(1,1,1)
+#    lines = dia.plot(np.arange(1000))
+#    fig.show()
     
 #    # set label 
 #    xAxis = "s" 
@@ -149,7 +173,7 @@ if __name__=="__main__":
     
     # plot status of ORC
     test_plot_StatusofORC(nodes, [1, 2])
-    '''
+    
     # plot process of ORC
     process = [ProcessPlot(0, 1, 'isos'),
                ProcessPlot(1, 2, 'isop'),
@@ -159,5 +183,5 @@ if __name__=="__main__":
                ProcessPlot(5, 6, 'isop'),
                ProcessPlot(6, 0, 'isop')]
     [plot.plot_process(nodes) for plot in process]
-    '''
-
+#    
+#
