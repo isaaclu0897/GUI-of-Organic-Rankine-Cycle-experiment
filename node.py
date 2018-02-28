@@ -100,7 +100,8 @@ class Node(object):
         result = '{:^12}, {:^5}, {:^10.4f}, {:^12.5f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12}' \
         .format(self.name, self.nid, self.p, self.t, self.h, self.s, self.d, self.q, self.over)
         return result
-    
+    def __repr__(self):
+        return self.name, self.nid, self.p, self.t, self.h, self.s, self.d, self.q, self.over
 #    # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
 #    def statusProps(self):
 #        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over]
