@@ -9,11 +9,11 @@ Created on Wed Jan 24 23:56:45 2018
 from tabulate import tabulate
 from ORC_sample import data
 
-def ORC_status(objlist, headers=['nodeID', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',
+def ORC_status(objlist, headers=['ID', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',
                                  's ((KJ/Kg)*K)', 'd (Kg/m^3)', 'q', 'over']):
     table = []
     for nodei in objlist:
-        table.append([nodei.name, nodei.nid, nodei.p, round(nodei.t, 3), round(nodei.h, 3),\
+        table.append([nodei.nid, nodei.name, nodei.p, round(nodei.t, 3), round(nodei.h, 3),\
                       round(nodei.s, 4), round(nodei.d, 2), nodei.q, round(nodei.over, 1)])
     
     print(tabulate(table, headers))

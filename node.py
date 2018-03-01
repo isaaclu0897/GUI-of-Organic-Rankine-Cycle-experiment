@@ -40,10 +40,10 @@ class Node(object):
     @property
     def h(self):
         return self._h / 1000
-#    @h.setter
-#    def h(self, value):
-#        self._h = value * 1000
-#        return self._h
+    @h.setter
+    def h(self, value):
+        self._h = value * 1000
+        return self._h
     @property
     def s(self):
         return self._s / 1000
@@ -89,6 +89,7 @@ class Node(object):
         self.d = PropsSI("D", "P", self._p, "Q", self.q, self.fluid)
         self.t = PropsSI("T", "P", self._p, "Q", self.q, self.fluid)
         self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 0.5, self.fluid))
+
             
     # set Props of P & T
     def set_tp(self, Temperature, Presspsure):
@@ -97,28 +98,26 @@ class Node(object):
 
     # print all of Props of the node
     def __str__(self):
-        result = '{:^12}, {:^5}, {:^10.4f}, {:^12.5f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12}' \
-        .format(self.name, self.nid, self.p, self.t, self.h, self.s, self.d, self.q, self.over)
+        result = '{:^5}, {:^12}, {:^10.4f}, {:^12.5f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12}' \
+        .format(self.nid, self.name, self.p, self.t, self.h, self.s, self.d, self.q, self.over)
         return result
+    
     def __repr__(self):
-        return self.name, self.nid, self.p, self.t, self.h, self.s, self.d, self.q, self.over
+        return '{} is a node object'.format(self.name)
+    
 #    # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
 #    def statusProps(self):
 #        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over]
     
 #   test
 if __name__ == '__main__':
-    from time import time
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     nodes = Node('point1', 1, "REFPROP::Water")
     nodes.p = 1.01325
-    nodes.t = 25
+    nodes.t = 100
     nodes.pt()
     msg = nodes.__str__()
-#    print(nodes, '\n')
-    print('{:^12}, {:^5}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
-          .format('name', 'nodeid', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
-
-    
-    
+    print(nodes, '\n')
+    print('{:^5}, {:^12}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
+          .format('id', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
