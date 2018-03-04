@@ -206,7 +206,7 @@ if __name__=='__main__':
     import time
     s = time.time()
     
-    Data = Paser_data('Data 0x2007 0x0957 2_22_2018 18_41_10.csv')
+    Data = Paser_data('./data/Data 0x2007 0x0957 2_22_2018 18_41_10.csv')
     Data.parser_csv()
     header = Data.header
     data = Data.read_csv()
