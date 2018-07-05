@@ -176,12 +176,14 @@ if __name__=="__main__":
 #    plot_StatusofORC(nodes)
     state_point = calc_StatusofORC(nodes, [1, 2, 3, 4])
     dia.add_line(state_point)
-#    ProcessPlot(0, 1, 'isos').plot_process
-#    a=ProcessPlot(3, 4, 'isos')
-#    a.iso_line(nodes)
-#    a.calc_iso()
-#    a.plot_iso()
-    # plot process of ORC
+    """ example
+    ProcessPlot(0, 1, 'isos').plot_process
+    a=ProcessPlot(3, 4, 'isos')
+    a.iso_line(nodes)
+    a.calc_iso()
+    a.plot_iso()
+    plot process of ORC
+    """
     process = [ProcessPlot(0, 1, 'isos'),
                ProcessPlot(1, 2, 'isop'),
                ProcessPlot(2, 3, 'isop'),
@@ -194,6 +196,5 @@ if __name__=="__main__":
     for i in good:
         dia.add_line(i[0])
         dia.add_line(i[1])
-    #### 最後狀態線還無物件畫
-#    [plot.plot_process(nodes) for plot in process]
+
     plt.show()
