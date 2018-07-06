@@ -6,6 +6,7 @@ Created on Sat Jan 27 20:40:46 2018
 @author: wei
 """
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import matplotlib.lines as lin
 from CoolProp.CoolProp import PropsSI 
 import numpy as np 
@@ -112,17 +113,19 @@ def set_windows():
     dia.set_xlim(1.05, 1.88)
     dia.grid()
     return dia
-def set_windows2():
-    plt.clf()
+def set_windows_GUI():
+    fig = Figure(figsize=(8,6), dpi=100)
+    dia = fig.add_subplot(1,1,1)
     xAxis = "s" 
     yAxis = "T" 
     title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
-    plt.title("%s-%s Diagram" %(yAxis, xAxis))
-    plt.xlabel(title[xAxis])
-    plt.ylabel(title[yAxis])
-    plt.ylim(10, 135)
-    plt.xlim(1.05, 1.88)
-    plt.grid()
+    dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
+    dia.set_xlabel(title[xAxis])
+    dia.set_ylabel(title[yAxis])
+    dia.set_ylim(10, 135)
+    dia.set_xlim(1.05, 1.88)
+    dia.grid()
+    return dia, fig
     
 
 def calc_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
@@ -157,13 +160,6 @@ if __name__=="__main__":
     
     # import data
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-    dev = {'pumpi' : pumpi,
-           'pumpo' : pumpo,
-           'EVPo' : EVPo, 
-           'EXPi' : EXPi, 
-           'EXPo' : EXPo, 
-           'CDSi' : CDSi, 
-           'CDSo' : CDSo}
 
     # init node
     nodes = [Node(i["name"], i["nid"]) for i in dev_list]

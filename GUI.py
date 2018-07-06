@@ -18,7 +18,7 @@ import numpy as np
 from unit import  T, pps
 from node import Node
 from ORC_sample import data
-from ORC_plot import ProcessPlot
+from ORC_plot import ProcessPlot, set_windows_GUI, calc_SaturationofCurve, calc_StatusofORC
 #import matplotlib.pyplot as plt 
 
 
@@ -76,61 +76,38 @@ frm_right.pack(side='right')
 #tk.Label(frm_right, text='frame right').pack()
 
 # set figure
-fig = Figure(figsize=(8,6), dpi=100)
-
-dia = fig.add_subplot(111)
-
-xAxis = "s" 
-yAxis = "T" 
-title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
-
-dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
-dia.set_xlabel(title[xAxis])
-dia.set_ylabel(title[yAxis])
-dia.set_ylim(10, 135)
-dia.set_xlim(1.05, 1.88)
-dia.grid()
 
 
-# plot figure
-fluid = 'REFPROP::R245FA'
-num = 50
-tcrit = PropsSI("Tcrit", fluid) - 0.00007 
-tmin = PropsSI("Tmin", fluid) 
-T_array = np.linspace(tmin, tcrit, num) 
-X_array = np.array([0, 1.0])
+# set label 
+dia, fig = set_windows_GUI()
+# plot Saturation of Curve
+sat_line = calc_SaturationofCurve()
+dia.add_line(sat_line[0])
+dia.add_line(sat_line[1])
 
-for x in X_array:
-    S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
-    
-    dia.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
 
 # import data
 dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-dev = {'pumpi' : pumpi,
-       'pumpo' : pumpo,
-       'EVPo' : EVPo, 
-       'EXPi' : EXPi, 
-       'EXPo' : EXPo, 
-       'CDSi' : CDSi, 
-       'CDSo' : CDSo}
 
 # init node
 nodes = [Node(i["name"], i["nid"]) for i in dev_list]
 for i, obj in enumerate(dev_list):
-    nodes[i].set_tp(obj["T"], obj["P"]) 
+    nodes[i].set_tp(obj["T"], obj["P"])
     nodes[i].pt()
 
+
 # plot status of ORC
-t = []; s = []
-for i in range(len(nodes)): 
-    t.append(nodes[i].t) 
-    s.append(nodes[i].s)
-
-dia.plot(s, t, 'bo')
-
-#b = ProcessPlot(3, 4, 'isos')
-
+#    plot_StatusofORC(nodes)
+state_point = calc_StatusofORC(nodes, [1, 2, 3, 4])
+dia.add_line(state_point)
+""" example
+ProcessPlot(0, 1, 'isos').plot_process
+a=ProcessPlot(3, 4, 'isos')
+a.iso_line(nodes)
+a.calc_iso()
+a.plot_iso()
+plot process of ORC
+"""
 process = [ProcessPlot(0, 1, 'isos'),
            ProcessPlot(1, 2, 'isop'),
            ProcessPlot(2, 3, 'isop'),
@@ -138,10 +115,13 @@ process = [ProcessPlot(0, 1, 'isos'),
            ProcessPlot(4, 5, 'isop'),
            ProcessPlot(5, 6, 'isop'),
            ProcessPlot(6, 0, 'isop')]
-for b in process:
-    b.iso_line(nodes)
-    b.calc_iso()
-    dia.plot(b.Isa, b.Ita, "b")
+good = [plot.plot_process(nodes) for plot in process]
+
+for i in good:
+    dia.add_line(i[0])
+    dia.add_line(i[1])
+
+plt.show()
 
 
 # push figure to tkinter window
@@ -176,36 +156,36 @@ canvas.mpl_connect('key_press_event', on_key_event)
 
 
 window.mainloop()
-#%%
-"""
-# test to Put a gif image on a canvas with tkinter
-import tkinter as tk
-
-# create the canvas, size in pixels
-canvas = tk.Canvas(width = 1024, height = 724, bg = 'white')
-# pack the canvas into a frame/form
-# load the .gif image file, put gif file here
-gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't use
-# put gif image on canvas
-# pic's upper left corner (NW) on the canvas is at x=50 y=10
-canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
-canvas.pack(expand = tk.YES, fill = tk.BOTH) #???
-
-tk.mainloop()
-"""
-#%%
-"""
-# try to put jpg image on canvas
-import tkinter as tk 
-from PIL import Image, ImageTk  
- 
-canvas = tk.Canvas(width = 1800, height = 1000, bg = 'black')     
-image = Image.open("500w_P&ID.jpg")  
-jpg = ImageTk.PhotoImage(image)  
-  
-canvas.create_image(300,50,image = jpg, anchor=tk.NW)    
-canvas.create_text(350,120, text = 'Use Canvas', fill = 'gray')
-canvas.create_text(300,75, text = 'Use Canvas', fill = 'blue')  
-canvas.pack()
-tk.mainloop()  
-"""
+##%
+#"""
+## test to Put a gif image on a canvas with tkinter
+#import tkinter as tk
+#
+## create the canvas, size in pixels
+#canvas = tk.Canvas(width = 1024, height = 724, bg = 'white')
+## pack the canvas into a frame/form
+## load the .gif image file, put gif file here
+#gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't use
+## put gif image on canvas
+## pic's upper left corner (NW) on the canvas is at x=50 y=10
+#canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
+#canvas.pack(expand = tk.YES, fill = tk.BOTH) #???
+#
+#tk.mainloop()
+#"""
+##%
+#"""
+## try to put jpg image on canvas
+#import tkinter as tk 
+#from PIL import Image, ImageTk  
+# 
+#canvas = tk.Canvas(width = 1800, height = 1000, bg = 'black')     
+#image = Image.open("500w_P&ID.jpg")  
+#jpg = ImageTk.PhotoImage(image)  
+#  
+#canvas.create_image(300,50,image = jpg, anchor=tk.NW)    
+#canvas.create_text(350,120, text = 'Use Canvas', fill = 'gray')
+#canvas.create_text(300,75, text = 'Use Canvas', fill = 'blue')  
+#canvas.pack()
+#tk.mainloop()  
+#"""
