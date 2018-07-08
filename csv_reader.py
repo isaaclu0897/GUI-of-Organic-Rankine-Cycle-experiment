@@ -10,7 +10,7 @@ import csv
 from node import Node
 from tabulate_text import ORC_status
 import matplotlib.pyplot as plt 
-from ORC_plot import ProcessPlot, set_windows, plot_SaturationofCurve, plot_StatusofORC
+from ORC_plot import ProcessPlot, set_windows, plot_SaturationofCurve, plot_StatusofORC, test_plot_StatusofORC, clear_plot, set_windows2
 
 class Paser_data():
     
@@ -32,6 +32,7 @@ class Paser_data():
             reader = csv.reader(file, delimiter=',')
             for row in (row for row in reader):
                 yield row
+                
 def csv_data(data, header,
              pumpi_p='112 <pump inlet> (BAR)',       pumpi_t='101 <pump inlet> (C)',
              pumpo_p='113 <pump outlet> (BAR)',      pumpo_t='102 <pump outlet> (C)',
@@ -70,8 +71,47 @@ def csv_data(data, header,
                  'T' : data[header.index(CDSo_t)]}
         return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
 
+def csv_data500(data, header,
+                pumpi_p='101 <pump inlet> (BAR)',       pumpi_t='102 <pump inlet> (C)',
+                pumpo_p='103 <pump outlet> (BAR)',      pumpo_t='104 <pump outlet> (C)',
+                EVPo_p ='105 <evaporater outlet> (BAR)',EVPo_t='106 <evaporalet outlet> (C)',
+                EXPi_p ='201 <expander2 inlet> (BAR)',   EXPi_t='202 <expander2 inlet> (C)',
+                EXPo_p ='203 <expander2 outlet> (BAR)',  EXPo_t='204 <expander2 outlet> (C)',
+                CDSi_p ='111 <condenser inlet> (BAR)',  CDSi_t='112 <condenser inlet> (C)',
+                CDSo_p ='113 <condenser outlet> (BAR)', CDSo_t='114 <condenser outlet> (C)'):
+        pumpi = {'name' : 'pump_inlet',
+                 'nid' : 1,
+                 'P' : data[header.index(pumpi_p)],
+                 'T' : data[header.index(pumpi_t)]}
+        pumpo = {'name' : 'pump_ioutlet',
+                 'nid' : 2,
+                 'P' : data[header.index(pumpo_p)],
+                 'T' : data[header.index(pumpo_t)]}
+        EVPo = {'name' : 'evaparator_outlet',
+                'nid' : 3,
+                 'P' : data[header.index(EVPo_p)],
+                 'T' : data[header.index(EVPo_t)]}
+        EXPi = {'name' : 'expander_inlet',
+                'nid' : 4,
+                 'P' : data[header.index(EXPi_p)],
+                 'T' : data[header.index(EXPi_t)]}
+        EXPo = {'name' : 'expander_outlet',
+                'nid' : 5,
+                 'P' : data[header.index(EXPo_p)],
+                 'T' : data[header.index(EXPo_t)]}
+        CDSi = {'name' : 'condenser_inlet',
+                'nid' : 6,
+                 'P' : data[header.index(CDSi_p)],
+                 'T' : data[header.index(CDSi_t)]}
+        CDSo = {'name' : 'condenser_outlet',
+                'nid' : 7,
+                 'P' : data[header.index(CDSo_p)],
+                 'T' : data[header.index(CDSo_t)]}
+        return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
+    
+
 def main():
-    Data = Paser_data('Data 8199 2391 1_9_2018 08_48_19.csv')
+    Data = Paser_data('Data 0x2007 0x0957 2_22_2018 19_05_07.csv')
     Data.parser_csv()
     header = Data.header
     data = Data.read_csv()
@@ -84,15 +124,7 @@ def main():
         if i[0] == '300':
             for i in data:
                 order = i[0]
-        #            print(type(i))
                 dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data(i, header)
-                dev = {'pumpi' : pumpi,
-                       'pumpo' : pumpo,
-                       'EVPo' : EVPo, 
-                       'EXPi' : EXPi, 
-                       'EXPo' : EXPo, 
-                       'CDSi' : CDSi, 
-                       'CDSo' : CDSo}
                     
                 nodes = []
                 for index, obj in enumerate(dev_list):
@@ -101,12 +133,11 @@ def main():
                     nodes[index].set_tp(float(obj['T']), float(obj['P']))
                     nodes[index].pt()
                     
-                    
                 print(order)
                 ORC_status([nodes[a] for a in range(7)])
                 
                 set_windows()
-                plot_SaturationofCurve()   
+                plot_SaturationofCurve() 
                 plot_StatusofORC(nodes)
         
                 # plot process of ORC
@@ -118,9 +149,21 @@ def main():
                            ProcessPlot(5, 6, 'isop'),
                            ProcessPlot(6, 0, 'isop')]
                 [plot.plot_process(nodes) for plot in process]
+                
+                ''' 測試
+                process = [ProcessPlot(0, 1, 'isos'),
+                           ProcessPlot(1, 2, 'isop'),
+#                           ProcessPlot(2, 3, 'isop'),
+                           ProcessPlot(2, 4, 'isos'),
+#                           ProcessPlot(4, 5, 'isop'),
+                           ProcessPlot(4, 6, 'isop')]
+#                            ProcessPlot(6, 0, 'isop')]
+                [plot.plot_process(nodes) for plot in process]
+                '''
                 plt.pause(0.0000005)
-                if order == '310':
+                if order == '':
                     break
+                
 #    def parser_data(self):
 #        [i for i in range(50) if]
 #
@@ -160,8 +203,131 @@ def main():
 
     
 if __name__=='__main__':
-
-    main()
+    import time
+    s = time.time()
+    
+    Data = Paser_data('./data/Data 0x2007 0x0957 2_22_2018 18_41_10.csv')
+    Data.parser_csv()
+    header = Data.header
+    data = Data.read_csv()
+#    file = 'Data 8199 2391 2_12_2018 14_23_36.csv'
+#    with open(file, 'r', newline='', encoding='utf-16') as file:
+#        reader = csv.reader(file, delimiter='\t')
+#        data = [row for row in reader]
+#        print(data[4][0])
+    ''' header
+    for i in data:
+        if i[0] == 'Scan':
+            order = i
+#            print(order)
+            break
+    '''
+#    print(header)
+    for i in data:
+        if i[0] == '245':
+            for i in data:
+                order = i[0]
+                dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data500(i, header)
+                    
+                nodes = []
+                for index, obj in enumerate(dev_list):
+                    nodes.append(Node(obj['name'], index))
+                for index, obj in enumerate(dev_list):
+                    nodes[index].set_tp(float(obj['T']), float(obj['P']))
+                    nodes[index].pt()
+                    
+                print('index:{}'.format(i[0]))
+                ORC_status([nodes[a] for a in range(7)])
+                if nodes[3].d < 200 and nodes[4].d < 200:
+                    ORC_eff = ((nodes[4].h-nodes[3].h)+(nodes[1].h-nodes[0].h))/(nodes[1].h-nodes[2].h)
+                    print('eff:{}'.format(ORC_eff))
+                else:
+                    print('None')
+                    
+                set_windows2()
+                plot_SaturationofCurve() 
+                test_plot_StatusofORC(nodes, [0, 1, 3, 4, 6])
+                
+                
+                # plot process of ORC
+                process = [ProcessPlot(0, 1, 'isos'),
+                           ProcessPlot(1, 2, 'isop'),
+        #                           ProcessPlot(2, 3, 'isop'),
+                           ProcessPlot(2, 4, 'isos'),
+        #                           ProcessPlot(4, 5, 'isop'),
+                           ProcessPlot(4, 6, 'isop')]
+        #                            ProcessPlot(6, 0, 'isop')]
+                [plot.plot_process(nodes) for plot in process]
+                
+                plt.pause(0.0005)
+#                plt.show()
+                if order == '':
+                    break
+    aaa = time.time() - s
+    
+    s = time.time()
+    
+    Data = Paser_data('Data 0x2007 0x0957 2_22_2018 18_41_10.csv')
+    Data.parser_csv()
+    header = Data.header
+    data = Data.read_csv()
+#    file = 'Data 8199 2391 2_12_2018 14_23_36.csv'
+#    with open(file, 'r', newline='', encoding='utf-16') as file:
+#        reader = csv.reader(file, delimiter='\t')
+#        data = [row for row in reader]
+#        print(data[4][0])
+    ''' header
+    for i in data:
+        if i[0] == 'Scan':
+            order = i
+#            print(order)
+            break
+    '''
+#    print(header)
+    a = set_windows()
+    for i in data:
+        if i[0] == '245':
+            for i in data:
+                order = i[0]
+                dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = csv_data500(i, header)
+                    
+                nodes = []
+                for index, obj in enumerate(dev_list):
+                    nodes.append(Node(obj['name'], index))
+                for index, obj in enumerate(dev_list):
+                    nodes[index].set_tp(float(obj['T']), float(obj['P']))
+                    nodes[index].pt()
+                    
+                print('index:{}'.format(i[0]))
+                ORC_status([nodes[a] for a in range(7)])
+                if nodes[3].d < 200 and nodes[4].d < 200:
+                    ORC_eff = ((nodes[4].h-nodes[3].h)+(nodes[1].h-nodes[0].h))/(nodes[1].h-nodes[2].h)
+                    print('eff:{}'.format(ORC_eff))
+                else:
+                    print('None')
+                    
+                clear_plot(a)
+                plot_SaturationofCurve() 
+                test_plot_StatusofORC(nodes, [0, 1, 3, 4, 6])
+                
+                
+                # plot process of ORC
+                process = [ProcessPlot(0, 1, 'isos'),
+                           ProcessPlot(1, 2, 'isop'),
+        #                           ProcessPlot(2, 3, 'isop'),
+                           ProcessPlot(2, 4, 'isos'),
+        #                           ProcessPlot(4, 5, 'isop'),
+                           ProcessPlot(4, 6, 'isop')]
+        #                            ProcessPlot(6, 0, 'isop')]
+                [plot.plot_process(nodes) for plot in process]
+                
+                plt.pause(0.0005)
+#                plt.show()
+                if order == '':
+                    break
+    bbb = time.time() - s
+          
+    print(aaa, bbb)      
 '''
 #    for i in data.read_csv():
 #        print(i)
