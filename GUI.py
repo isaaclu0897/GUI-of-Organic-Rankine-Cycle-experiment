@@ -6,9 +6,10 @@ Created on Mon Feb  5 23:03:37 2018
 @author: wei
 """
 import tkinter as tk
+import tkinter.font as tkfont
 #import matplotlib
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-#from matplotlib.backend_bases import key_press_handler
+from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
 #matplotlib.use('TkAgg')
 
@@ -18,11 +19,16 @@ from unit import  T, pps
 from node import Node
 from ORC_sample import data
 from ORC_plot import ProcessPlot
-#from matplotlib.gridspec import GridSpec
+#import matplotlib.pyplot as plt 
+
+
 
 window = tk.Tk()
-window.title("matplotlib into tk")
-tk.Label(window, text='this is ORC_GUI, window top').pack()
+
+window.title("Lab429, ORC for 500W, author:wei")
+w = tk.Label(window, text='this is ORC_GUI')
+#w.config(height=10, size=20)
+w.pack()
 
 frm = tk.Frame(window)
 frm.pack()
@@ -43,40 +49,36 @@ frm.pack()
 
 frm_left = tk.Frame(frm)
 frm_left.pack(side='left')
-tk.Label(frm_left, text='frame left').pack(side='top')
+#tk.Label(frm_left, text='frame left').pack(side='top')
 # create the canvas, size in pixels
 canvas = tk.Canvas(master=frm_left, width = 1024, height = 724, bg = 'white')
 # pack the canvas into a frame/form
 
 # load the .gif image file, put gif file here
-gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't use
+gif1 = tk.PhotoImage(file = './fig/500w_P&ID.png') # test gif, png and jpg, jpg can't use
 # put gif image on canvas
 # pic's upper left corner (NW) on the canvas is at x=50 y=10
 canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
-canvas.create_text(100,110, text = '1_T', fill = 'blue', font=("Arial", 12))  
-canvas.create_text(100,126,text = '1_P', fill = 'blue', font=("times new roman", 12))  
+k = 30
+fontprop = tkfont.Font(family='courier 10 pitch', size=30)# bitstream charter or courier 10 pitch
+fonteff = tkfont.Font(family='courier 10 pitch', size=50, weight='bold')# bitstream charter or courier 10 pitch
+
+canvas.create_text(100,110, text = 'P', fill = 'blue', font=fontprop)  
+canvas.create_text(100,110+k,text = 'T', fill = 'blue', font=fontprop)  
+
+canvas.create_text(280,320, text = '429_ORC\neff: 3 %', fill = 'blue', font=fonteff)
+
 canvas.pack(expand = 1, fill = tk.BOTH) #???
 #tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
 
 frm_right = tk.Frame(frm)
 frm_right.pack(side='right')
-tk.Label(frm_right, text='frame right').pack()
+#tk.Label(frm_right, text='frame right').pack()
 
 # set figure
 fig = Figure(figsize=(8,6), dpi=100)
 
-#gs = GridSpec(4, 3)
-#dia = fig.add_subplot(gs[0:3, :], facecolor='w') # projection='polar'
 dia = fig.add_subplot(111)
-'''
-b = fig.add_subplot(gs[0, 0])
-r = [1, 2, 3]
-t = [5, 5, 7]
-b.plot(r, t)
-b = fig.add_subplot(gs[1, :-1])
-b.plot(r, t)
-b = fig.add_subplot(gs[:, 1])
-'''
 
 xAxis = "s" 
 yAxis = "T" 
@@ -88,6 +90,7 @@ dia.set_ylabel(title[yAxis])
 dia.set_ylim(10, 135)
 dia.set_xlim(1.05, 1.88)
 dia.grid()
+
 
 # plot figure
 fluid = 'REFPROP::R245FA'
@@ -122,10 +125,11 @@ for i, obj in enumerate(dev_list):
 t = []; s = []
 for i in range(len(nodes)): 
     t.append(nodes[i].t) 
-    s.append(pps.J2KJ(nodes[i].s))
+    s.append(nodes[i].s)
 
 dia.plot(s, t, 'bo')
 
+#b = ProcessPlot(3, 4, 'isos')
 
 process = [ProcessPlot(0, 1, 'isos'),
            ProcessPlot(1, 2, 'isop'),
@@ -137,14 +141,19 @@ process = [ProcessPlot(0, 1, 'isos'),
 for b in process:
     b.iso_line(nodes)
     b.calc_iso()
-    
-    dia.plot(pps.J2KJ(b.sa), T.K2C(b.ta), "b")
+    dia.plot(b.Isa, b.Ita, "b")
+
 
 # push figure to tkinter window
 canvas = FigureCanvasTkAgg(fig, master=frm_right)
-canvas.show()
+#canvas.show()
+
+
 canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1) # side=tk.BOTTOM
 #canvas.get_tk_widget().grid(row=0, columnspan=3)
+#window.mainloop()
+##%%
+
 
 # define quit button, quit & kill the window
 def _quit():
@@ -159,13 +168,11 @@ toolbar =NavigationToolbar2TkAgg(canvas, frm_right)
 toolbar.update()
 canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
 
-'''
 # define keyboard event
 def on_key_event(event):
     print('you pressed %s'% event.key)
     key_press_handler(event, canvas, toolbar)
 canvas.mpl_connect('key_press_event', on_key_event)
-'''
 
 
 window.mainloop()
