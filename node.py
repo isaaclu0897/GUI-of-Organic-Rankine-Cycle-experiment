@@ -5,9 +5,18 @@ Created on Sun Jan 21 23:18:15 2018
 
 @author: wei
 """
-
 from CoolProp.CoolProp import PropsSI
 from unit import P, T
+
+def fixpath():
+    """ set different path of OS """
+    from platform import system
+    if system() == 'Linux':
+        path = r'/opt/refprop'
+    else:
+        path = r'C:\Program Files (x86)\REFPROP'
+    import CoolProp.CoolProp as CP;CP.set_config_string(CP.ALTERNATIVE_REFPROP_PATH, path)
+    # CP.get_global_param_string("REFPROP_version")
 
 class Node(object):
     
