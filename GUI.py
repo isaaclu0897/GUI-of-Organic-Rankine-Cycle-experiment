@@ -121,7 +121,7 @@ for i in good:
     dia.add_line(i[0])
     dia.add_line(i[1])
 
-plt.show()
+#plt.show()
 
 
 # push figure to tkinter window
