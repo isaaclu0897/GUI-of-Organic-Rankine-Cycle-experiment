@@ -32,6 +32,23 @@ class Paser_data():
             reader = csv.reader(file, delimiter=',')
             for row in (row for row in reader):
                 yield row
+
+def data_gen(filename):
+    Data = Paser_data(filename)
+    Data.parser_csv()
+    header = Data.header
+    data = Data.read_csv()
+#    head, data = data_gen()
+    _cont = 0
+    while 1:
+        if next(data) == header:
+            return header, data
+        elif _cont > 10:
+            raise Exception("data error") 
+        else:
+            _cont += 1
+            continue
+
                 
 def csv_data(data, header,
              pumpi_p='112 <pump inlet> (BAR)',       pumpi_t='101 <pump inlet> (C)',
@@ -203,23 +220,13 @@ def main():
 
     
 if __name__=='__main__':
-    Data = Paser_data(r'./data/Data 8199 2391 2_13_2018 09_48_30.csv')
-    Data.parser_csv()
-    header = Data.header
-    data = Data.read_csv()
+    header, data = data_gen(r'./data/Data 8199 2391 2_13_2018 09_48_30.csv')
 #    file = 'Data 8199 2391 2_12_2018 14_23_36.csv'
 #    with open(file, 'r', newline='', encoding='utf-16') as file:
 #        reader = csv.reader(file, delimiter='\t')
 #        data = [row for row in reader]
 #        print(data[4][0])
-    ''' header
-    for i in data:
-        if i[0] == 'Scan':
-            order = i
-#            print(order)
-            break
-    '''
-#    print(header)
+
     dia = set_windows()
     sat_line = calc_SaturationofCurve()
     dia.add_line(sat_line[0])
