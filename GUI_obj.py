@@ -6,28 +6,15 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-"""
-=================
-Animated subplots
-=================
-
-This example uses subclassing, but there is no reason that the proper function
-couldn't be set up and then use FuncAnimation. The code is long, but not
-really complex. The length is due solely to the fact that there are a total of
-9 lines that need to be changed for the animation as well as 3 subplots that
-need initial set up.
-
-"""
 import tkinter as tk
 import tkinter.font as tkfont
-#import numpy as np
-#import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import numpy as np
-from ORC_plot import calc_SaturationofCurve
+from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+from threading import Timer
+import visa
+import node
 
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
@@ -71,8 +58,8 @@ class ORC_Figure(tk.Frame):
         self.dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
         self.dia.set_xlabel(title[xAxis])
         self.dia.set_ylabel(title[yAxis])
-        self.dia.set_ylim(10, 160)
-        self.dia.set_xlim(0.9, 2)
+        self.dia.set_ylim(10, 150)
+        self.dia.set_xlim(0.9, 1.9)
         self.dia.grid()
         
         self.toolbar =NavigationToolbar2Tk(self.canvas, master)
@@ -80,55 +67,86 @@ class ORC_Figure(tk.Frame):
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
         [self.dia.add_line(i) for i in calc_SaturationofCurve()]
+        self.state_point = Line2D([], [], color='b', linestyle='None', marker='o')
+        self.dia.add_line(self.state_point)
     
-    def good():
-        pass
-#        self.line2 = Line2D([], [], color='blue', marker='o')
-#        self.line2a = Line2D([], [], color='blue', marker='o')
-#        self.line2e = Line2D([], [], color='blue', marker='o')
-#        self.dia.add_line(self.line2)
-#        self.dia.add_line(self.line2a)
-#        self.dia.add_line(self.line2e)
-###
-###
-###
-#        self.line3 = Line2D([], [], color='green')
-#        self.line3a = Line2D([], [], color='green', linewidth=2)
-#        self.line3e = Line2D([], [], color='green', marker='o', markeredgecolor='r')
-#        self.dia.add_line(self.line3)
-#        self.dia.add_line(self.line3a)
-#        self.dia.add_line(self.line3e)
-#       
-#        self.canvas.show()
-#
-#        animation.TimedAnimation.__init__(self, self.fig, interval=50, blit=True)
-#
-#    def _draw_frame(self, framedata):
-#        i = framedata
-#        head = i - 1
-#        head_slice = (self.t > self.t[i] - 1.0) & (self.t < self.t[i])
-#
-#        self.line1.set_data(self.x[:i], self.y[:i])
-#        self.line1a.set_data(self.x[head_slice], self.y[head_slice])
-#        self.line1e.set_data(self.x[head], self.y[head])
-#
-#        self.line2.set_data(self.y[:i], self.z[:i])
-#        self.line2a.set_data(self.y[head_slice], self.z[head_slice])
-#        self.line2e.set_data(self.y[head], self.z[head])
-#
-#        self.line3.set_data(self.x[:i], self.z[:i])
-#        self.line3a.set_data(self.x[head_slice], self.z[head_slice])
-#        self.line3e.set_data(self.x[head], self.z[head])
-#
-#        self._drawn_artists = [self.line1, self.line1a, self.line1e,
-#                               self.line2, self.line2a, self.line2e,
-#                               self.line3, self.line3a, self.line3e]
 
+def scan_data():
+    rm = visa.ResourceManager()
+    v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
+#        idn_string = v34972A.query('*IDN?')
+
+    def innerfunc():
+        # scan temperature
+        scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
         
+        # scan pressure
+        v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (range_PRESS,resolution_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' % (state_PRESS, ch_PRESS))
+        scans_PRESS = v34972A.query(':READ?')
+        
+        # convert str to float
+        readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
+        readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
+        
+# =========================================================
+# define the  of all point & init all node
+# =========================================================
+        dev_list = [pumpi, pumpo, EXPi, EXPo]
+        for i in range(4):
+            dev_list[i]['P'] = readings_PRESS[i]
+            dev_list[i]['T'] = readings_TEMP[i]
+        nodes = []
+        for i in dev_list:
+            nodes.append(node.Node(i['name'], i['nid']))
+            
+        for i, obj in enumerate(dev_list):
+            nodes[i].set_tp(obj['T'], obj['P'])
+            nodes[i].pt()
+#            ORC_status([nodes[i] for i in range(len(nodes))])
+        xdata, ydata = calc_StatusofORC(nodes, [0, 1, 2, 3])
 
+        global a
+        a.state_point.set_xdata(xdata)
+        a.state_point.set_ydata(ydata)
+        print(a.dia.lines)
+        
+        a.canvas.draw()
+    timer(innerfunc, 3,)
+
+def timer(func, second=2, *arg):
+    func(*arg)
+    t = Timer(second, timer, args=(func, 3, *arg))
+    t.setDaemon(True)
+
+    if t.daemon:
+        t.start()
+    else:
+#        print('else')
+#        print(readings_TEMP, readings_PRESS)
+        del readings_TEMP, readings_PRESS
+        return 0
+
+            
+
+    
         
         
 if __name__=='__main__':
+    # =============================================================================
+    # load the data
+    # =============================================================================
+    probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
+    range_PRESS,resolution_PRESS, ch_PRESS  = 10, 5.5, '@301:306'
+    gain_PRESS, offset_PRESS, label_PRESS, state_PRESS = 2.1, 0, 'BAR', 1
+    pumpi = {'name' : 'pump_inlet',         'nid' : 1}
+    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2}
+    EXPi  = {'name' : 'expander_inlet',     'nid' : 3}
+    EXPo  = {'name' : 'expander_outlet',    'nid' : 4}
+#    CDSi  = {'name' : 'condenser_inlet',    'nid' : 5}
+#    CDSo  = {'name' : 'condenser_outlet',   'nid' : 6}
+    
     window = tk.Tk()
     window.title("Lab429, ORC for 500W, author:wei")
     w = tk.Label(window, text='this is ORC_GUI').pack()
@@ -140,11 +158,34 @@ if __name__=='__main__':
     tk.Label(frm_right, text='frame right').pack()
 
     frm_left = tk.Frame(frame)
-    frm_left.pack(side='left')              
+    frm_left.pack(side='left')
     tk.Label(frm_left, text='frame left').pack()
     
+    #    ORC_Status(frm_left)
     a = ORC_Figure(frm_right)
-#    ORC_Status(frm_left)
-#    a.dia.add_line(Line2D([0, 100], [0, 100], color='blue', marker='o'))
+    
+    
+    var = tk.StringVar()
+    l = tk.Label(window, textvariable=var, bg='green', font=('Arial', 12), width=15, height=2)
+#    #l = tk.Label(window, text='OMG! this is TK!', bg='green', font=('Arial', 12), width=15, height=2)
+    l.pack()
+    on_hit = False
+    def hit_me():
+        global on_hit
+        if on_hit == False:
+            on_hit = True
+            var.set('start2scan')
+            scan_data()
+            
+    b = tk.Button(window, text='hit me', width=15, height=2, command=hit_me)
+    b.pack()
+    
     
     window.mainloop()
+
+    
+    
+    
+
+    
+

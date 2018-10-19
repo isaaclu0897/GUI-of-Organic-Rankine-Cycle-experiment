@@ -26,8 +26,8 @@ def calc_StatusofORC(nodes, point=None):
     for i in point: 
         t.append(nodes[i].t) 
         s.append(nodes[i].s)
-    
-    return lin.Line2D(s, t, color='b', linestyle='None', marker='o')
+    lin.Line2D(s, t, color='b', linestyle='None', marker='o')
+    return s, t
         
 class ProcessPlot(Node):
     
