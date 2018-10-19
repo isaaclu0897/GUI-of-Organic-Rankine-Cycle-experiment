@@ -17,7 +17,7 @@ def fixpath():
         path = r'C:\Program Files (x86)\REFPROP'
     import CoolProp.CoolProp as CP;CP.set_config_string(CP.ALTERNATIVE_REFPROP_PATH, path)
     # CP.get_global_param_string("REFPROP_version")
-
+fixpath()
 class Node(object):
     
     # define the Props of the node
