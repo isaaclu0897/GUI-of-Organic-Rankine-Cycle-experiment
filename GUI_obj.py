@@ -6,24 +6,15 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-"""
-=================
-Animated subplots
-=================
-
-This example uses subclassing, but there is no reason that the proper function
-couldn't be set up and then use FuncAnimation. The code is long, but not
-really complex. The length is due solely to the fact that there are a total of
-9 lines that need to be changed for the animation as well as 3 subplots that
-need initial set up.
-
-"""
 import tkinter as tk
 import tkinter.font as tkfont
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from ORC_plot import calc_SaturationofCurve
+from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+from threading import Timer
+import visa
+import node
 
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
@@ -67,8 +58,8 @@ class ORC_Figure(tk.Frame):
         self.dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
         self.dia.set_xlabel(title[xAxis])
         self.dia.set_ylabel(title[yAxis])
-        self.dia.set_ylim(10, 160)
-        self.dia.set_xlim(0.9, 2)
+        self.dia.set_ylim(10, 150)
+        self.dia.set_xlim(0.9, 1.9)
         self.dia.grid()
         
         self.toolbar =NavigationToolbar2Tk(self.canvas, master)
@@ -76,17 +67,73 @@ class ORC_Figure(tk.Frame):
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
         [self.dia.add_line(i) for i in calc_SaturationofCurve()]
+        self.state_point = Line2D([], [], color='b', linestyle='None', marker='o')
+        self.dia.add_line(self.state_point)
     
-    def good():
-        pass
+
+def scan_data():
+    rm = visa.ResourceManager()
+    v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
+#        idn_string = v34972A.query('*IDN?')
+
+    def innerfunc():
+        # scan temperature
+        scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
+        
+        # scan pressure
+        v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (range_PRESS,resolution_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' % (state_PRESS, ch_PRESS))
+        scans_PRESS = v34972A.query(':READ?')
+        
+        # convert str to float
+        readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
+        readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
+        
+# =========================================================
+# define the  of all point & init all node
+# =========================================================
+        dev_list = [pumpi, pumpo, EXPi, EXPo]
+        for i in range(4):
+            dev_list[i]['P'] = readings_PRESS[i]
+            dev_list[i]['T'] = readings_TEMP[i]
+        nodes = []
+        for i in dev_list:
+            nodes.append(node.Node(i['name'], i['nid']))
+            
+        for i, obj in enumerate(dev_list):
+            nodes[i].set_tp(obj['T'], obj['P'])
+            nodes[i].pt()
+#            ORC_status([nodes[i] for i in range(len(nodes))])
+        xdata, ydata = calc_StatusofORC(nodes, [0, 1, 2, 3])
+
+        global a
+        a.state_point.set_xdata(xdata)
+        a.state_point.set_ydata(ydata)
+        print(a.dia.lines)
+        
+        a.canvas.draw()
+    timer(innerfunc, 3,)
+
+def timer(func, second=2, *arg):
+    func(*arg)
+    t = Timer(second, timer, args=(func, 3, *arg))
+    t.setDaemon(True)
+
+    if t.daemon:
+        t.start()
+    else:
+#        print('else')
+#        print(readings_TEMP, readings_PRESS)
+        del readings_TEMP, readings_PRESS
+        return 0
+
+            
+
+    
         
         
 if __name__=='__main__':
-    import visa
-    import time
-    import node
-    from tabulate_text import ORC_status
-    
     # =============================================================================
     # load the data
     # =============================================================================
@@ -111,50 +158,34 @@ if __name__=='__main__':
     tk.Label(frm_right, text='frame right').pack()
 
     frm_left = tk.Frame(frame)
-    frm_left.pack(side='left')              
+    frm_left.pack(side='left')
     tk.Label(frm_left, text='frame left').pack()
     
+    #    ORC_Status(frm_left)
     a = ORC_Figure(frm_right)
     
     
+    var = tk.StringVar()
+    l = tk.Label(window, textvariable=var, bg='green', font=('Arial', 12), width=15, height=2)
+#    #l = tk.Label(window, text='OMG! this is TK!', bg='green', font=('Arial', 12), width=15, height=2)
+    l.pack()
+    on_hit = False
+    def hit_me():
+        global on_hit
+        if on_hit == False:
+            on_hit = True
+            var.set('start2scan')
+            scan_data()
+            
+    b = tk.Button(window, text='hit me', width=15, height=2, command=hit_me)
+    b.pack()
     
-    rm = visa.ResourceManager()
-    with rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') as v34972A:
-        idn_string = v34972A.query('*IDN?')
-        
-        while 1:
-            # scan temperature
-            scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
-            
-            # scan pressure
-            v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (range_PRESS,resolution_PRESS, ch_PRESS))
-            v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
-            v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' % (state_PRESS, ch_PRESS))
-            scans_PRESS = v34972A.query(':READ?')
-            
-            # convert str to float
-            readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
-            readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
-            
-    # =========================================================
-    # define the  of all point & init all node====================
-    # =============================================================================
-            dev_list = [pumpi, pumpo, EXPi, EXPo]
-            for i in range(4):
-                dev_list[i]['P'] = readings_PRESS[i]
-                dev_list[i]['T'] = readings_TEMP[i]
-            nodes = []
-            for i in dev_list:
-                nodes.append(node.Node(i['name'], i['nid']))
-                
-            for i, obj in enumerate(dev_list):
-                nodes[i].set_tp(obj['T'], obj['P'])
-                nodes[i].pt()
-            ORC_status([nodes[i] for i in range(len(nodes))])
-
-            time.sleep(3)
-    rm.close()
-#    ORC_Status(frm_left)
-#    a.dia.add_line(Line2D([0, 100], [0, 100], color='blue', marker='o'))
+    
     window.mainloop()
+
+    
+    
+    
+
+    
 
