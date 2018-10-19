@@ -25,8 +25,9 @@ import tkinter.font as tkfont
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 import matplotlib.animation as animation
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+import numpy as np
+from ORC_plot import calc_SaturationofCurve
 
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
@@ -61,7 +62,6 @@ class ORC_Figure(tk.Frame):
         
         self.fig = Figure(figsize=(8,6), dpi=100)
         self.canvas = FigureCanvasTkAgg(self.fig, master)
-        self.canvas.draw()
         
 #        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1)
         self.dia = self.fig.add_subplot(111)
@@ -71,42 +71,35 @@ class ORC_Figure(tk.Frame):
         self.dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
         self.dia.set_xlabel(title[xAxis])
         self.dia.set_ylabel(title[yAxis])
-        self.dia.set_ylim(10, 135)
-        self.dia.set_xlim(1.05, 1.88)
+        self.dia.set_ylim(10, 160)
+        self.dia.set_xlim(0.9, 2)
         self.dia.grid()
         
-        self.toolbar =NavigationToolbar2TkAgg(self.canvas, master)
+        self.toolbar =NavigationToolbar2Tk(self.canvas, master)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
-#        self.canvas.draw()
-
-##
-##
-##
-        self.line1 = Line2D([], [], color='red', linewidth=2)
-        self.line1a = Line2D([], [], color='red', linewidth=2)
-        self.dia.add_line(self.line1)
-        self.dia.add_line(self.line1a)
-##        
-##
-        self.line2 = Line2D([], [], color='blue', marker='o')
-        self.line2a = Line2D([], [], color='blue', marker='o')
-        self.line2e = Line2D([], [], color='blue', marker='o')
-        self.dia.add_line(self.line2)
-        self.dia.add_line(self.line2a)
-        self.dia.add_line(self.line2e)
-##
-##
-##
-        self.line3 = Line2D([], [], color='green')
-        self.line3a = Line2D([], [], color='green', linewidth=2)
-        self.line3e = Line2D([], [], color='green', marker='o', markeredgecolor='r')
-        self.dia.add_line(self.line3)
-        self.dia.add_line(self.line3a)
-        self.dia.add_line(self.line3e)
+        [self.dia.add_line(i) for i in calc_SaturationofCurve()]
+    
+    def good():
+        pass
+#        self.line2 = Line2D([], [], color='blue', marker='o')
+#        self.line2a = Line2D([], [], color='blue', marker='o')
+#        self.line2e = Line2D([], [], color='blue', marker='o')
+#        self.dia.add_line(self.line2)
+#        self.dia.add_line(self.line2a)
+#        self.dia.add_line(self.line2e)
+###
+###
+###
+#        self.line3 = Line2D([], [], color='green')
+#        self.line3a = Line2D([], [], color='green', linewidth=2)
+#        self.line3e = Line2D([], [], color='green', marker='o', markeredgecolor='r')
+#        self.dia.add_line(self.line3)
+#        self.dia.add_line(self.line3a)
+#        self.dia.add_line(self.line3e)
 #       
-        self.canvas.show()
+#        self.canvas.show()
 #
 #        animation.TimedAnimation.__init__(self, self.fig, interval=50, blit=True)
 #
@@ -130,20 +123,7 @@ class ORC_Figure(tk.Frame):
 #        self._drawn_artists = [self.line1, self.line1a, self.line1e,
 #                               self.line2, self.line2a, self.line2e,
 #                               self.line3, self.line3a, self.line3e]
-#
-#    def new_frame_seq(self):
-#        return iter(range(self.t.size))
-#
-    def _init_draw(self):
-        lines = [self.line1, self.line1a, self.line1e,
-                 self.line2, self.line2a, self.line2e,
-                 self.line3, self.line3a, self.line3e]
-        for l in lines:
-            l.set_data([], [])
 
-#ani = SubplotAnimation()
-## ani.save('test_sub.mp4')
-#plt.show()
         
 
         
@@ -154,16 +134,17 @@ if __name__=='__main__':
     w = tk.Label(window, text='this is ORC_GUI').pack()
     
     frame = tk.Frame(window).pack()
-#    tk.Label(frame, text='frame').pack(side='top')
-#
-#    frm_left = tk.Frame(frame)
-#    frm_left.pack(side='left')
-#    tk.Label(frm_left, text='frame left').pack(side='top')
-#    ORC_Status(frm_left)
     
     frm_right = tk.Frame(frame)
-    frm_right.pack(side='right')
-#    tk.Label(frm_right, text='frame right').pack(side='top')
-    ORC_Figure(frm_right)
+    frm_right.pack(side='right')              
+    tk.Label(frm_right, text='frame right').pack()
 
+    frm_left = tk.Frame(frame)
+    frm_left.pack(side='left')              
+    tk.Label(frm_left, text='frame left').pack()
+    
+    a = ORC_Figure(frm_right)
+#    ORC_Status(frm_left)
+#    a.dia.add_line(Line2D([0, 100], [0, 100], color='blue', marker='o'))
+    
     window.mainloop()
