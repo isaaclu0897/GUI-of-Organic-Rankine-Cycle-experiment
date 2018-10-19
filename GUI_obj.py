@@ -24,9 +24,7 @@ import tkinter.font as tkfont
 #import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-import matplotlib.animation as animation
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-import numpy as np
 from ORC_plot import calc_SaturationofCurve
 
 class ORC_Status(tk.Frame):
@@ -83,49 +81,6 @@ class ORC_Figure(tk.Frame):
     
     def good():
         pass
-#        self.line2 = Line2D([], [], color='blue', marker='o')
-#        self.line2a = Line2D([], [], color='blue', marker='o')
-#        self.line2e = Line2D([], [], color='blue', marker='o')
-#        self.dia.add_line(self.line2)
-#        self.dia.add_line(self.line2a)
-#        self.dia.add_line(self.line2e)
-###
-###
-###
-#        self.line3 = Line2D([], [], color='green')
-#        self.line3a = Line2D([], [], color='green', linewidth=2)
-#        self.line3e = Line2D([], [], color='green', marker='o', markeredgecolor='r')
-#        self.dia.add_line(self.line3)
-#        self.dia.add_line(self.line3a)
-#        self.dia.add_line(self.line3e)
-#       
-#        self.canvas.show()
-#
-#        animation.TimedAnimation.__init__(self, self.fig, interval=50, blit=True)
-#
-#    def _draw_frame(self, framedata):
-#        i = framedata
-#        head = i - 1
-#        head_slice = (self.t > self.t[i] - 1.0) & (self.t < self.t[i])
-#
-#        self.line1.set_data(self.x[:i], self.y[:i])
-#        self.line1a.set_data(self.x[head_slice], self.y[head_slice])
-#        self.line1e.set_data(self.x[head], self.y[head])
-#
-#        self.line2.set_data(self.y[:i], self.z[:i])
-#        self.line2a.set_data(self.y[head_slice], self.z[head_slice])
-#        self.line2e.set_data(self.y[head], self.z[head])
-#
-#        self.line3.set_data(self.x[:i], self.z[:i])
-#        self.line3a.set_data(self.x[head_slice], self.z[head_slice])
-#        self.line3e.set_data(self.x[head], self.z[head])
-#
-#        self._drawn_artists = [self.line1, self.line1a, self.line1e,
-#                               self.line2, self.line2a, self.line2e,
-#                               self.line3, self.line3a, self.line3e]
-
-        
-
         
         
 if __name__=='__main__':

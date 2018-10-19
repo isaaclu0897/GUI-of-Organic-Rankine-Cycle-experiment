@@ -81,8 +81,6 @@ with rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') as v34972A:
         plt.show()
         time.sleep(3)
 rm.close()
-#%%
-
 
 
 
