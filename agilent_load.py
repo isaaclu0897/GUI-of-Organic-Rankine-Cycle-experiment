@@ -55,7 +55,7 @@ def scan():
         global readings_PRESS
         readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
-    timer(innerfunc, 3,)
+    timer(innerfunc, 3)
             
 #    rm.close()
         
