@@ -17,6 +17,7 @@ import visa
 import node
 from ORC_plot import ProcessPlot
 
+
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
@@ -30,6 +31,7 @@ class ORC_Status(tk.Frame):
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
         self.canvas.create_image(0, 0, image=self.gif1, anchor=tk.NW)
         self.canvas.pack(expand = 1, fill = tk.BOTH)
+        
         itv_y = 30
         itv_x = 50
         fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
@@ -38,7 +40,6 @@ class ORC_Status(tk.Frame):
 
         self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
         self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
-        
 
         self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
         self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
@@ -55,7 +56,7 @@ class ORC_Status(tk.Frame):
         self.canvas.create_text(280,320, text = '429_ORC\neff: 10 %', fill = 'blue', font=fonteff)
         
         
-        init_value = '000'
+
 
         # can not use state1 = state2 = state3 = state4 = {}, because id will same
         state1 = {}
@@ -63,7 +64,7 @@ class ORC_Status(tk.Frame):
         state3 = {}
         state4 = {}
         self.state = [state1, state2, state3, state4]
-        
+        init_value = '000'
         state1['p'] = self.canvas.create_text(120+itv_x,430, text = init_value, fill = 'blue', font=fontprop)  
         state1['t'] = self.canvas.create_text(120+itv_x,430+itv_y,text = init_value, fill = 'blue', font=fontprop)
         
@@ -75,21 +76,12 @@ class ORC_Status(tk.Frame):
         
         state4['p'] = self.canvas.create_text(400+itv_x,500, text = init_value, fill = 'blue', font=fontprop)  
         state4['t'] = self.canvas.create_text(400+itv_x,500+itv_y,text = init_value, fill = 'blue', font=fontprop)
-#        print(id(self.state), [id(y) for y in self.state], [[id(y) for y in x] for x in self.state] )
-#        print(self.state[0]['p'])
         
     def update_state(self, num, data):
         self.canvas.itemconfigure(self.state[num]['p'], text=str(round(data.p, 2)))
         self.canvas.itemconfigure(self.state[num]['t'], text=str(round(data.t, 1)))
         
         
-#        print(a)
-#        self.canvas.itemconfig(a, text="Goodbye, world")
-##        self.canvas.draw()
-#        print(a)
-        #tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
-
-
 class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
@@ -125,7 +117,6 @@ class ORC_Figure(tk.Frame):
         for i in self.allofline:
             self.dia.add_line(i)
         
-        
     def set_window_boundary(self):
         self.dia.set_ylim(10, 150)
         self.dia.set_xlim(0.9, 1.9)
@@ -156,18 +147,20 @@ def scan_data():
 #    CDSi  = {'name' : 'condenser_inlet',    'nid' : 5}
 #    CDSo  = {'name' : 'condenser_outlet',   'nid' : 6}
     
+    
     rm = visa.ResourceManager()
     v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
 #        idn_string = v34972A.query('*IDN?')
-    
-    def calc(readings_TEMP, readings_PRESS):
+
 # =========================================================
 # define the  of all point & init all node
 # =========================================================
+    def calc(readings_TEMP, readings_PRESS):
         dev_list = [pumpi, pumpo, EXPi, EXPo]
         for i in range(4):
             dev_list[i]['P'] = readings_PRESS[i]
             dev_list[i]['T'] = readings_TEMP[i]
+            
         global nodes
         nodes = []
         for i in dev_list:
@@ -178,7 +171,6 @@ def scan_data():
             nodes[i].pt()
         
         def left(nodes):
-            
             global SM_dia
             for i in range(len(nodes)):
                 SM_dia.update_state(i, nodes[i])
@@ -201,27 +193,7 @@ def scan_data():
             
         left(nodes)
         right(nodes)
-
-        
-        def left(nodes):
-            global SM_dia
-            for i in range(len(nodes)):
-                SM_dia.update_state(i, nodes[i])
                 
-        
-        def right(nodes):
-#            ORC_status([nodes[i] for i in range(len(nodes))])
-            state_data = calc_StatusofORC(nodes, [0, 1, 2, 3])
-            
-            process = [ProcessPlot(0, 1, 'isos'),
-                       ProcessPlot(1, 2, 'isop'),
-                       ProcessPlot(2, 3, 'isop'),
-                       ProcessPlot(3, 4, 'isos')]
-            line_data = [plot.plot_process_data(nodes) for plot in process]
-    
-            global TH_dia
-            TH_dia.updata_state_point(state_data)
-            TH_dia.updata_line(line_data)
 
     def innerfunc():
         # scan temperature
@@ -238,8 +210,6 @@ def scan_data():
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
 #        print(readings_TEMP, readings_PRESS)
         calc(readings_TEMP, readings_PRESS)
-    
-
     timer(innerfunc, 3,)
 
 
@@ -250,11 +220,9 @@ def timer(func, second=2, *arg):
     t.setDaemon(True)
     
     global on_click_loop
-#    print(t.daemon, on_click_loop)
     if t.daemon and on_click_loop:
         t.start()
     else:
-#        del readings_TEMP, readings_PRESS
         return 0
 
             
@@ -302,7 +270,6 @@ if __name__=='__main__':
 
 #    x = 0
     
-    
     var = tk.StringVar()
     l = tk.Label(frm_right_bottom, textvariable=var, bg='white', \
                  font=('Arial', 12), width=15, height=2)
@@ -321,21 +288,10 @@ if __name__=='__main__':
             
     def btn_cmd_one(func):
         func()
-        
-        
             
     b = tk.Button(frm_right_bottom, text='click me', width=15, height=2, \
                   command=lambda: btn_cmd_loop(scan_data))
     b.pack()
-    
-#    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \
-#                  command=lambda: btn_cmd_loop(SM_dia.update_state))
-#    kkk.pack()
-#
-#    
-#    init_boundary = tk.Button(frm_right_bottom, text='init_boundary', width=15, height=2, \
-#                  command=lambda: btn_cmd_one(TH_dia.set_window_boundary))
-#    init_boundary.pack()
     
     
     window.mainloop()

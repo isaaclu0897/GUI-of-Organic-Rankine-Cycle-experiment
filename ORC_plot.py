@@ -13,14 +13,6 @@ import numpy as np
 from node import Node
 from unit import P, T, pps
 
-#def plot_StatusofORC(nodes):
-#    t = []; s = []
-#    for i in range(len(nodes)): 
-#        t.append(nodes[i].t) 
-#        s.append(nodes[i].s)
-#    
-#    plt.plot(s, t, 'bo')
-# test 選點打印
 def calc_StatusofORC(nodes, point=None):
     t = []; s = []
     for i in point: 
