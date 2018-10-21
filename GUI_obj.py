@@ -10,30 +10,34 @@ import tkinter as tk
 import tkinter.font as tkfont
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from threading import Timer
-#import visa
+import visa
 import node
-from ORC_plot import ProcessPlot, plot_process_data
+from ORC_plot import ProcessPlot
 
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
         
         # create the canvas, size in pixels
-        self.canvas = tk.Canvas(master, width = 1024, height = 724, bg = 'white')
+        self.canvas = tk.Canvas(master, width = 1338, height = 945, bg = 'white')
         # load the .gif image file, put gif file here
-        self.gif1 = tk.PhotoImage(file = './fig/500w_P&ID.png') # test gif, png and jpg, jpg can't use
+        self.gif1 = tk.PhotoImage(file = './fig/500w_P&ID_4x3.png') # test gif, png and jpg, jpg can't use
 
         # put gif image on canvas
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
         self.canvas.create_image(0, 0, image=self.gif1, anchor=tk.NW)
-        self.canvas.pack(expand = 1, fill = tk.BOTH) #???
+        self.canvas.pack(expand = 1, fill = tk.BOTH)
         itv_y = 30
         itv_x = 50
-        fontprop = tkfont.Font(family='courier 10 pitch', size=30)# bitstream charter or courier 10 pitch
-        fonteff = tkfont.Font(family='courier 10 pitch', size=50, weight='bold')# bitstream charter or courier 10 pitch
+        fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
+        fonteff = tkfont.Font(family='courier 10 pitch', size=30, weight='bold')# bitstream charter or courier 10 pitch
+        
+
+        self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
+        self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
         
 
         self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
@@ -53,8 +57,11 @@ class ORC_Status(tk.Frame):
         
         init_value = '000'
 
-        
-        state1 = state2 = state3 = state4 = {}
+        # can not use state1 = state2 = state3 = state4 = {}, because id will same
+        state1 = {}
+        state2 = {}
+        state3 = {}
+        state4 = {}
         self.state = [state1, state2, state3, state4]
         
         state1['p'] = self.canvas.create_text(120+itv_x,430, text = init_value, fill = 'blue', font=fontprop)  
@@ -68,12 +75,12 @@ class ORC_Status(tk.Frame):
         
         state4['p'] = self.canvas.create_text(400+itv_x,500, text = init_value, fill = 'blue', font=fontprop)  
         state4['t'] = self.canvas.create_text(400+itv_x,500+itv_y,text = init_value, fill = 'blue', font=fontprop)
-        
-        print(self.state[0]['p'])
+#        print(id(self.state), [id(y) for y in self.state], [[id(y) for y in x] for x in self.state] )
+#        print(self.state[0]['p'])
         
     def update_state(self, num, data):
-        self.canvas.itemconfigure(self.state[num]['p'], text=str(data.p))
-        self.canvas.itemconfigure(self.state[num]['t'], text=str(data.t))
+        self.canvas.itemconfigure(self.state[num]['p'], text=str(round(data.p, 2)))
+        self.canvas.itemconfigure(self.state[num]['t'], text=str(round(data.t, 1)))
         
         
 #        print(a)
@@ -102,7 +109,7 @@ class ORC_Figure(tk.Frame):
         self.dia.set_xlim(0.9, 1.9)
         self.dia.grid()
         
-        self.toolbar = NavigationToolbar2TkAgg(self.canvas, master)
+        self.toolbar = NavigationToolbar2Tk(self.canvas, master)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
@@ -128,14 +135,10 @@ class ORC_Figure(tk.Frame):
         self.state_point.set_ydata(data[1])
         
     def updata_line(self, data):
-        for i in data:
-            self.allofline[i].set_xdata(data[0])
-            self.allofline[i].set_ydata(data[0])
+        for i in range(len(data)):
+            self.allofline[i].set_xdata(data[i][0])
+            self.allofline[i].set_ydata(data[i][1])
         
-#    def set_xlabel():
-        
-        
-    
 
 def scan_data():
 # =============================================================================
@@ -165,6 +168,7 @@ def scan_data():
         for i in range(4):
             dev_list[i]['P'] = readings_PRESS[i]
             dev_list[i]['T'] = readings_TEMP[i]
+        global nodes
         nodes = []
         for i in dev_list:
             nodes.append(node.Node(i['name'], i['nid']))
@@ -172,6 +176,32 @@ def scan_data():
         for i, obj in enumerate(dev_list):
             nodes[i].set_tp(obj['T'], obj['P'])
             nodes[i].pt()
+        
+        def left(nodes):
+            
+            global SM_dia
+            for i in range(len(nodes)):
+                SM_dia.update_state(i, nodes[i])
+                
+        
+        def right(nodes):
+#            ORC_status([nodes[i] for i in range(len(nodes))])
+            state_data = calc_StatusofORC(nodes, [0, 1, 2, 3])
+            process = [ProcessPlot(0, 1, 'isos'),
+                       ProcessPlot(1, 2, 'isop'),
+                       ProcessPlot(2, 3, 'isop'),
+                       ProcessPlot(3, 0, 'isos')]
+            line_data = [plot.plot_process_data(nodes) for plot in process]
+    
+            global TH_dia
+            TH_dia.updata_state_point(state_data)
+            TH_dia.updata_line(line_data)
+
+            TH_dia.canvas.draw()
+            
+        left(nodes)
+        right(nodes)
+
         
         def left(nodes):
             global SM_dia
@@ -193,13 +223,6 @@ def scan_data():
             TH_dia.updata_state_point(state_data)
             TH_dia.updata_line(line_data)
 
-            TH_dia.canvas.draw()
-            
-        left(dev_list)
-        right(dev_list)
-
-        
-
     def innerfunc():
         # scan temperature
         scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
@@ -213,6 +236,7 @@ def scan_data():
         # convert str to float
         readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
+#        print(readings_TEMP, readings_PRESS)
         calc(readings_TEMP, readings_PRESS)
     
 
@@ -226,7 +250,7 @@ def timer(func, second=2, *arg):
     t.setDaemon(True)
     
     global on_click_loop
-    print(t.daemon, on_click_loop)
+#    print(t.daemon, on_click_loop)
     if t.daemon and on_click_loop:
         t.start()
     else:
@@ -234,15 +258,15 @@ def timer(func, second=2, *arg):
         return 0
 
             
-def smliu_scan_data():
-    print('load data')
-
-    def innerfunc():
-        global x
-        
-        print('get and update the data', x)
-        
-    timer(innerfunc, 3,)
+#def smliu_scan_data():
+#    print('load data')
+#
+#    def innerfunc():
+#        global x
+#        
+#        print('get and update the data', x)
+#        
+#    timer(innerfunc, 3,)
     
         
         
@@ -257,26 +281,26 @@ if __name__=='__main__':
     # left and right frame
     frm_right = tk.Frame(frame)
     frm_right.pack(side='right')
-    tk.Label(frm_right, text='frame right').pack()
+#    tk.Label(frm_right, text='frame right').pack()
 
     frm_left = tk.Frame(frame)
     frm_left.pack(side='left')
-    tk.Label(frm_left, text='frame left').pack()
+#    tk.Label(frm_left, text='frame left').pack()
     
     
     # top and bottom of right frame
     frm_right_top = tk.Frame(frm_right)
     frm_right_top.pack(side='top')
-    tk.Label(frm_right_top, text='frame right top').pack()
+#    tk.Label(frm_right_top, text='frame right top').pack()
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
-    tk.Label(frm_right_bottom, text='frame right bottom').pack()
+#    tk.Label(frm_right_bottom, text='frame right bottom').pack()
     
     
     SM_dia = ORC_Status(frm_left)
     TH_dia = ORC_Figure(frm_right_top)
 
-    x = 0
+#    x = 0
     
     
     var = tk.StringVar()
@@ -301,7 +325,7 @@ if __name__=='__main__':
         
             
     b = tk.Button(frm_right_bottom, text='click me', width=15, height=2, \
-                  command=lambda: btn_cmd_loop(smliu_scan_data))
+                  command=lambda: btn_cmd_loop(scan_data))
     b.pack()
     
 #    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \
