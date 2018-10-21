@@ -13,20 +13,12 @@ import numpy as np
 from node import Node
 from unit import P, T, pps
 
-#def plot_StatusofORC(nodes):
-#    t = []; s = []
-#    for i in range(len(nodes)): 
-#        t.append(nodes[i].t) 
-#        s.append(nodes[i].s)
-#    
-#    plt.plot(s, t, 'bo')
-# test 選點打印
 def calc_StatusofORC(nodes, point=None):
     t = []; s = []
     for i in point: 
         t.append(nodes[i].t) 
         s.append(nodes[i].s)
-    lin.Line2D(s, t, color='b', linestyle='None', marker='o')
+    
     return s, t
         
 class ProcessPlot(Node):
@@ -94,11 +86,20 @@ class ProcessPlot(Node):
 #        plt.pause(0.00000000001)
         return self._iso, self._act
     
+    def calc_stateline_data(self):
+        return self.Isa, self.Ita
+    
     def plot_process(self, nodes):
         self.iso_line(nodes)
         self.calc_iso()
         self.calc_stateline()
         return self._iso, self._act
+    
+    def plot_process_data(self, nodes):
+        self.iso_line(nodes)
+        self.calc_iso()
+        self.calc_stateline_data()
+        return self.Isa, self.Ita
         
 def set_windows():
     fig = plt.figure()
@@ -171,13 +172,15 @@ if __name__=="__main__":
     # plot status of ORC
 #    plot_StatusofORC(nodes)
     state_point = calc_StatusofORC(nodes, [1, 2, 3, 4])
-    dia.add_line(state_point)
+    x, y = state_point
+    state_point_line = lin.Line2D(x, y, color='b', linestyle='None', marker='o')
+    dia.add_line(state_point_line)
     """ example
     ProcessPlot(0, 1, 'isos').plot_process
     a=ProcessPlot(3, 4, 'isos')
     a.iso_line(nodes)
     a.calc_iso()
-    a.plot_iso()
+    a.calc_stateline()
     plot process of ORC
     """
     process = [ProcessPlot(0, 1, 'isos'),
@@ -187,10 +190,16 @@ if __name__=="__main__":
                ProcessPlot(4, 5, 'isop'),
                ProcessPlot(5, 6, 'isop'),
                ProcessPlot(6, 0, 'isop')]
-    good = [plot.plot_process(nodes) for plot in process]
+#    good = [plot.plot_process(nodes) for plot in process]
+#    for i in good:
+#        act_line = 
+#        dia.add_line(i[0])
+#        dia.add_line(i[1])
+    good = [plot.plot_process_data(nodes) for plot in process]
     
     for i in good:
-        dia.add_line(i[0])
-        dia.add_line(i[1])
+        act_line_x, act_line_x = i
+        act_line = lin.Line2D(i[0], i[1], color="b", lw=2.0)
+        dia.add_line(act_line)
 
     plt.show()

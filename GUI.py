@@ -84,16 +84,16 @@ dia, fig = set_windows_GUI()
 sat_line = calc_SaturationofCurve()
 dia.add_line(sat_line[0])
 dia.add_line(sat_line[1])
-
-
-# import data
-dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-
-# init node
-nodes = [Node(i["name"], i["nid"]) for i in dev_list]
-for i, obj in enumerate(dev_list):
-    nodes[i].set_tp(obj["T"], obj["P"])
-    nodes[i].pt()
+#
+#
+## import data
+#dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
+#
+## init node
+#nodes = [Node(i["name"], i["nid"]) for i in dev_list]
+#for i, obj in enumerate(dev_list):
+#    nodes[i].set_tp(obj["T"], obj["P"])
+#    nodes[i].pt()
 
 
 # plot status of ORC
