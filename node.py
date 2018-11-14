@@ -56,10 +56,10 @@ class Node(object):
     @property
     def s(self):
         return self._s / 1000
-#    @s.setter
-#    def s(self, value):
-#        self._s = value * 1000
-#        return self._s
+    @s.setter
+    def s(self, value):
+        self._s = value * 1000
+        return self._s
     @property
     def d(self):
         return self._d

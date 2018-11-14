@@ -17,13 +17,12 @@ import visa
 import node
 from ORC_plot import ProcessPlot
 
-
 class ORC_Status(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
         
         # create the canvas, size in pixels
-        self.canvas = tk.Canvas(master, width = 1338, height = 945, bg = 'white')
+        self.canvas = tk.Canvas(master, width = 1338, height = 800, bg = 'white')
         # load the .gif image file, put gif file here
         self.gif1 = tk.PhotoImage(file = './fig/500w_P&ID_4x3.png') # test gif, png and jpg, jpg can't use
 
@@ -31,15 +30,11 @@ class ORC_Status(tk.Frame):
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
         self.canvas.create_image(0, 0, image=self.gif1, anchor=tk.NW)
         self.canvas.pack(expand = 1, fill = tk.BOTH)
-        
         itv_y = 30
         itv_x = 50
         fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
         fonteff = tkfont.Font(family='courier 10 pitch', size=30, weight='bold')# bitstream charter or courier 10 pitch
         
-
-        self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
-        self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
 
         self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
         self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
@@ -53,18 +48,23 @@ class ORC_Status(tk.Frame):
         self.canvas.create_text(400,500, text = 'P', fill = 'blue', font=fontprop)  
         self.canvas.create_text(400,500+itv_y,text = 'T', fill = 'blue', font=fontprop)
         
-        self.canvas.create_text(280,320, text = '429_ORC\neff: 10 %', fill = 'blue', font=fonteff)
+        self.canvas.create_text(280,320, text = '429_ORC\neff:       %', fill = 'blue', font=fonteff)
+        
+        self.canvas.create_text(60,600, text = 'mdot', fill = 'blue', font=fontprop)
+        self.canvas.create_text(60,600+30, text = 'Qin', fill = 'blue', font=fontprop)
+        self.canvas.create_text(60,600+60, text = 'Wout', fill = 'blue', font=fontprop)
         
         
-
+        init_value = '000'
 
         # can not use state1 = state2 = state3 = state4 = {}, because id will same
         state1 = {}
         state2 = {}
         state3 = {}
         state4 = {}
+        self.eff = {}
         self.state = [state1, state2, state3, state4]
-        init_value = '000'
+        
         state1['p'] = self.canvas.create_text(120+itv_x,430, text = init_value, fill = 'blue', font=fontprop)  
         state1['t'] = self.canvas.create_text(120+itv_x,430+itv_y,text = init_value, fill = 'blue', font=fontprop)
         
@@ -76,12 +76,33 @@ class ORC_Status(tk.Frame):
         
         state4['p'] = self.canvas.create_text(400+itv_x,500, text = init_value, fill = 'blue', font=fontprop)  
         state4['t'] = self.canvas.create_text(400+itv_x,500+itv_y,text = init_value, fill = 'blue', font=fontprop)
+
+        self.eff = self.canvas.create_text(300, 350,text = "kkk", fill = 'blue', font=fonteff)
+        self.mdot = self.canvas.create_text(150, 600,text = "kkk", fill = 'blue', font=fontprop)
+        self.Qin = self.canvas.create_text(150, 600+30,text = "kkk", fill = 'blue', font=fontprop)
+        self.Wout = self.canvas.create_text(150, 600+60,text = "kkk", fill = 'blue', font=fontprop)
+#        print(id(self.state), [id(y) for y in self.state], [[id(y) for y in x] for x in self.state] )
+#        print(self.state[0]['p'])
         
     def update_state(self, num, data):
         self.canvas.itemconfigure(self.state[num]['p'], text=str(round(data.p, 2)))
         self.canvas.itemconfigure(self.state[num]['t'], text=str(round(data.t, 1)))
+    def update_eff(self, eff_num):
+        self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
+    def update_mdot(self, mdot_num):
+        self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 5)))
+    def update_Qin(self, Qin_num):
+        self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 5)))
+    def update_Wout(self, Wout_num):
+        self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 5)))
         
-        
+#        print(a)
+#        self.canvas.itemconfig(a, text="Goodbye, world")
+##        self.canvas.draw()
+#        print(a)
+        #tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
+
+
 class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
@@ -106,16 +127,24 @@ class ORC_Figure(tk.Frame):
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
         [self.dia.add_line(i) for i in calc_SaturationofCurve()]
-        self.state_point = Line2D([], [], color='b', linestyle='None', marker='o')
-        self.line1 = Line2D([], [], color="b", lw=2.0)
-        self.line2 = Line2D([], [], color="b", lw=2.0)
-        self.line3 = Line2D([], [], color="b", lw=2.0)
-        self.line4 = Line2D([], [], color="b", lw=2.0)
+        self.state_point = Line2D([], [], color='g', linestyle='None', marker='o')
+        self.line1 = Line2D([], [], color="g", lw=2.0)
+        self.line2 = Line2D([], [], color="g", lw=2.0)
+        self.line3 = Line2D([], [], color="g", lw=2.0)
+        self.line4 = Line2D([], [], color="g", lw=2.0)
+        
+        self.heat = Line2D([], [], color="r", lw=2.0)
+        self.cool = Line2D([], [], color="b", lw=2.0)
         
         self.dia.add_line(self.state_point)
         self.allofline = [self.line1, self.line2, self.line3, self.line4]
+        self.hx = [self.heat, self.cool] 
+        
         for i in self.allofline:
             self.dia.add_line(i)
+        for i in self.hx:
+            self.dia.add_line(i)
+        
         
     def set_window_boundary(self):
         self.dia.set_ylim(10, 150)
@@ -129,7 +158,12 @@ class ORC_Figure(tk.Frame):
         for i in range(len(data)):
             self.allofline[i].set_xdata(data[i][0])
             self.allofline[i].set_ydata(data[i][1])
-        
+    
+    def updata_linehx(self, data):
+        for i in range(len(data)):
+            self.hx[i].set_xdata(data[i][0])
+            self.hx[i].set_ydata(data[i][1])
+
 
 def scan_data():
 # =============================================================================
@@ -144,23 +178,28 @@ def scan_data():
     pumpo = {'name' : 'pump_ioutlet',       'nid' : 2}
     EXPi  = {'name' : 'expander_inlet',     'nid' : 3}
     EXPo  = {'name' : 'expander_outlet',    'nid' : 4}
-#    CDSi  = {'name' : 'condenser_inlet',    'nid' : 5}
-#    CDSo  = {'name' : 'condenser_outlet',   'nid' : 6}
     
+    HI = {'name' : 'heat_inlet',       'nid' : 5}
+    HO = {'name' : 'heat_outlet',      'nid' : 6}
+    CI = {'name' : 'condenser_inlet',  'nid' : 7}
+    CO = {'name' : 'condenser_outlet', 'nid' : 8}
     
     rm = visa.ResourceManager()
     v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
 #        idn_string = v34972A.query('*IDN?')
-
+    
+    def calc(readings_TEMP, readings_PRESS):
 # =========================================================
 # define the  of all point & init all node
 # =========================================================
-    def calc(readings_TEMP, readings_PRESS):
         dev_list = [pumpi, pumpo, EXPi, EXPo]
+        HX = [HI, HO, CI, CO]
         for i in range(4):
             dev_list[i]['P'] = readings_PRESS[i]
             dev_list[i]['T'] = readings_TEMP[i]
-            
+        for i in range(4):
+            HX[i]['T'] = readings_TEMP[i+6]
+
         global nodes
         nodes = []
         for i in dev_list:
@@ -169,31 +208,55 @@ def scan_data():
         for i, obj in enumerate(dev_list):
             nodes[i].set_tp(obj['T'], obj['P'])
             nodes[i].pt()
+        global nodes_HX
+        nodes_HX = []
+        for i in HX:
+            nodes_HX.append(node.Node(i['name'], i['nid']))
+        for i, obj in enumerate(HX):
+            nodes_HX[i].t = obj['T']
+        nodes_HX[0].s = nodes[2].s + 0.03
+        nodes_HX[1].s = nodes[0].s - 0.03 
+        nodes_HX[2].s = nodes[0].s - 0.03 
+        nodes_HX[3].s = nodes[2].s + 0.03
+        
+        
         
         def left(nodes):
+            
             global SM_dia
             for i in range(len(nodes)):
                 SM_dia.update_state(i, nodes[i])
-                
-        
+            eff = ((nodes[2].h-nodes[3].h)/(nodes[2].h-nodes[1].h))*100
+            SM_dia.update_eff(eff)
+            mdot = 0.23*4.2*(nodes_HX[0].t-nodes_HX[1].t)/(nodes[2].h-nodes[1].h)
+            SM_dia.update_mdot(mdot)
+            Qin = mdot * (nodes[2].h - nodes[1].h)
+            Wout = mdot * (nodes[2].h - nodes[3].h)
+            SM_dia.update_Qin(Qin)
+            SM_dia.update_Wout(Wout)
+            
         def right(nodes):
 #            ORC_status([nodes[i] for i in range(len(nodes))])
             state_data = calc_StatusofORC(nodes, [0, 1, 2, 3])
             process = [ProcessPlot(0, 1, 'isos'),
                        ProcessPlot(1, 2, 'isop'),
-                       ProcessPlot(2, 3, 'isop'),
-                       ProcessPlot(3, 0, 'isos')]
+                       ProcessPlot(2, 3, 'isos'),
+                       ProcessPlot(3, 0, 'isop')]
+            
             line_data = [plot.plot_process_data(nodes) for plot in process]
-    
+            line_datahx = [[[nodes_HX[0].s, nodes_HX[1].s], [nodes_HX[0].t, nodes_HX[1].t]], [[nodes_HX[2].s, nodes_HX[3].s], [nodes_HX[2].t, nodes_HX[3].t]]]
             global TH_dia
             TH_dia.updata_state_point(state_data)
             TH_dia.updata_line(line_data)
+            TH_dia.updata_linehx(line_datahx)
+            
 
             TH_dia.canvas.draw()
             
         left(nodes)
         right(nodes)
-                
+
+        
 
     def innerfunc():
         # scan temperature
@@ -210,6 +273,8 @@ def scan_data():
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
 #        print(readings_TEMP, readings_PRESS)
         calc(readings_TEMP, readings_PRESS)
+    
+
     timer(innerfunc, 3,)
 
 
@@ -220,9 +285,11 @@ def timer(func, second=2, *arg):
     t.setDaemon(True)
     
     global on_click_loop
+#    print(t.daemon, on_click_loop)
     if t.daemon and on_click_loop:
         t.start()
     else:
+#        del readings_TEMP, readings_PRESS
         return 0
 
             
@@ -270,6 +337,7 @@ if __name__=='__main__':
 
 #    x = 0
     
+    
     var = tk.StringVar()
     l = tk.Label(frm_right_bottom, textvariable=var, bg='white', \
                  font=('Arial', 12), width=15, height=2)
@@ -288,10 +356,21 @@ if __name__=='__main__':
             
     def btn_cmd_one(func):
         func()
+        
+        
             
     b = tk.Button(frm_right_bottom, text='click me', width=15, height=2, \
                   command=lambda: btn_cmd_loop(scan_data))
     b.pack()
+    
+#    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \
+#                  command=lambda: btn_cmd_loop(SM_dia.update_state))
+#    kkk.pack()
+#
+#    
+#    init_boundary = tk.Button(frm_right_bottom, text='init_boundary', width=15, height=2, \
+#                  command=lambda: btn_cmd_one(TH_dia.set_window_boundary))
+#    init_boundary.pack()
     
     
     window.mainloop()
