@@ -120,6 +120,8 @@ class Node(object):
     
 #   test
 if __name__ == '__main__':
+#    from CoolProp.CoolProp import PropsSI
+    import numpy as np
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     nodes = Node('point1', 1, "REFPROP::Water")
@@ -130,3 +132,5 @@ if __name__ == '__main__':
     print(nodes, '\n')
     print('{:^5}, {:^12}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
           .format('id', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
+    print(PropsSI('P','T',[280,290],'Q',[0,1],'R134a'))
+#    print(PropsSI('P','T',np.array([280,290,300,280,290,300]).reshape(2,3),'Q',np.array([0,0.5,1,0.0,0.5,1]).reshape(2,3),'R134a'))
