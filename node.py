@@ -21,7 +21,7 @@ fixpath()
 class Node(object):
     
     # define the Props of the node
-    def __init__(self, name, nid, fluid="REFPROP::R245FA"):
+    def __init__(self, name=None, nid=None, fluid="REFPROP::R245FA"):
         self.fluid = fluid
         self.name = name
         self.nid = nid
