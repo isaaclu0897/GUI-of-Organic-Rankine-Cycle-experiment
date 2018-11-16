@@ -13,80 +13,94 @@ from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from threading import Timer
-import visa
+#import visa
 import node
 from ORC_plot import ProcessPlot
 
 class ORC_Status(tk.Frame):
+    offset_x = 50
+    offset_y = 30
+    
+    nodePosition = {"node1": {"x": 120, "y": 430},
+                    "node2": {"x": 100, "y": 110},
+                    "node3": {"x": 480, "y": 150},
+                    "node4": {"x": 400, "y": 500}}
+    
+    workPosition = {'x': 90,
+                    'y': 500}
+    #        posx = 220
+    #        posy = 220
+    
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
         
         # create the canvas, size in pixels
-        self.canvas = tk.Canvas(master, width = 1338, height = 800, bg = 'white')
+        self.canvas = tk.Canvas(master, width = 900, height = 800, bg = 'white')
         # load the .gif image file, put gif file here
         self.gif1 = tk.PhotoImage(file = './fig/500w_P&ID_4x3.png') # test gif, png and jpg, jpg can't use
-
         # put gif image on canvas
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
         self.canvas.create_image(0, 0, image=self.gif1, anchor=tk.NW)
         self.canvas.pack(expand = 1, fill = tk.BOTH)
-        itv_y = 30
-        itv_x = 50
-        fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
-        fonteff = tkfont.Font(family='courier 10 pitch', size=30, weight='bold')# bitstream charter or courier 10 pitch
         
-
-        self.canvas.create_text(120,430, text = 'P', fill = 'blue', font=fontprop)  
-        self.canvas.create_text(120,430+itv_y,text = 'T', fill = 'blue', font=fontprop)
+        self.fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
+        self.fonteff = tkfont.Font(family='courier 10 pitch', size=30, weight='bold')# bitstream charter or courier 10 pitch
         
-        self.canvas.create_text(100,110, text = 'P', fill = 'blue', font=fontprop)  
-        self.canvas.create_text(100,110+itv_y,text = 'T', fill = 'blue', font=fontprop)
-        
-        self.canvas.create_text(480,150, text = 'P', fill = 'blue', font=fontprop)  
-        self.canvas.create_text(480,150+itv_y,text = 'T', fill = 'blue', font=fontprop)
-        
-        self.canvas.create_text(400,500, text = 'P', fill = 'blue', font=fontprop)  
-        self.canvas.create_text(400,500+itv_y,text = 'T', fill = 'blue', font=fontprop)
-        
-        self.canvas.create_text(280,320, text = '429_ORC\neff:       %', fill = 'blue', font=fonteff)
-        
-        self.canvas.create_text(60,600, text = 'mdot', fill = 'blue', font=fontprop)
-        self.canvas.create_text(60,600+30, text = 'Qin', fill = 'blue', font=fontprop)
-        self.canvas.create_text(60,600+60, text = 'Wout', fill = 'blue', font=fontprop)
+        self.state = {'node1': {"p": None, "t": None},# can not use state1 = state2 = state3 = state4 = {}, because id will same
+                      'node2': {"p": None, "t": None},
+                      'node3': {"p": None, "t": None},
+                      'node4': {"p": None, "t": None}}
+        # set label of pressure and temperature
+        self.labelPAndTSet()
+        # set value of pressure and temperature
+        self.valuePAndTSet()
         
         
-        init_value = '000'
-
-        # can not use state1 = state2 = state3 = state4 = {}, because id will same
-        state1 = {}
-        state2 = {}
-        state3 = {}
-        state4 = {}
-        self.eff = {}
-        self.state = [state1, state2, state3, state4]
+        # set label of work
+        self.labelWorkSet()
+        # set value of work
+        self.valueWorkSet()
         
-        state1['p'] = self.canvas.create_text(120+itv_x,430, text = init_value, fill = 'blue', font=fontprop)  
-        state1['t'] = self.canvas.create_text(120+itv_x,430+itv_y,text = init_value, fill = 'blue', font=fontprop)
+        # set label of efficiency
+        self.canvas.create_text(280,320, text = '429_ORC\neff:       %', fill = 'blue', font=self.fonteff)
         
-        state2['p'] = self.canvas.create_text(100+itv_x,110, text = init_value, fill = 'blue', font=fontprop)  
-        state2['t'] = self.canvas.create_text(100+itv_x,110+itv_y,text = init_value, fill = 'blue', font=fontprop)
-        
-        state3['p'] = self.canvas.create_text(480+itv_x,150, text = init_value, fill = 'blue', font=fontprop)  
-        state3['t'] = self.canvas.create_text(480+itv_x,150+itv_y,text = init_value, fill = 'blue', font=fontprop)
-        
-        state4['p'] = self.canvas.create_text(400+itv_x,500, text = init_value, fill = 'blue', font=fontprop)  
-        state4['t'] = self.canvas.create_text(400+itv_x,500+itv_y,text = init_value, fill = 'blue', font=fontprop)
-
-        self.eff = self.canvas.create_text(300, 350,text = "kkk", fill = 'blue', font=fonteff)
-        self.mdot = self.canvas.create_text(150, 600,text = "kkk", fill = 'blue', font=fontprop)
-        self.Qin = self.canvas.create_text(150, 600+30,text = "kkk", fill = 'blue', font=fontprop)
-        self.Wout = self.canvas.create_text(150, 600+60,text = "kkk", fill = 'blue', font=fontprop)
-#        print(id(self.state), [id(y) for y in self.state], [[id(y) for y in x] for x in self.state] )
-#        print(self.state[0]['p'])
-        
+        self.eff = self.canvas.create_text(300, 350,text = "None", fill = 'blue', font=self.fonteff)
+    
+    
+    def labelPAndT(self, posx, posy):
+        self.canvas.create_text(posx, posy, text='P', fill='blue', font=self.fontprop)  
+        self.canvas.create_text(posx, posy+self.offset_y, text='T', fill='blue', font=self.fontprop)
+    def labelPAndTSet(self):
+        for pos in self.nodePosition.values():
+            self.labelPAndT(pos["x"], pos["y"])
+    def valuePAndT(self, node, posx, posy, offestx=20):
+        self.state[node]['p'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
+        self.state[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
+    def valuePAndTSet(self):
+        for node, pos in self.nodePosition.items():
+            self.valuePAndT(node, pos['x'], pos['y'])
+            
+    
+    def labelWork(self, posx, posy, text):
+        self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
+    def labelWorkSet(self):
+        self.labelWork(self.workPosition['x'], self.workPosition['y'], text = 'mdot{}kW'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y, text = 'Win {}kW'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*6))
+    def valueWorkSet(self, offestx=20):
+        posx = self.workPosition['x'] + offestx
+        self.mdot = self.canvas.create_text(posx, self.workPosition['y'],text = 'None', fill = 'blue', font=self.fontprop)
+        self.Win = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y, text = 'None', fill = 'blue', font=self.fontprop)
+        self.Qin = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*2, text = 'None', fill = 'blue', font=self.fontprop)
+        self.Wout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*3, text = 'None', fill = 'blue', font=self.fontprop)
+        self.Qout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*4, text = 'None', fill = 'blue', font=self.fontprop)
+    
+    
     def update_state(self, num, data):
-        self.canvas.itemconfigure(self.state[num]['p'], text=str(round(data.p, 2)))
-        self.canvas.itemconfigure(self.state[num]['t'], text=str(round(data.t, 1)))
+        self.canvas.itemconfigure(self.state['node'.format(num)]['p'], text=str(round(data.p, 2)))
+        self.canvas.itemconfigure(self.state['node'.format(num)]['t'], text=str(round(data.t, 1)))
     def update_eff(self, eff_num):
         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
     def update_mdot(self, mdot_num):
@@ -95,12 +109,6 @@ class ORC_Status(tk.Frame):
         self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 5)))
     def update_Wout(self, Wout_num):
         self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 5)))
-        
-#        print(a)
-#        self.canvas.itemconfig(a, text="Goodbye, world")
-##        self.canvas.draw()
-#        print(a)
-        #tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
 
 
 class ORC_Figure(tk.Frame):
