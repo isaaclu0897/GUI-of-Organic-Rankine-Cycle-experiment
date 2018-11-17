@@ -126,52 +126,66 @@ class ORC_Figure(tk.Frame):
         self.dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
         self.dia.set_xlabel(title[xAxis])
         self.dia.set_ylabel(title[yAxis])
-        self.dia.set_ylim(10, 150)
-        self.dia.set_xlim(0.9, 1.9)
-        self.dia.grid()
-        
+        self.set_window_boundary()
+        self.openGrid()
+
         self.toolbar = NavigationToolbar2Tk(self.canvas, master)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
-        [self.dia.add_line(i) for i in calc_SaturationofCurve()]
-        self.state_point = Line2D([], [], color='g', linestyle='None', marker='o')
-        self.line1 = Line2D([], [], color="g", lw=2.0)
-        self.line2 = Line2D([], [], color="g", lw=2.0)
-        self.line3 = Line2D([], [], color="g", lw=2.0)
-        self.line4 = Line2D([], [], color="g", lw=2.0)
         
-        self.heat = Line2D([], [], color="r", lw=2.0)
-        self.cool = Line2D([], [], color="b", lw=2.0)
-        
-        self.dia.add_line(self.state_point)
-        self.allofline = [self.line1, self.line2, self.line3, self.line4]
-        self.hx = [self.heat, self.cool] 
-        
-        for i in self.allofline:
-            self.dia.add_line(i)
-        for i in self.hx:
-            self.dia.add_line(i)
-        
+        self.setThermoLine()
+        self.addThermoLine()
+            
         
     def set_window_boundary(self):
         self.dia.set_ylim(10, 150)
         self.dia.set_xlim(0.9, 1.9)
+    
+    def openGrid(self):
+        self.dia.grid()
         
-    def updata_state_point(self, data):
+    
+    def setThermoLine(self):
+        self.lineOfSaturationCurve  = calc_SaturationofCurve()
+        
+        self.lineStatePoint = Line2D([], [], color='g', linestyle='None', marker='o')
+        
+        self.linePumpimg = Line2D([], [], color="g", lw=2.0)
+        self.lineHeating = Line2D([], [], color="g", lw=2.0)
+        self.lineWorking = Line2D([], [], color="g", lw=2.0)
+        self.lineCooling = Line2D([], [], color="g", lw=2.0)
+        
+        self.lineHeater = Line2D([], [], color="r", lw=2.0)
+        self.lineCooler = Line2D([], [], color="b", lw=2.0)
+        
+        self.thermoLine = [self.linePumpimg, self.lineHeating, self.lineWorking, self.lineCooling]
+        self.heatExchangerLine = [self.lineHeater, self.lineCooler]
+        
+    def addThermoLine(self):
+#        self.dia.add_line(self.lineOfSaturationCurve)
+        self.dia.add_line(self.lineStatePoint)
+        
+        for i in self.thermoLine:
+            self.dia.add_line(i)
+        
+        for i in self.heatExchangerLine:
+            self.dia.add_line(i)
+            
+        
+    def updata_StatePoint(self, data):
         self.state_point.set_xdata(data[0])
         self.state_point.set_ydata(data[1])
         
-    def updata_line(self, data):
+    def updata_thermoLine(self, data):
         for i in range(len(data)):
             self.allofline[i].set_xdata(data[i][0])
             self.allofline[i].set_ydata(data[i][1])
     
-    def updata_linehx(self, data):
+    def updata_heatExchangerLine(self, data):
         for i in range(len(data)):
             self.hx[i].set_xdata(data[i][0])
             self.hx[i].set_ydata(data[i][1])
-
 
 def scan_data():
 # =============================================================================
@@ -201,15 +215,15 @@ def scan_data():
 # define the  of all point & init all node
 # =========================================================
         dev_list = [pumpi, pumpo, EXPi, EXPo]
-        HX = [HI, HO, CI, CO]
+        HX_list = [HI, HO, CI, CO]
         for i in range(4):
             dev_list[i]['P'] = readings_PRESS[i]
             dev_list[i]['T'] = readings_TEMP[i]
-        for i in range(4):
-            HX[i]['T'] = readings_TEMP[i+6]
+            HX_list[i]['T'] = readings_TEMP[i+6]
 
         global nodes
         nodes = []
+        
         for i in dev_list:
             nodes.append(node.Node(i['name'], i['nid']))
             

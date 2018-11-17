@@ -43,6 +43,10 @@ def data():
    
     return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
 
+def initNode(dev_list):
+        return [nodes.append(node.Node(i['name'], i['nid'])) for nodes in dev_list]
+    
+
 if __name__ == '__main__':
     import node
     from tabulate_text import ORC_status
@@ -51,9 +55,10 @@ if __name__ == '__main__':
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
     
     # init all node
-    nodes = []
-    for i in dev_list:
-        nodes.append(node.Node(i['name'], i['nid']))
+#    nodes = []
+#    for i in dev_list:
+#        nodes.append(node.Node(i['name'], i['nid']))
+    nodes = initNode(dev_list)
     
     # set & calc Prop of point 
     for i, obj in enumerate(dev_list):
