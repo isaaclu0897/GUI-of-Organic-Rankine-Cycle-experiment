@@ -10,12 +10,13 @@ import tkinter as tk
 import tkinter.font as tkfont
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from threading import Timer
 #import visa
-import node
+#import node
 from ORC_plot import ProcessPlot
+from ORC_sample import initNode, setAndCalcNode
 
 class ORC_Status(tk.Frame):
     offset_x = 50
@@ -99,17 +100,40 @@ class ORC_Status(tk.Frame):
     
     
     def update_state(self, num, data):
-        self.canvas.itemconfigure(self.state['node'.format(num)]['p'], text=str(round(data.p, 2)))
-        self.canvas.itemconfigure(self.state['node'.format(num)]['t'], text=str(round(data.t, 1)))
+        self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
+        self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
     def update_eff(self, eff_num):
         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
     def update_mdot(self, mdot_num):
-        self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 5)))
+        self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 4)))
+    def update_Win(self, Win_num):
+        self.canvas.itemconfigure(self.Win, text=str(round(Win_num, 3)))
     def update_Qin(self, Qin_num):
-        self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 5)))
+        self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 2)))
     def update_Wout(self, Wout_num):
-        self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 5)))
-
+        self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 3)))
+    def update_Qout(self, Qout_num):
+        self.canvas.itemconfigure(self.Qout, text=str(round(Qout_num, 2)))
+    
+    def update_data(self, nodesSys, nodesHX):
+        for i in range(len(nodesSys)):
+            self.update_state(i+1, nodesSys[i])
+        eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
+        
+        mdot = 0.17*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
+        
+        Win = mdot * (nodesSys[1].h - nodesSys[0].h)
+        Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
+        Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
+        Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
+        
+        self.update_eff(eff)
+        self.update_mdot(mdot)
+        self.update_Win(Win)
+        self.update_Qin(Qin)
+        self.update_Wout(Wout)
+        self.update_Qout(Qout)
+        
 
 class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
@@ -129,7 +153,7 @@ class ORC_Figure(tk.Frame):
         self.set_window_boundary()
         self.openGrid()
 
-        self.toolbar = NavigationToolbar2Tk(self.canvas, master)
+        self.toolbar = NavigationToolbar2TkAgg(self.canvas, master)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
@@ -163,7 +187,9 @@ class ORC_Figure(tk.Frame):
         self.heatExchangerLine = [self.lineHeater, self.lineCooler]
         
     def addThermoLine(self):
-#        self.dia.add_line(self.lineOfSaturationCurve)
+        for i in self.lineOfSaturationCurve:
+            self.dia.add_line(i)
+        
         self.dia.add_line(self.lineStatePoint)
         
         for i in self.thermoLine:
@@ -174,18 +200,39 @@ class ORC_Figure(tk.Frame):
             
         
     def updata_StatePoint(self, data):
-        self.state_point.set_xdata(data[0])
-        self.state_point.set_ydata(data[1])
+        self.lineStatePoint.set_xdata(data[0])
+        self.lineStatePoint.set_ydata(data[1])
         
     def updata_thermoLine(self, data):
         for i in range(len(data)):
-            self.allofline[i].set_xdata(data[i][0])
-            self.allofline[i].set_ydata(data[i][1])
+            self.thermoLine[i].set_xdata(data[i][0])
+            self.thermoLine[i].set_ydata(data[i][1])
     
     def updata_heatExchangerLine(self, data):
         for i in range(len(data)):
-            self.hx[i].set_xdata(data[i][0])
-            self.hx[i].set_ydata(data[i][1])
+            self.heatExchangerLine[i].set_xdata(data[i][0])
+            self.heatExchangerLine[i].set_ydata(data[i][1])
+    
+    def update_data(self, nodesSys, nodesHX):
+#            ORC_status([nodes[i] for i in range(len(nodes))])
+            state_data = calc_StatusofORC(nodesSys, [0, 1, 2, 3])
+            
+            process = [ProcessPlot(0, 1, 'isos'),
+                       ProcessPlot(1, 2, 'isop'),
+                       ProcessPlot(2, 3, 'isos'),
+                       ProcessPlot(3, 0, 'isop')]
+            thermoLine_data = [plot.plot_process_data(nodesSys) for plot in process]
+            
+            heatExchangerLine_data = [[[nodesHX[0].s, nodesHX[1].s], [nodesHX[0].t, nodesHX[1].t]],
+                                      [[nodesHX[2].s, nodesHX[3].s], [nodesHX[2].t, nodesHX[3].t]]]
+            
+            self.updata_StatePoint(state_data)
+            self.updata_thermoLine(thermoLine_data)
+            self.updata_heatExchangerLine(heatExchangerLine_data)
+            
+
+            self.canvas.draw()
+        
 
 def scan_data():
 # =============================================================================
@@ -195,89 +242,12 @@ def scan_data():
     range_PRESS,resolution_PRESS, ch_PRESS  = 10, 5.5, '@301:306'
     gain_PRESS, state_PRESS = 2.1, 1
 #    offset_PRESS, label_PRESS = 0, 'BAR'
-    
-    pumpi = {'name' : 'pump_inlet',         'nid' : 1}
-    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2}
-    EXPi  = {'name' : 'expander_inlet',     'nid' : 3}
-    EXPo  = {'name' : 'expander_outlet',    'nid' : 4}
-    
-    HI = {'name' : 'heat_inlet',       'nid' : 5}
-    HO = {'name' : 'heat_outlet',      'nid' : 6}
-    CI = {'name' : 'condenser_inlet',  'nid' : 7}
-    CO = {'name' : 'condenser_outlet', 'nid' : 8}
+
     
     rm = visa.ResourceManager()
     v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
 #        idn_string = v34972A.query('*IDN?')
-    
-    def calc(readings_TEMP, readings_PRESS):
-# =========================================================
-# define the  of all point & init all node
-# =========================================================
-        dev_list = [pumpi, pumpo, EXPi, EXPo]
-        HX_list = [HI, HO, CI, CO]
-        for i in range(4):
-            dev_list[i]['P'] = readings_PRESS[i]
-            dev_list[i]['T'] = readings_TEMP[i]
-            HX_list[i]['T'] = readings_TEMP[i+6]
-
-        global nodes
-        nodes = []
-        
-        for i in dev_list:
-            nodes.append(node.Node(i['name'], i['nid']))
-            
-        for i, obj in enumerate(dev_list):
-            nodes[i].set_tp(obj['T'], obj['P'])
-            nodes[i].pt()
-        global nodes_HX
-        nodes_HX = []
-        for i in HX:
-            nodes_HX.append(node.Node(i['name'], i['nid']))
-        for i, obj in enumerate(HX):
-            nodes_HX[i].t = obj['T']
-        nodes_HX[0].s = nodes[2].s + 0.03
-        nodes_HX[1].s = nodes[0].s - 0.03 
-        nodes_HX[2].s = nodes[0].s - 0.03 
-        nodes_HX[3].s = nodes[2].s + 0.03
-        
-        
-        
-        def left(nodes):
-            
-            global SM_dia
-            for i in range(len(nodes)):
-                SM_dia.update_state(i, nodes[i])
-            eff = ((nodes[2].h-nodes[3].h)/(nodes[2].h-nodes[1].h))*100
-            SM_dia.update_eff(eff)
-            mdot = 0.23*4.2*(nodes_HX[0].t-nodes_HX[1].t)/(nodes[2].h-nodes[1].h)
-            SM_dia.update_mdot(mdot)
-            Qin = mdot * (nodes[2].h - nodes[1].h)
-            Wout = mdot * (nodes[2].h - nodes[3].h)
-            SM_dia.update_Qin(Qin)
-            SM_dia.update_Wout(Wout)
-            
-        def right(nodes):
-#            ORC_status([nodes[i] for i in range(len(nodes))])
-            state_data = calc_StatusofORC(nodes, [0, 1, 2, 3])
-            process = [ProcessPlot(0, 1, 'isos'),
-                       ProcessPlot(1, 2, 'isop'),
-                       ProcessPlot(2, 3, 'isos'),
-                       ProcessPlot(3, 0, 'isop')]
-            
-            line_data = [plot.plot_process_data(nodes) for plot in process]
-            line_datahx = [[[nodes_HX[0].s, nodes_HX[1].s], [nodes_HX[0].t, nodes_HX[1].t]], [[nodes_HX[2].s, nodes_HX[3].s], [nodes_HX[2].t, nodes_HX[3].t]]]
-            global TH_dia
-            TH_dia.updata_state_point(state_data)
-            TH_dia.updata_line(line_data)
-            TH_dia.updata_linehx(line_datahx)
-            
-
-            TH_dia.canvas.draw()
-            
-        left(nodes)
-        right(nodes)
-
+    data = SendData()
         
 
     def innerfunc():
@@ -293,12 +263,78 @@ def scan_data():
         # convert str to float
         readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
+        
 #        print(readings_TEMP, readings_PRESS)
-        calc(readings_TEMP, readings_PRESS)
-    
+        readings_PRESS = [1.8, 8.8, 8.6, 1.9, 1.9, 2]
+        readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
+        
+        data.send(readings_TEMP, readings_PRESS)
+        data.update()
 
     timer(innerfunc, 3,)
 
+def test_scan_data():
+    data = SendData()
+
+    def innerfunc():
+        readings_PRESS = [1.8, 8.8, 8.6, 1.9, 1.9, 2]
+        readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
+        
+        data.send(readings_TEMP, readings_PRESS)
+        data.update()
+    
+    innerfunc()
+
+
+
+    
+class SendData:
+    def __init__(self):
+        pumpi = {'name' : 'pump_inlet',         'nid' : 1}
+        pumpo = {'name' : 'pump_ioutlet',       'nid' : 2}
+        EXPi  = {'name' : 'expander_inlet',     'nid' : 3}
+        EXPo  = {'name' : 'expander_outlet',    'nid' : 4}
+        
+        HI = {'name' : 'heat_inlet',       'nid' : 5}
+        HO = {'name' : 'heat_outlet',      'nid' : 6}
+        CI = {'name' : 'condenser_inlet',  'nid' : 7}
+        CO = {'name' : 'condenser_outlet', 'nid' : 8}
+        
+# =========================================================
+# define the  of all point & init all node
+# =========================================================
+
+        self.dev_list = [pumpi, pumpo, EXPi, EXPo]
+        self.heatexchange_list = [HI, HO, CI, CO]
+    
+    def send(self, readings_TEMP, readings_PRESS):
+        for i in range(4):
+            self.dev_list[i]['P'] = readings_PRESS[i]
+            self.dev_list[i]['T'] = readings_TEMP[i]
+            self.heatexchange_list[i]['T'] = readings_TEMP[i+6]
+    
+    #        global nodesSys
+    #        global nodesHX
+        
+        self.nodesSys = initNode(self.dev_list)
+        self.nodesHX = initNode(self.heatexchange_list)
+            
+        setAndCalcNode(self.nodesSys, self.dev_list)
+        setAndCalcNode(self.nodesHX, self.heatexchange_list)
+        self.nodesHX[0].s = self.nodesSys[2].s + 0.03
+        self.nodesHX[1].s = self.nodesSys[0].s - 0.03 
+        self.nodesHX[2].s = self.nodesSys[0].s - 0.03 
+        self.nodesHX[3].s = self.nodesSys[2].s + 0.03
+            
+        
+    def update(self):
+
+        
+        global SM_dia
+        global TH_dia
+        
+        SM_dia.update_data(self.nodesSys, self.nodesHX)
+        TH_dia.update_data(self.nodesSys, self.nodesHX)
 
 
 def timer(func, second=2, *arg):
@@ -307,7 +343,7 @@ def timer(func, second=2, *arg):
     t.setDaemon(True)
     
     global on_click_loop
-#    print(t.daemon, on_click_loop)
+    
     if t.daemon and on_click_loop:
         t.start()
     else:
@@ -315,15 +351,6 @@ def timer(func, second=2, *arg):
         return 0
 
             
-#def smliu_scan_data():
-#    print('load data')
-#
-#    def innerfunc():
-#        global x
-#        
-#        print('get and update the data', x)
-#        
-#    timer(innerfunc, 3,)
     
         
         
@@ -356,8 +383,6 @@ if __name__=='__main__':
     
     SM_dia = ORC_Status(frm_left)
     TH_dia = ORC_Figure(frm_right_top)
-
-#    x = 0
     
     
     var = tk.StringVar()
@@ -382,7 +407,7 @@ if __name__=='__main__':
         
             
     b = tk.Button(frm_right_bottom, text='click me', width=15, height=2, \
-                  command=lambda: btn_cmd_loop(scan_data))
+                  command=lambda: btn_cmd_loop(test_scan_data))
     b.pack()
     
 #    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \

@@ -31,7 +31,8 @@ P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
- 
+import node
+
 def data():
     pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
     pumpo = {'name' : 'pump_ioutlet',       'nid' : 2, 'P' : 6.44, 'T' : 22.55}
@@ -44,11 +45,19 @@ def data():
     return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
 
 def initNode(dev_list):
-        return [nodes.append(node.Node(i['name'], i['nid'])) for nodes in dev_list]
+        return [node.Node(nodes['name'], nodes['nid']) for nodes in dev_list]
+
+def setAndCalcNode(nodes, dev_list):
+    if ('P' or 'p') in dev_list[0].keys():
+        for i, obj in enumerate(dev_list):
+            nodes[i].set_tp(obj['T'], obj['P'])
+            nodes[i].pt()
+    else:
+        for i, obj in enumerate(dev_list):
+            nodes[i].t = obj['T']
     
 
 if __name__ == '__main__':
-    import node
     from tabulate_text import ORC_status
     
     # define the  of all point
@@ -61,9 +70,7 @@ if __name__ == '__main__':
     nodes = initNode(dev_list)
     
     # set & calc Prop of point 
-    for i, obj in enumerate(dev_list):
-        nodes[i].set_tp(obj['T'], obj['P'])
-        nodes[i].pt()
+    setAndCalcNode(nodes, dev_list)
 
     # print pretty ORC_status table
     ORC_status([nodes[i] for i in range(len(nodes))])
