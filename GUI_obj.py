@@ -26,6 +26,8 @@ class ORC_Status(tk.Frame):
                     "node2": {"x": 100, "y": 110},
                     "node3": {"x": 480, "y": 150},
                     "node4": {"x": 400, "y": 500}}
+    heatExchangerPosition = {"heater": {"x": 500, "y": 50},
+                             "cooler": {"x": 500, "y": 615}}
     
     workPosition = {'x': 90,
                     'y': 500}
@@ -51,11 +53,15 @@ class ORC_Status(tk.Frame):
                       'node2': {"p": None, "t": None},
                       'node3': {"p": None, "t": None},
                       'node4': {"p": None, "t": None}}
+        self.stateHX = {'heater': {'ti': None, 'to': None}, 
+                        'cooler': {'ti': None, 'to': None}}
         # set label of pressure and temperature
         self.labelPAndTSet()
         # set value of pressure and temperature
         self.valuePAndTSet()
         
+        self.labelHeatExchangerSet()
+        self.valueHeatExchangerSet()
         
         # set label of work
         self.labelWorkSet()
@@ -80,6 +86,19 @@ class ORC_Status(tk.Frame):
     def valuePAndTSet(self):
         for node, pos in self.nodePosition.items():
             self.valuePAndT(node, pos['x'], pos['y'])
+    
+    def labelHeatExchanger(self, posx, posy):
+        self.canvas.create_text(posx, posy, text='To', fill='blue', font=self.fontprop)  
+        self.canvas.create_text(posx, posy+self.offset_y, text='Ti', fill='blue', font=self.fontprop)
+    def labelHeatExchangerSet(self):
+        for pos in self.heatExchangerPosition.values():
+            self.labelHeatExchanger(pos["x"], pos["y"])
+    def valueHeatExchanger(self, node, posx, posy, offestx=20):
+        self.stateHX[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
+        self.stateHX[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
+    def valueHeatExchangerSet(self):
+        for node, pos in self.heatExchangerPosition.items():
+            self.valueHeatExchanger(node, pos['x'], pos['y'])
             
     
     def labelWork(self, posx, posy, text):
@@ -102,6 +121,13 @@ class ORC_Status(tk.Frame):
     def update_state(self, num, data):
         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
         self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
+    
+    def update_stateHX(self, data):
+        self.canvas.itemconfigure(self.stateHX['heater']['ti'], text=str(round(data[0].t, 1)))
+        self.canvas.itemconfigure(self.stateHX['heater']['to'], text=str(round(data[1].t, 1)))
+        self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[2].t, 1)))
+        self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[3].t, 1)))        
+        
     def update_eff(self, eff_num):
         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
     def update_mdot(self, mdot_num):
@@ -118,6 +144,10 @@ class ORC_Status(tk.Frame):
     def update_data(self, nodesSys, nodesHX):
         for i in range(len(nodesSys)):
             self.update_state(i+1, nodesSys[i])
+            
+
+        self.update_stateHX(nodesHX)
+
         eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
         
         mdot = 0.17*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
@@ -175,15 +205,21 @@ class ORC_Figure(tk.Frame):
         
         self.lineStatePoint = Line2D([], [], color='g', linestyle='None', marker='o')
         
-        self.linePumpimg = Line2D([], [], color="g", lw=2.0)
-        self.lineHeating = Line2D([], [], color="g", lw=2.0)
-        self.lineWorking = Line2D([], [], color="g", lw=2.0)
-        self.lineCooling = Line2D([], [], color="g", lw=2.0)
+        self.linePumpimg = Line2D([], [], color="g", lw=2.5)
+        self.lineHeating = Line2D([], [], color="g", lw=2.5)
+        self.lineWorking = Line2D([], [], color="g", lw=2.5)
+        self.lineCooling = Line2D([], [], color="g", lw=2.5)
+        
+        self.linePumpimgISO = Line2D([], [], color="grey", lw=1.3)
+        self.lineHeatingISO = Line2D([], [], color="grey", lw=1.3)
+        self.lineWorkingISO = Line2D([], [], color="grey", lw=1.3)
+        self.lineCoolingISO = Line2D([], [], color="grey", lw=1.3)
         
         self.lineHeater = Line2D([], [], color="r", lw=2.0)
         self.lineCooler = Line2D([], [], color="b", lw=2.0)
         
         self.thermoLine = [self.linePumpimg, self.lineHeating, self.lineWorking, self.lineCooling]
+        self.thermoLineISO = [self.linePumpimgISO, self.lineHeatingISO, self.lineWorkingISO, self.lineCoolingISO]
         self.heatExchangerLine = [self.lineHeater, self.lineCooler]
         
     def addThermoLine(self):
@@ -193,6 +229,9 @@ class ORC_Figure(tk.Frame):
         self.dia.add_line(self.lineStatePoint)
         
         for i in self.thermoLine:
+            self.dia.add_line(i)
+        
+        for i in self.thermoLineISO:
             self.dia.add_line(i)
         
         for i in self.heatExchangerLine:
@@ -205,8 +244,11 @@ class ORC_Figure(tk.Frame):
         
     def updata_thermoLine(self, data):
         for i in range(len(data)):
-            self.thermoLine[i].set_xdata(data[i][0])
-            self.thermoLine[i].set_ydata(data[i][1])
+            self.thermoLine[i].set_xdata(data[i][1][0])
+            self.thermoLine[i].set_ydata(data[i][1][1])
+            
+            self.thermoLineISO[i].set_xdata(data[i][0][0])
+            self.thermoLineISO[i].set_ydata(data[i][0][1])
     
     def updata_heatExchangerLine(self, data):
         for i in range(len(data)):
@@ -221,13 +263,13 @@ class ORC_Figure(tk.Frame):
                        ProcessPlot(1, 2, 'isop'),
                        ProcessPlot(2, 3, 'isos'),
                        ProcessPlot(3, 0, 'isop')]
-            thermoLine_data = [plot.plot_process_data(nodesSys) for plot in process]
+            thermoLine = [plot.plot_process_data(nodesSys) for plot in process]
             
             heatExchangerLine_data = [[[nodesHX[0].s, nodesHX[1].s], [nodesHX[0].t, nodesHX[1].t]],
                                       [[nodesHX[2].s, nodesHX[3].s], [nodesHX[2].t, nodesHX[3].t]]]
             
             self.updata_StatePoint(state_data)
-            self.updata_thermoLine(thermoLine_data)
+            self.updata_thermoLine(thermoLine)
             self.updata_heatExchangerLine(heatExchangerLine_data)
             
 
@@ -247,6 +289,7 @@ def scan_data():
     rm = visa.ResourceManager()
     v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
 #        idn_string = v34972A.query('*IDN?')
+
     data = SendData()
         
 
@@ -274,11 +317,13 @@ def scan_data():
     timer(innerfunc, 3,)
 
 def test_scan_data():
+    global data
     data = SendData()
 
     def innerfunc():
-        readings_PRESS = [1.8, 8.8, 8.6, 1.9, 1.9, 2]
+        readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
         readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
+        
         
         data.send(readings_TEMP, readings_PRESS)
         data.update()
