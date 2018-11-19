@@ -87,19 +87,19 @@ class ProcessPlot(Node):
         return self._iso, self._act
     
     def calc_stateline_data(self):
-        return self.Isa, self.Ita
+        return [self.Isi, self.Iti], [self.Isa, self.Ita]
     
     def plot_process(self, nodes):
         self.iso_line(nodes)
         self.calc_iso()
-        self.calc_stateline()
-        return self._iso, self._act
+        
+        return self.calc_stateline()
     
     def plot_process_data(self, nodes):
         self.iso_line(nodes)
         self.calc_iso()
-        self.calc_stateline_data()
-        return self.Isa, self.Ita
+        
+        return self.calc_stateline_data()
         
 def set_windows():
     fig = plt.figure()
@@ -138,7 +138,7 @@ def calc_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
     line = []
     for x in X_array: 
         S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
-        line.append(lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=2.0))
+        line.append(lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8))
     return line
 
 
@@ -198,8 +198,8 @@ if __name__=="__main__":
     good = [plot.plot_process_data(nodes) for plot in process]
     
     for i in good:
-        act_line_x, act_line_x = i
-        act_line = lin.Line2D(i[0], i[1], color="b", lw=2.0)
-        dia.add_line(act_line)
+        iso = lin.Line2D(i[0][0], i[0][1], color="grey", lw=2.0)
+        dia.add_line(iso)
+#        dia.add_line(i[1])
 
     plt.show()

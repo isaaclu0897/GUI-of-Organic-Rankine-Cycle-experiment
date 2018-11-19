@@ -108,19 +108,19 @@ a.calc_iso()
 a.plot_iso()
 plot process of ORC
 """
-process = [ProcessPlot(0, 1, 'isos'),
-           ProcessPlot(1, 2, 'isop'),
-           ProcessPlot(2, 3, 'isop'),
-           ProcessPlot(3, 4, 'isos'),
-           ProcessPlot(4, 5, 'isop'),
-           ProcessPlot(5, 6, 'isop'),
-           ProcessPlot(6, 0, 'isop')]
-good = [plot.plot_process(nodes) for plot in process]
-
-for i in good:
-    dia.add_line(i[0])
-    dia.add_line(i[1])
-
+#process = [ProcessPlot(0, 1, 'isos'),
+#           ProcessPlot(1, 2, 'isop'),
+#           ProcessPlot(2, 3, 'isop'),
+#           ProcessPlot(3, 4, 'isos'),
+#           ProcessPlot(4, 5, 'isop'),
+#           ProcessPlot(5, 6, 'isop'),
+#           ProcessPlot(6, 0, 'isop')]
+#good = [plot.plot_process(nodes) for plot in process]
+#
+#for i in good:
+#    dia.add_line(i[0])
+#    dia.add_line(i[1])
+#
 #plt.show()
 
 
