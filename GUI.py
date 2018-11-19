@@ -6,10 +6,6 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-
-            
-    
-        
         
 if __name__=='__main__':
     import tkinter as tk
@@ -42,6 +38,7 @@ if __name__=='__main__':
     
     SM_dia = ORC_Status(frm_left)
     TH_dia = ORC_Figure(frm_right_top)
+    data = SendData()
     
     frm_right_bottom_left = tk.Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
@@ -64,7 +61,7 @@ if __name__=='__main__':
         if on_click_loop == False:
             on_click_loop = True
             varScan.set('start2scan')
-            func(SM_dia, TH_dia)
+            func(data, SM_dia, TH_dia)
         else:
             on_click_loop = False
             varScan.set('stop2scan')
@@ -74,10 +71,11 @@ if __name__=='__main__':
         func()
     
     def good():
-        motWater = varmdotWater.get()
-#        print(motWater, type(motWater))
-        SM_dia.mdotWater = float(motWater)
-        labelmdotWater.config(text=str(motWater))
+        mdotWater = varmdotWater.get()
+#        print(mdotWater, type(mdotWater))
+        SM_dia.update_mdotWater(float(mdotWater))
+        data.update_mdotWater(float(mdotWater))
+        labelmdotWater.config(text=str(mdotWater))
         
             
     buttonScan = tk.Button(frm_right_bottom_left, text='click me', width=15, height=2, \

@@ -17,6 +17,8 @@ from threading import Timer
 #import node
 from ORC_plot import ProcessPlot
 from ORC_sample import initNode, setAndCalcNode
+from openpyxl import Workbook
+import datetime
 
 class ORC_Status(tk.Frame):
     offset_x = 50
@@ -286,7 +288,7 @@ class ORC_Figure(tk.Frame):
             self.canvas.draw()
         
 
-def scan_data(on_click_loop, SM_dia, TH_dia):
+def scan_data(on_click_loop, data, SM_dia, TH_dia):
 # =============================================================================
 # load the data
 # =============================================================================
@@ -300,7 +302,15 @@ def scan_data(on_click_loop, SM_dia, TH_dia):
     v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
 #        idn_string = v34972A.query('*IDN?')
 
-    data = SendData()
+#    data = SendData()
+    
+    workBook = Workbook()
+    workSheet = workBook.active
+    workSheet['a1'] = '實驗名稱'
+    workSheet['a2'] = '實驗日期'
+    workSheet['b2'] = datetime.date.today()
+    workSheet['a3'] = '實驗說明(描述)'
+    workBook.save("./DillWithData/sample.xlsx")
         
 
     def innerfunc(on_click_loop, SM_dia, TH_dia):
@@ -326,19 +336,28 @@ def scan_data(on_click_loop, SM_dia, TH_dia):
 
     timer(innerfunc, 3, on_click_loop, SM_dia, TH_dia)
 
-def test_scan_data(SM_dia, TH_dia):
+def test_scan_data(data, SM_dia, TH_dia):
 
-    data = SendData()
+#    data = SendData()
 
-    def innerfunc(SM_dia, TH_dia):
+    workBook = Workbook()
+    workSheet = workBook.active
+    workSheet['a1'] = '實驗名稱'
+    workSheet['a2'] = '實驗日期'
+    workSheet['b2'] = datetime.date.today()
+    workSheet['a3'] = '實驗說明(描述)'
+    workBook.save("./DillWithData/sample.xlsx")
+
+    def innerfunc(data, SM_dia, TH_dia):
         readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
         readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
         
         
-        data.send(readings_TEMP, readings_PRESS)
+        value = data.send(readings_TEMP, readings_PRESS)
+        print(value)
         data.update(SM_dia, TH_dia)
     
-    innerfunc(SM_dia, TH_dia)
+    innerfunc(data, SM_dia, TH_dia)
 
 
 
@@ -361,6 +380,7 @@ class SendData:
 
         self.dev_list = [pumpi, pumpo, EXPi, EXPo]
         self.heatexchange_list = [HI, HO, CI, CO]
+        self.mdotWater = None
     
     def send(self, readings_TEMP, readings_PRESS):
         for i in range(4):
@@ -380,6 +400,17 @@ class SendData:
         self.nodesHX[1].s = self.nodesSys[0].s - 0.03 
         self.nodesHX[2].s = self.nodesSys[0].s - 0.03 
         self.nodesHX[3].s = self.nodesSys[2].s + 0.03
+        value = [self.nodesSys[0].p, self.nodesSys[0].t, self.nodesSys[0].d, self.nodesSys[0].over, self.nodesSys[0].h, \
+                 self.nodesSys[1].p, self.nodesSys[1].t, self.nodesSys[1].tSat, self.nodesSys[1].h, \
+                 self.nodesSys[2].p, self.nodesSys[2].t, self.nodesSys[2].tSat, self.nodesSys[2].over, self.nodesSys[2].h, \
+                 self.nodesSys[3].p, self.nodesSys[3].t, self.nodesSys[3].tSat, self.nodesSys[3].h, \
+                 self.nodesHX[0].t, self.nodesHX[1].t, self.nodesHX[1].t-self.nodesSys[2].tSat, \
+                 self.nodesHX[2].t, self.nodesHX[3].t, self.nodesHX[3].t-self.nodesSys[3].tSat, \
+                 ((self.nodesSys[2].h-self.nodesSys[3].h)/(self.nodesSys[2].h-self.nodesSys[1].h))*100, \
+                 self.mdotWater*4.2*(self.nodesHX[0].t-self.nodesHX[1].t)/(self.nodesSys[2].h-self.nodesSys[1].h)]
+                 
+                 
+        return value
             
         
     def update(self, SM_dia, TH_dia):
@@ -390,6 +421,8 @@ class SendData:
         
         SM_dia.update_data(self.nodesSys, self.nodesHX)
         TH_dia.update_data(self.nodesSys, self.nodesHX)
+    def update_mdotWater(self, mdotWater):
+        self.mdotWater = mdotWater
 
 
 def timer(func, second=2, *arg):

@@ -40,11 +40,25 @@ class Node(object):
         self._p = P.Bar2Pa(value)
         return self._p
     @property
+    def pSat(self):
+        return P.Pa2Bar(self._pSat)
+    @pSat.setter
+    def pSat(self, value):
+        self._pSat = P.Bar2Pa(value)
+        return self._pSat
+    @property
     def t(self):
         return T.K2C(self._t)
     @t.setter
     def t(self, value):
         self._t = T.C2K(value)
+        return self._t
+    @property
+    def tSat(self):
+        return T.K2C(self._tSat)
+    @tSat.setter
+    def tSat(self, value):
+        self._tSat = T.C2K(value)
         return self._t
     @property
     def h(self):
@@ -78,6 +92,8 @@ class Node(object):
         self._s = PropsSI("S", "P", self._p, "T", self._t, self.fluid)
         self._d = PropsSI("D", "P", self._p, "T", self._t, self.fluid)
         self.q = PropsSI("Q", "P", self._p, "T", self._t, self.fluid)
+        self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
+        self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
         self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 0.5, self.fluid))
 
         if self.q < 0:
