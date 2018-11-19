@@ -10,7 +10,7 @@ import tkinter as tk
 import tkinter.font as tkfont
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from threading import Timer
 #import visa
@@ -94,8 +94,8 @@ class ORC_Status(tk.Frame):
         for pos in self.heatExchangerPosition.values():
             self.labelHeatExchanger(pos["x"], pos["y"])
     def valueHeatExchanger(self, node, posx, posy, offestx=20):
-        self.stateHX[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
-        self.stateHX[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
+        self.stateHX[node]['ti'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
+        self.stateHX[node]['to'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
     def valueHeatExchangerSet(self):
         for node, pos in self.heatExchangerPosition.items():
             self.valueHeatExchanger(node, pos['x'], pos['y'])
@@ -109,6 +109,8 @@ class ORC_Status(tk.Frame):
         self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*6))
         self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*6))
         self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*5, text = 'Eff{}%'.format(' '*6))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*6, text = 'Effi{}%'.format(' '*6))
     def valueWorkSet(self, offestx=20):
         posx = self.workPosition['x'] + offestx
         self.mdot = self.canvas.create_text(posx, self.workPosition['y'],text = 'None', fill = 'blue', font=self.fontprop)
@@ -116,7 +118,8 @@ class ORC_Status(tk.Frame):
         self.Qin = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*2, text = 'None', fill = 'blue', font=self.fontprop)
         self.Wout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*3, text = 'None', fill = 'blue', font=self.fontprop)
         self.Qout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*4, text = 'None', fill = 'blue', font=self.fontprop)
-    
+        self.Eff = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*5, text = 'None', fill = 'blue', font=self.fontprop)
+        self.Effi = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*6, text = 'None', fill = 'blue', font=self.fontprop)
     
     def update_state(self, num, data):
         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
@@ -125,8 +128,8 @@ class ORC_Status(tk.Frame):
     def update_stateHX(self, data):
         self.canvas.itemconfigure(self.stateHX['heater']['ti'], text=str(round(data[0].t, 1)))
         self.canvas.itemconfigure(self.stateHX['heater']['to'], text=str(round(data[1].t, 1)))
-        self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[2].t, 1)))
-        self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[3].t, 1)))        
+        self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[3].t, 1)))
+        self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[2].t, 1)))        
         
     def update_eff(self, eff_num):
         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
@@ -140,7 +143,12 @@ class ORC_Status(tk.Frame):
         self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 3)))
     def update_Qout(self, Qout_num):
         self.canvas.itemconfigure(self.Qout, text=str(round(Qout_num, 2)))
-    
+    def update_Eff(self, Eff_num):
+        self.canvas.itemconfigure(self.Eff, text=str(round(Eff_num, 2)))
+    def update_Effi(self, Effi_num):
+        self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
+    def update_mdotWater(self, mdotWater_num):
+        self.mdotWater = mdotWater_num
     def update_data(self, nodesSys, nodesHX):
         for i in range(len(nodesSys)):
             self.update_state(i+1, nodesSys[i])
@@ -149,8 +157,8 @@ class ORC_Status(tk.Frame):
         self.update_stateHX(nodesHX)
 
         eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
-        
-        mdot = 0.17*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
+
+        mdot = self.mdotWater*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
         
         Win = mdot * (nodesSys[1].h - nodesSys[0].h)
         Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
@@ -163,6 +171,8 @@ class ORC_Status(tk.Frame):
         self.update_Qin(Qin)
         self.update_Wout(Wout)
         self.update_Qout(Qout)
+        self.update_Eff(eff)
+#        self.update_Effi(Effi)
         
 
 class ORC_Figure(tk.Frame):
@@ -183,7 +193,7 @@ class ORC_Figure(tk.Frame):
         self.set_window_boundary()
         self.openGrid()
 
-        self.toolbar = NavigationToolbar2TkAgg(self.canvas, master)
+        self.toolbar = NavigationToolbar2Tk(self.canvas, master)
         self.toolbar.update()
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         
@@ -429,32 +439,56 @@ if __name__=='__main__':
     SM_dia = ORC_Status(frm_left)
     TH_dia = ORC_Figure(frm_right_top)
     
+    frm_right_bottom_left = tk.Frame(frm_right_bottom)
+    frm_right_bottom_left.pack(side='left')
+    frm_right_bottom_right = tk.Frame(frm_right_bottom)
+    frm_right_bottom_right.pack(side='right')    
     
-    var = tk.StringVar()
-    l = tk.Label(frm_right_bottom, textvariable=var, bg='white', \
+    varScan = tk.StringVar()
+    labelScan = tk.Label(frm_right_bottom_left, textvariable=varScan, bg='white', \
                  font=('Arial', 12), width=15, height=2)
-    l.pack()
+    labelScan.pack()
+
+    varmdotWater = tk.StringVar()
+    labelmdotWater = tk.Label(frm_right_bottom_right, textvariable=varmdotWater, bg='white', \
+                 font=('Arial', 12), width=15, height=2)
+    labelmdotWater.pack()
     
     on_click_loop = False
     def btn_cmd_loop(func):
         global on_click_loop
         if on_click_loop == False:
             on_click_loop = True
-            var.set('start2scan')
+            varScan.set('start2scan')
             func()
         else:
             on_click_loop = False
-            var.set('stop2scan')
+            varScan.set('stop2scan')
+
             
     def btn_cmd_one(func):
         func()
-        
+    
+    def good():
+        motWater = varmdotWater.get()
+#        print(motWater, type(motWater))
+        SM_dia.mdotWater = float(motWater)
+        labelmdotWater.config(text=str(motWater))
         
             
-    b = tk.Button(frm_right_bottom, text='click me', width=15, height=2, \
+    buttonScan = tk.Button(frm_right_bottom_left, text='click me', width=15, height=2, \
                   command=lambda: btn_cmd_loop(test_scan_data))
-    b.pack()
+    buttonScan.pack()
     
+    g = tk.Radiobutton(frm_right_bottom_right, text='熱水大流量',  variable=varmdotWater, value=0.29, \
+                  command=good)
+    g.pack()
+    gg = tk.Radiobutton(frm_right_bottom_right, text='熱水中流量', variable=varmdotWater, value=0.23, \
+                  command=good)
+    gg.pack()
+    ggg = tk.Radiobutton(frm_right_bottom_right, text='熱水小流量', variable=varmdotWater, value=0.17, \
+                  command=good)
+    ggg.pack()
 #    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \
 #                  command=lambda: btn_cmd_loop(SM_dia.update_state))
 #    kkk.pack()
