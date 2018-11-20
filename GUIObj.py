@@ -12,26 +12,23 @@ from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
-from threading import Timer
-#import visa
 #import node
 from ORC_plot import ProcessPlot
 from ORC_sample import initNode, setAndCalcNode
-from openpyxl import Workbook
-import datetime
+
 
 class ORC_Status(tk.Frame):
     offset_x = 50
     offset_y = 30
     
-    nodePosition = {"node1": {"x": 120, "y": 430},
+    nodePosition = {"node1": {"x": 120, "y": 410},
                     "node2": {"x": 100, "y": 110},
-                    "node3": {"x": 480, "y": 150},
-                    "node4": {"x": 400, "y": 500}}
+                    "node3": {"x": 450, "y": 140},
+                    "node4": {"x": 380, "y": 480}}
     heatExchangerPosition = {"heater": {"x": 500, "y": 50},
                              "cooler": {"x": 500, "y": 615}}
     
-    workPosition = {'x': 90,
+    workPosition = {'x': 110,
                     'y': 500}
     #        posx = 220
     #        posy = 220
@@ -71,7 +68,7 @@ class ORC_Status(tk.Frame):
         self.valueWorkSet()
         
         # set label of efficiency
-        self.canvas.create_text(280,320, text = '429_ORC\neff:       %', fill = 'blue', font=self.fonteff)
+        self.canvas.create_text(280,320, text = '429_ORC\neff:         %', fill = 'blue', font=self.fonteff)
         
         self.eff = self.canvas.create_text(300, 350,text = "None", fill = 'blue', font=self.fonteff)
     
@@ -106,14 +103,14 @@ class ORC_Status(tk.Frame):
     def labelWork(self, posx, posy, text):
         self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
     def labelWorkSet(self):
-        self.labelWork(self.workPosition['x'], self.workPosition['y'], text = 'mdot{}kW'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y, text = 'Win {}kW'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*5, text = 'Eff{}%'.format(' '*6))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*6, text = 'Effi{}%'.format(' '*6))
-    def valueWorkSet(self, offestx=20):
+        self.labelWork(self.workPosition['x'], self.workPosition['y'], text = 'mdot{}kg/s'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y, text = 'Win {}kW'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*5, text = 'Eff{}%'.format(' '*12))
+        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*6, text = 'Effi{}%'.format(' '*12))
+    def valueWorkSet(self, offestx=10):
         posx = self.workPosition['x'] + offestx
         self.mdot = self.canvas.create_text(posx, self.workPosition['y'],text = 'None', fill = 'blue', font=self.fontprop)
         self.Win = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y, text = 'None', fill = 'blue', font=self.fontprop)
@@ -288,76 +285,6 @@ class ORC_Figure(tk.Frame):
             self.canvas.draw()
         
 
-def scan_data(on_click_loop, data, SM_dia, TH_dia):
-# =============================================================================
-# load the data
-# =============================================================================
-    probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
-    range_PRESS,resolution_PRESS, ch_PRESS  = 10, 5.5, '@301:306'
-    gain_PRESS, state_PRESS = 2.1, 1
-#    offset_PRESS, label_PRESS = 0, 'BAR'
-
-    
-    rm = visa.ResourceManager()
-    v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
-#        idn_string = v34972A.query('*IDN?')
-
-#    data = SendData()
-    
-    workBook = Workbook()
-    workSheet = workBook.active
-    workSheet['a1'] = '實驗名稱'
-    workSheet['a2'] = '實驗日期'
-    workSheet['b2'] = datetime.date.today()
-    workSheet['a3'] = '實驗說明(描述)'
-    workBook.save("./DillWithData/sample.xlsx")
-        
-
-    def innerfunc(on_click_loop, SM_dia, TH_dia):
-        # scan temperature
-        scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
-        
-        # scan pressure
-        v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (range_PRESS,resolution_PRESS, ch_PRESS))
-        v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
-        v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' % (state_PRESS, ch_PRESS))
-        scans_PRESS = v34972A.query(':READ?')
-        
-        # convert str to float
-        readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
-        readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
-        
-#        print(readings_TEMP, readings_PRESS)
-        readings_PRESS = [1.8, 8.8, 8.6, 1.9, 1.9, 2]
-        readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-        
-        data.send(readings_TEMP, readings_PRESS)
-        data.update(SM_dia, TH_dia)
-
-    timer(innerfunc, 3, on_click_loop, SM_dia, TH_dia)
-
-def test_scan_data(data, SM_dia, TH_dia):
-
-#    data = SendData()
-
-    workBook = Workbook()
-    workSheet = workBook.active
-    workSheet['a1'] = '實驗名稱'
-    workSheet['a2'] = '實驗日期'
-    workSheet['b2'] = datetime.date.today()
-    workSheet['a3'] = '實驗說明(描述)'
-    workBook.save("./DillWithData/sample.xlsx")
-
-    def innerfunc(data, SM_dia, TH_dia):
-        readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
-        readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-        
-        
-        value = data.send(readings_TEMP, readings_PRESS)
-        print(value)
-        data.update(SM_dia, TH_dia)
-    
-    innerfunc(data, SM_dia, TH_dia)
 
 
 
@@ -425,15 +352,3 @@ class SendData:
         self.mdotWater = mdotWater
 
 
-def timer(func, second=2, *arg):
-    func(*arg)
-    t = Timer(second, timer, args=(func, 3, *arg))
-    t.setDaemon(True)
-    
-    on_click_loop = arg[0]
-    
-    if t.daemon and on_click_loop:
-        t.start()
-    else:
-#        del readings_TEMP, readings_PRESS
-        return 0
