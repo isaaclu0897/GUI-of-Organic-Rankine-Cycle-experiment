@@ -8,17 +8,17 @@ Created on Wed Nov 14 16:35:38 2018
 
 from node import Node
 
-def ClacMdot(mdot, Hi, Ho, T1, P1, T2, P2):
+def calcm(mdot, Hi, Ho, T1, P1, T2, P2):
     inlet = Node()
     outlet = Node()
     inlet.set_tp(T1, P1); inlet.pt()
     outlet.set_tp(T2, P2); outlet.pt()
-    return mdot*(Hi-Ho) / (outlet.h - inlet.h)
+    return mdot*4.2*(Hi-Ho) / (outlet.h - inlet.h)
 
-def Clac_Watt(mdot, T1, P1, T2, P2):
+def calcw(mdot, T1, P1, T2, P2):
     inlet = Node()
     outlet = Node()
     inlet.set_tp(T1, P1); inlet.pt()
     outlet.set_tp(T2, P2); outlet.pt()
-    return mdot*(outlet.h-inlet.h)
+    return mdot*(inlet.h-outlet.h)
     
