@@ -1,211 +1,210 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb  5 23:03:37 2018
+Created on Mon Jul  9 00:24:49 2018
 
 @author: wei
 """
-import tkinter as tk
-import tkinter.font as tkfont
-#import matplotlib
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
-from matplotlib.backend_bases import key_press_handler
-from matplotlib.figure import Figure
-#matplotlib.use('TkAgg')
 
-from CoolProp.CoolProp import PropsSI
-import numpy as np
-from unit import  T, pps
-from node import Node
-from ORC_sample import data
-from ORC_plot import ProcessPlot
-#import matplotlib.pyplot as plt 
+import visa
+from openpyxl import Workbook
+import datetime
+from threading import Timer
+from GUIObj import mk_exclusivefile
 
+def scan_data(data, SM_dia, TH_dia):
+# =============================================================================
+# load the data
+# =============================================================================
+    probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
+    range_PRESS,resolution_PRESS, ch_PRESS  = 10, 5.5, '@301:306'
+    gain_PRESS, state_PRESS = 2.1, 1
+#    offset_PRESS, label_PRESS = 0, 'BAR'
 
-
-window = tk.Tk()
-
-window.title("Lab429, ORC for 500W, author:wei")
-w = tk.Label(window, text='this is ORC_GUI')
-#w.config(height=10, size=20)
-w.pack()
-
-frm = tk.Frame(window)
-frm.pack()
-#tk.Label(frm, text='frame top').pack()
-#
-#txt = '''  nodeID  name                 p (bar)    t (c)    h (KJ/Kg)    s ((KJ/Kg)*K)    d (Kg/m^3)  q             over
-#--------  -----------------  ---------  -------  -----------  ---------------  ------------  ----------  ------
-#       1  pump_inlet              2.01    21.86      228.331           1.0994      1347.24   subcool      -11.6
-#       2  pump_ioutlet            6.44    22.55      229.373           1.1018      1346.72   subcool      -49.5
-#       3  evaparator_outlet       6.11    88.31      475.503           1.8317        30.912  supderheat    18.2
-#       4  expander_inlet          6.27    88.28      475.138           1.8293        31.856  supderheat    17.2
-#       5  expander_outlet         2.05    64.03      458.841           1.8464        10.309  supderheat    30
-#       6  condenser_inlet         1.99    56.68      451.762           1.8269        10.268  supderheat    23.5
-#       7  condenser_outlet        1.98    22.12      228.673           1.1005      1346.53   subcool      -10.9'''
-#bg='white',     # 背景颜色
-#font=('Helvetica', 12)     # 字体和字体大小
-
-
-frm_left = tk.Frame(frm)
-frm_left.pack(side='left')
-#tk.Label(frm_left, text='frame left').pack(side='top')
-# create the canvas, size in pixels
-canvas = tk.Canvas(master=frm_left, width = 1024, height = 724, bg = 'white')
-# pack the canvas into a frame/form
-
-# load the .gif image file, put gif file here
-gif1 = tk.PhotoImage(file = './fig/500w_P&ID.png') # test gif, png and jpg, jpg can't use
-# put gif image on canvas
-# pic's upper left corner (NW) on the canvas is at x=50 y=10
-canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
-k = 30
-fontprop = tkfont.Font(family='courier 10 pitch', size=30)# bitstream charter or courier 10 pitch
-fonteff = tkfont.Font(family='courier 10 pitch', size=50, weight='bold')# bitstream charter or courier 10 pitch
-
-canvas.create_text(100,110, text = 'P', fill = 'blue', font=fontprop)  
-canvas.create_text(100,110+k,text = 'T', fill = 'blue', font=fontprop)  
-
-canvas.create_text(280,320, text = '429_ORC\neff: 3 %', fill = 'blue', font=fonteff)
-
-canvas.pack(expand = 1, fill = tk.BOTH) #???
-#tk.Label(frm_left, text=txt, bg=bg, font=font).pack(side='top')
-
-frm_right = tk.Frame(frm)
-frm_right.pack(side='right')
-#tk.Label(frm_right, text='frame right').pack()
-
-# set figure
-fig = Figure(figsize=(8,6), dpi=100)
-
-dia = fig.add_subplot(111)
-
-xAxis = "s" 
-yAxis = "T" 
-title = {"T": "T, °C", "s": "s, (kJ/kg)*K"} 
-
-dia.set_title("%s-%s Diagram" %(yAxis, xAxis))
-dia.set_xlabel(title[xAxis])
-dia.set_ylabel(title[yAxis])
-dia.set_ylim(10, 135)
-dia.set_xlim(1.05, 1.88)
-dia.grid()
-
-
-# plot figure
-fluid = 'REFPROP::R245FA'
-num = 50
-tcrit = PropsSI("Tcrit", fluid) - 0.00007 
-tmin = PropsSI("Tmin", fluid) 
-T_array = np.linspace(tmin, tcrit, num) 
-X_array = np.array([0, 1.0])
-
-for x in X_array:
-    S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
     
-    dia.plot(pps.J2KJ(S), T.K2C(T_array), "r", lw=2.0)
+    rm = visa.ResourceManager()
+    v34972A = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR') 
+#        idn_string = v34972A.query('*IDN?')
 
-# import data
-dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-dev = {'pumpi' : pumpi,
-       'pumpo' : pumpo,
-       'EVPo' : EVPo, 
-       'EXPi' : EXPi, 
-       'EXPo' : EXPo, 
-       'CDSi' : CDSi, 
-       'CDSo' : CDSo}
+#    data = SendData()
+    
+    path = r'C:\Users\lab\Desktop\weiGUIData'
+    filename = '{}.xlsx'.format(datetime.date.today())
+#    global workBook, workSheet
+    workBook, workSheet = mk_exclusivefile(path, filename)
+    
+    lastCell = workSheet.cell(workSheet.max_row, 1).value
+    global i
+    if lastCell != 'scan':
+        i = lastCell
+    else:
+        i = 0
+        
+    def innerfunc(SM_dia, TH_dia):
+        # scan temperature
+        scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
+        
+        # scan pressure
+        v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (range_PRESS,resolution_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
+        v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' % (state_PRESS, ch_PRESS))
+        scans_PRESS = v34972A.query(':READ?')
+        
+        # convert str to float
+        readings_TEMP = [float(x) for x in scans_TEMP.split(',')]
+        readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
+        
+#        print(readings_TEMP, readings_PRESS)
+       
+        
+        value = data.send(readings_TEMP, readings_PRESS)
+        global i
+        i += 1
+        prefixList = [i, datetime.datetime.now().strftime("%H:%M:%S")]
+        postfixList = [i * 3]
+        
+        workSheet.append(prefixList+value+postfixList)
+        
+        workBook.save("{}".format(filename))
+        data.update(SM_dia, TH_dia)
 
-# init node
-nodes = [Node(i["name"], i["nid"]) for i in dev_list]
-for i, obj in enumerate(dev_list):
-    nodes[i].set_tp(obj["T"], obj["P"]) 
-    nodes[i].pt()
+    timer(innerfunc, 3, SM_dia, TH_dia)
 
-# plot status of ORC
-t = []; s = []
-for i in range(len(nodes)): 
-    t.append(nodes[i].t) 
-    s.append(nodes[i].s)
+def test_scan_data(data, SM_dia, TH_dia):
 
-dia.plot(s, t, 'bo')
+#    data = SendData()
 
-#b = ProcessPlot(3, 4, 'isos')
+    workBook = Workbook()
+    workSheet = workBook.active
+    workSheet['a1'] = '實驗名稱'
+    workSheet['a2'] = '實驗日期'
+    workSheet['b2'] = datetime.date.today()
+    workSheet['a3'] = '實驗說明(描述)'
+    workBook.save("./DillWithData/sample.xlsx")
 
-process = [ProcessPlot(0, 1, 'isos'),
-           ProcessPlot(1, 2, 'isop'),
-           ProcessPlot(2, 3, 'isop'),
-           ProcessPlot(3, 4, 'isos'),
-           ProcessPlot(4, 5, 'isop'),
-           ProcessPlot(5, 6, 'isop'),
-           ProcessPlot(6, 0, 'isop')]
-for b in process:
-    b.iso_line(nodes)
-    b.calc_iso()
-    dia.plot(b.Isa, b.Ita, "b")
-
-
-# push figure to tkinter window
-canvas = FigureCanvasTkAgg(fig, master=frm_right)
-#canvas.show()
-
-
-canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1) # side=tk.BOTTOM
-#canvas.get_tk_widget().grid(row=0, columnspan=3)
-#window.mainloop()
-##%%
-
-
-# define quit button, quit & kill the window
-def _quit():
-    window.quit()
-    window.destroy()
-button =tk.Button(master=frm_right, text='Quit', command=_quit)
-button.pack(side=tk.RIGHT)
-
-
-# push tool of matplotlib into tkinter window
-toolbar =NavigationToolbar2TkAgg(canvas, frm_right)
-toolbar.update()
-canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
-# define keyboard event
-def on_key_event(event):
-    print('you pressed %s'% event.key)
-    key_press_handler(event, canvas, toolbar)
-canvas.mpl_connect('key_press_event', on_key_event)
+    def innerfunc(data, SM_dia, TH_dia):
+        readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
+        readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
+        
+        
+        value = data.send(readings_TEMP, readings_PRESS)
+        print(value)
+        data.update(SM_dia, TH_dia)
+    
+    innerfunc(data, SM_dia, TH_dia)
 
 
-window.mainloop()
-#%%
-"""
-# test to Put a gif image on a canvas with tkinter
-import tkinter as tk
+def timer(func, second=2, *arg):
+    func(*arg)
+    t = Timer(second, timer, args=(func, 3, *arg))
+    t.setDaemon(True)
+    
+    
+    if t.daemon and on_click_loop:
+        t.start()
+    else:
+#        del readings_TEMP, readings_PRESS
+        return 0
+    
+if __name__=='__main__':
+    import tkinter as tk
+    from GUIObj import ORC_Figure, ORC_Status, SendData
+    window = tk.Tk()
+    window.title("Lab429, ORC for 500W, author:wei")
+    w = tk.Label(window, text='this is ORC_GUI').pack()
+    
+    frame = tk.Frame(window).pack()
+    
+    
+    # left and right frame
+    frm_right = tk.Frame(frame)
+    frm_right.pack(side='right')
+#    tk.Label(frm_right, text='frame right').pack()
 
-# create the canvas, size in pixels
-canvas = tk.Canvas(width = 1024, height = 724, bg = 'white')
-# pack the canvas into a frame/form
-# load the .gif image file, put gif file here
-gif1 = tk.PhotoImage(file = '500w_P&ID.png') # test gif, png and jpg, jpg can't use
-# put gif image on canvas
-# pic's upper left corner (NW) on the canvas is at x=50 y=10
-canvas.create_image(0, 0, image = gif1, anchor = tk.NW)
-canvas.pack(expand = tk.YES, fill = tk.BOTH) #???
+    frm_left = tk.Frame(frame)
+    frm_left.pack(side='left')
+#    tk.Label(frm_left, text='frame left').pack()
+    
+    
+    # top and bottom of right frame
+    frm_right_top = tk.Frame(frm_right)
+    frm_right_top.pack(side='top')
+#    tk.Label(frm_right_top, text='frame right top').pack()
+    frm_right_bottom = tk.Frame(frm_right)
+    frm_right_bottom.pack(side='bottom')
+#    tk.Label(frm_right_bottom, text='frame right bottom').pack()
+    
+    
+    SM_dia = ORC_Status(frm_left)
+    TH_dia = ORC_Figure(frm_right_top)
+    data = SendData()
+    
+    frm_right_bottom_left = tk.Frame(frm_right_bottom)
+    frm_right_bottom_left.pack(side='left')
+    frm_right_bottom_right = tk.Frame(frm_right_bottom)
+    frm_right_bottom_right.pack(side='right')    
+    
+    varScan = tk.StringVar()
+    labelScan = tk.Label(frm_right_bottom_left, textvariable=varScan, bg='white', \
+                 font=('Arial', 12), width=15, height=2)
+    labelScan.pack()
 
-tk.mainloop()
-"""
-#%%
-"""
-# try to put jpg image on canvas
-import tkinter as tk 
-from PIL import Image, ImageTk  
- 
-canvas = tk.Canvas(width = 1800, height = 1000, bg = 'black')     
-image = Image.open("500w_P&ID.jpg")  
-jpg = ImageTk.PhotoImage(image)  
-  
-canvas.create_image(300,50,image = jpg, anchor=tk.NW)    
-canvas.create_text(350,120, text = 'Use Canvas', fill = 'gray')
-canvas.create_text(300,75, text = 'Use Canvas', fill = 'blue')  
-canvas.pack()
-tk.mainloop()  
-"""
+    varmdotWater = tk.StringVar()
+    labelmdotWater = tk.Label(frm_right_bottom_right, textvariable=varmdotWater, bg='white', \
+                 font=('Arial', 12), width=15, height=2)
+    labelmdotWater.pack()
+    
+    on_click_loop = False
+    def btn_cmd_loop(func):
+        global on_click_loop
+        if on_click_loop == False:
+            on_click_loop = True
+            varScan.set('start2scan')
+            func(data, SM_dia, TH_dia)
+        else:
+            on_click_loop = False
+            varScan.set('stop2scan')
+
+            
+    def btn_cmd_one(func):
+        func()
+    
+    def good():
+        mdotWater = varmdotWater.get()
+#        print(mdotWater, type(mdotWater))
+        SM_dia.update_mdotWater(float(mdotWater))
+        data.update_mdotWater(float(mdotWater))
+        labelmdotWater.config(text=str(mdotWater))
+        
+            
+    buttonScan = tk.Button(frm_right_bottom_left, text='click me', width=15, height=2, \
+                  command=lambda: btn_cmd_loop(scan_data))
+    buttonScan.pack()
+    
+    g = tk.Radiobutton(frm_right_bottom_right, text='熱水大流量',  variable=varmdotWater, value=0.29, \
+                  command=good)
+    g.pack()
+    gg = tk.Radiobutton(frm_right_bottom_right, text='熱水中流量', variable=varmdotWater, value=0.23, \
+                  command=good)
+    gg.pack()
+    ggg = tk.Radiobutton(frm_right_bottom_right, text='熱水小流量', variable=varmdotWater, value=0.17, \
+                  command=good)
+    ggg.pack()
+#    kkk = tk.Button(frm_right_bottom, text='scan', width=15, height=2, \
+#                  command=lambda: btn_cmd_loop(SM_dia.update_state))
+#    kkk.pack()
+#
+#    
+#    init_boundary = tk.Button(frm_right_bottom, text='init_boundary', width=15, height=2, \
+#                  command=lambda: btn_cmd_one(TH_dia.set_window_boundary))
+#    init_boundary.pack()
+    
+    
+    window.mainloop()
+
+    
+    
+    
+
+    
+

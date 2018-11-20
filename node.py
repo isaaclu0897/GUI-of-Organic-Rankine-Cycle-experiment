@@ -17,11 +17,11 @@ def fixpath():
         path = r'C:\Program Files (x86)\REFPROP'
     import CoolProp.CoolProp as CP;CP.set_config_string(CP.ALTERNATIVE_REFPROP_PATH, path)
     # CP.get_global_param_string("REFPROP_version")
-
+fixpath()
 class Node(object):
     
     # define the Props of the node
-    def __init__(self, name, nid, fluid="REFPROP::R245FA"):
+    def __init__(self, name=None, nid=None, fluid="REFPROP::R245FA"):
         self.fluid = fluid
         self.name = name
         self.nid = nid
@@ -40,11 +40,25 @@ class Node(object):
         self._p = P.Bar2Pa(value)
         return self._p
     @property
+    def pSat(self):
+        return P.Pa2Bar(self._pSat)
+    @pSat.setter
+    def pSat(self, value):
+        self._pSat = P.Bar2Pa(value)
+        return self._pSat
+    @property
     def t(self):
         return T.K2C(self._t)
     @t.setter
     def t(self, value):
         self._t = T.C2K(value)
+        return self._t
+    @property
+    def tSat(self):
+        return T.K2C(self._tSat)
+    @tSat.setter
+    def tSat(self, value):
+        self._tSat = T.C2K(value)
         return self._t
     @property
     def h(self):
@@ -56,10 +70,10 @@ class Node(object):
     @property
     def s(self):
         return self._s / 1000
-#    @s.setter
-#    def s(self, value):
-#        self._s = value * 1000
-#        return self._s
+    @s.setter
+    def s(self, value):
+        self._s = value * 1000
+        return self._s
     @property
     def d(self):
         return self._d
@@ -78,6 +92,8 @@ class Node(object):
         self._s = PropsSI("S", "P", self._p, "T", self._t, self.fluid)
         self._d = PropsSI("D", "P", self._p, "T", self._t, self.fluid)
         self.q = PropsSI("Q", "P", self._p, "T", self._t, self.fluid)
+        self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
+        self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
         self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 0.5, self.fluid))
 
         if self.q < 0:
@@ -120,6 +136,8 @@ class Node(object):
     
 #   test
 if __name__ == '__main__':
+#    from CoolProp.CoolProp import PropsSI
+    import numpy as np
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     nodes = Node('point1', 1, "REFPROP::Water")
@@ -130,3 +148,5 @@ if __name__ == '__main__':
     print(nodes, '\n')
     print('{:^5}, {:^12}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
           .format('id', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
+    print(PropsSI('P','T',[280,290],'Q',[0,1],'R134a'))
+#    print(PropsSI('P','T',np.array([280,290,300,280,290,300]).reshape(2,3),'Q',np.array([0,0.5,1,0.0,0.5,1]).reshape(2,3),'R134a'))
