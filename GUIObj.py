@@ -15,6 +15,9 @@ from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 #import node
 from ORC_plot import ProcessPlot
 from ORC_sample import initNode, setAndCalcNode
+import os
+from openpyxl import Workbook, load_workbook
+import datetime
 
 
 class ORC_Status(tk.Frame):
@@ -327,9 +330,9 @@ class SendData:
         self.nodesHX[1].s = self.nodesSys[0].s - 0.03 
         self.nodesHX[2].s = self.nodesSys[0].s - 0.03 
         self.nodesHX[3].s = self.nodesSys[2].s + 0.03
-        value = [self.nodesSys[0].p, self.nodesSys[0].t, self.nodesSys[0].d, self.nodesSys[0].over, self.nodesSys[0].h, \
+        value = [self.nodesSys[1].p-self.nodesSys[0].p, self.nodesSys[0].p, self.nodesSys[0].t, self.nodesSys[0].d, self.nodesSys[0].over, self.nodesSys[0].h, \
                  self.nodesSys[1].p, self.nodesSys[1].t, self.nodesSys[1].tSat, self.nodesSys[1].h, \
-                 self.nodesSys[2].p, self.nodesSys[2].t, self.nodesSys[2].tSat, self.nodesSys[2].over, self.nodesSys[2].h, \
+                 self.nodesSys[2].p-self.nodesSys[3].p, self.nodesSys[2].p, self.nodesSys[2].t, self.nodesSys[2].tSat, self.nodesSys[2].over, self.nodesSys[2].h, \
                  self.nodesSys[3].p, self.nodesSys[3].t, self.nodesSys[3].tSat, self.nodesSys[3].h, \
                  self.nodesHX[0].t, self.nodesHX[1].t, self.nodesHX[1].t-self.nodesSys[2].tSat, \
                  self.nodesHX[2].t, self.nodesHX[3].t, self.nodesHX[3].t-self.nodesSys[3].tSat, \
@@ -350,5 +353,47 @@ class SendData:
         TH_dia.update_data(self.nodesSys, self.nodesHX)
     def update_mdotWater(self, mdotWater):
         self.mdotWater = mdotWater
+
+def mk_exclusivefile(path, filename):
+    ''' 創見專屬資料夾
+    
+    說明: 在路徑 path 中, 創見名為 dirname 的資料夾
+    -----
+    ex: 
+        path = '/home/wei/data/python/photo'
+        dirname = 'good'
+        os.path.isdir(path + '/' + dirname) # False
+        mk_exclusivedir(path, dirname)
+        os.path.isdir(path + '/' + dirname) # True
+    '''
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    os.chdir(path)
+    if not os.path.isfile(filename):
+        workBook = Workbook()
+        workSheet = workBook.active
+        workSheet['a1'] = '實驗名稱'
+        workSheet['a2'] = '實驗日期'
+        workSheet['b2'] = datetime.date.today()
+        workSheet['a3'] = '實驗說明(描述)'
+        workSheet.append(['scan', 'time(real)', \
+                          '壓差', 'inlet(P)', 'inlet(T)', '密度', '次冷', 'h1', \
+                          'outlet(P)', 'outlet(T)', '飽和溫度', 'h2', \
+                          '壓差', 'inlet(P)', 'inlet(T)', '飽和溫度', '過熱','h3', \
+                          'outlet(P)', 'outlet(T)', '飽和溫度', 'h4',\
+                          'inlet(T)', 'outlet(T)', '高溫壓迫', \
+                          'inlet(T)', 'outlet(T)', '低溫壓迫', \
+                          'ORC效率(%)', 'mdot(kg/s)', 'time(s)', '聚集', 'operate'])
+        workBook.save(".\{}".format(filename))
+        
+    else:
+        workBook = load_workbook('{}'.format(filename))
+        workSheet = workBook.active
+        
+    return workBook, workSheet
+        
+        
+#    if not os.path.isdir(dirname):
+#        os.mkdir('{}'.format(dirname))
 
 

@@ -10,6 +10,7 @@ import visa
 from openpyxl import Workbook
 import datetime
 from threading import Timer
+from GUIObj import mk_exclusivefile
 
 def scan_data(data, SM_dia, TH_dia):
 # =============================================================================
@@ -27,15 +28,18 @@ def scan_data(data, SM_dia, TH_dia):
 
 #    data = SendData()
     
-    workBook = Workbook()
-    workSheet = workBook.active
-    workSheet['a1'] = '實驗名稱'
-    workSheet['a2'] = '實驗日期'
-    workSheet['b2'] = datetime.date.today()
-    workSheet['a3'] = '實驗說明(描述)'
-    workBook.save("./DillWithData/sample.xlsx")
+    path = r'C:\Users\lab\Desktop\weiGUIData'
+    filename = '{}.xlsx'.format(datetime.date.today())
+#    global workBook, workSheet
+    workBook, workSheet = mk_exclusivefile(path, filename)
+    
+    lastCell = workSheet.cell(workSheet.max_row, 1).value
+    global i
+    if lastCell != 'scan':
+        i = lastCell
+    else:
+        i = 0
         
-
     def innerfunc(SM_dia, TH_dia):
         # scan temperature
         scans_TEMP = v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' % (probe_type_TEMP, type_TEMP, ch_TEMP))
@@ -51,8 +55,17 @@ def scan_data(data, SM_dia, TH_dia):
         readings_PRESS = [float(x) for x in scans_PRESS.split(',')]
         
 #        print(readings_TEMP, readings_PRESS)
+       
         
-        data.send(readings_TEMP, readings_PRESS)
+        value = data.send(readings_TEMP, readings_PRESS)
+        global i
+        i += 1
+        prefixList = [i, datetime.datetime.now().strftime("%H:%M:%S")]
+        postfixList = [i * 3]
+        
+        workSheet.append(prefixList+value+postfixList)
+        
+        workBook.save("{}".format(filename))
         data.update(SM_dia, TH_dia)
 
     timer(innerfunc, 3, SM_dia, TH_dia)
