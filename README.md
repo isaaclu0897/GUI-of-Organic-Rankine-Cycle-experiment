@@ -9,50 +9,61 @@ ORC（Organic Rankine Cycle，有機朗肯循環）發電技術，是利用低�
 
 以往本實驗室量測設備採用的是 keysight agilent 多功能數據擷取器(型號:34972A)，雖然keysight公司的數據擷取器本身付有 BenchLink DataLogger 數據擷取軟體。但其軟體本身並無法幫助本實驗室分析熱力方面的資訊。因此敝人我決定自己寫一個。
 
+BenchLink DataLogger 界面
+
+<img src="https://about.keysight.com/en/newsroom/imagelibrary/2007/27nov-em07182/image002.jpg" width=600>
+
 # 開法想法
 開發的概念是利用 coolprop 進行熱力性質的參照，接著利用 matplotlib 可繪製溫度-熵圖，並將此類資訊整合至 tkinter 中，並顯示給實驗人員或客戶知曉。並且將系統的訊系以 excel儲存下來，並自動計算其結果，以便實驗人員的後續分析。
 
 
 
 # 人機界面的演化
-文字人機界面
-
-<img src="https://i.imgur.com/WkaT3ie.gif" width=500>
+## 文字人機界面
+<img src="https://i.imgur.com/WkaT3ie.gif" width=600>
 
 ---
 
-圖形化人機界面
-
-<img src="https://i.imgur.com/xjsiQjV.gif" width=500>
+## 圖形化人機界面
+<img src="https://i.imgur.com/xjsiQjV.gif" width=600>
 
 ----
 
-功能演示
+### 功能演示
 
-圖形縮放(確認熱力性質)
+#### 圖形縮放(確認熱力性質)
+<img src="https://i.imgur.com/eCM2ihM.gif" width=600>
 
-<img src="https://i.imgur.com/eCM2ihM.gif" width=500>
+#### 回到預設窗格
+<img src="https://i.imgur.com/z0DgOoR.gif" width=600>
 
-回到預設窗格
-
-<img src="https://i.imgur.com/z0DgOoR.gif" width=500>
-
-圖形拖曳
-
-<img src="https://i.imgur.com/MdPVlBO.gif" width=500>
+#### 圖形拖曳
+<img src="https://i.imgur.com/MdPVlBO.gif" width=600>
 
 
-圖片儲存
+#### 圖片儲存
+<img src="https://i.imgur.com/KnF5pWO.gif" width=600>
 
-<img src="https://i.imgur.com/GQlgyDj.gif" width=500>
-
-人機界面概況(系統關機操作)
-
-<img src="https://i.imgur.com/RWtwKMi.gif" width=500>
+#### 人機界面概況(系統關機操作)
+<img src="https://i.imgur.com/RWtwKMi.gif" width=600>
 
 ---
 
-refprop嵌入excel
+# refprop 嵌入 excel 
+
+以下影片時長過長，使用youtube上傳影片，須點擊播放。
 
 
-excel vba 巨集自動化(擷取實驗穩態數據)
+## 利用excel查熱力性質
+{%youtube erQ5wYSyNTs %}
+https://youtu.be/erQ5wYSyNTs
+
+## excel vba 擷取實驗穩態數據 (自動化)
+
+### Part A
+{%youtube ZjbVMBE1Hzk %}
+https://youtu.be/ZjbVMBE1Hzk
+
+### Part B
+{%youtube WznF8XCsUu0 %}
+https://youtu.be/WznF8XCsUu0
