@@ -1,7 +1,7 @@
 ORC人機界面與excel資料處理（GUI of Organic Rankine Cycle experiment）
 ===
 
-# ORC簡介
+# ORC簡介【LAB429】
 ORC（Organic Rankine Cycle，有機朗肯循環）發電技術，是利用低溫沸點有機工作流體的熱機循環系統，將工廠廢熱、地熱、太陽等低溫熱能轉換為電力或軸功率輸出的一種作功裝置。
 
 # 開發人機界面的動機
