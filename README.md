@@ -1,4 +1,4 @@
-ORC人機界面與excel資料處理
+ORC人機界面與excel資料處理（GUI of Organic Rankine Cycle experiment）
 ===
 
 # ORC簡介
