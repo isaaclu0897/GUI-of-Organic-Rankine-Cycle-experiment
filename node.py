@@ -27,10 +27,10 @@ class Node(object):
         self.fluid = fluid
         self.name = name
         self.nid = nid
-        self._p = None
+        self._p = 0
         self._pSat = None
-        self._t = None
-        self._tSat = None
+        self._t = 0
+        self._tSat = 0
         self._h = None
         self._s = None
         self._d = None
@@ -92,12 +92,11 @@ class Node(object):
         
         the coolprop default unit is Pa & K, but I Accustomed to use Bar & C
         '''
-        self._h = PropsSI("H", "P", self._p, "T", self._t, self.fluid)
-        self._s = PropsSI("S", "P", self._p, "T", self._t, self.fluid)
-        self._d = PropsSI("D", "P", self._p, "T", self._t, self.fluid)
+        self._h, self._s, self._d = PropsSI(["H", "S", "D"], "P", self._p, "T", self._t, self.fluid)
+
         # assume that Q is equal to 0
-        self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
-        self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
+        self._pSat, self._tSat = PropsSI(["P", "T"], "Q", 0, "T", self._t, self.fluid)
+
         self._over = self.t - self.tSat
         
         if self._over <= 0:
@@ -111,11 +110,13 @@ class Node(object):
         
         the coolprop default unit is Pa & K, but I Accustomed to use Bar & C
         '''
-        self.h = PropsSI("H", "P", self._p, "Q", self.q, self.fluid)
-        self.s = PropsSI("S", "P", self._p, "Q", self.q, self.fluid)
-        self.d = PropsSI("D", "P", self._p, "Q", self.q, self.fluid)
-        self.t = PropsSI("T", "P", self._p, "Q", self.q, self.fluid)
-        self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 0.5, self.fluid))
+
+        self._h, self._s, self._d, self._t = PropsSI(["H", "S", "D", "T"], "P", self._p, "Q", self.q, self.fluid)
+        
+        self._tSat, self._pSat = PropsSI(["T", "P"], "P", self._p, "Q", 0.5, self.fluid)
+
+        self._over = self.t - self.tSat
+            
 
             
     # set Props of P & T
@@ -149,12 +150,18 @@ class Node(object):
 if __name__ == '__main__':
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
-    node = Node(None, None, "Water")
-    node.p = 1.01325
-    node.t = 100
-    node.pt()
+    node1 = Node(None, 1, "Water")
+    node1.p = 1.01325
+    node1.t = 100
+    node1.pt()
+
+    node2 = Node(None, 2, "Water")
+    node2.p = 1.01325
+    node2.q = 0.5
+    node2.pq()
     print("---test node---")
-    print(node)
+    print(node1)
+    print(node2)
     
     # test PropsSI
     import numpy as np
@@ -163,3 +170,14 @@ if __name__ == '__main__':
     print(PropsSI('T','P', 1.01325 * 1e5,'Q',0,'Water') - 273)
     print(PropsSI('P','T',[25+273, 25+273],'Q',[0,1], "R245FA") / 1e5)
     print(PropsSI(['H', 'S', 'D'],'P',[1.01325 * 1e5, 1.01325 * 1e5],'T',[20+273,50+273],'Water')/1000)
+
+
+    import CoolProp
+    from CoolProp.Plots import PropertyPlot
+    ts_plot = PropertyPlot('Water', 'Ts')
+    ts_plot.calc_isolines(CoolProp.iQ, num=11)
+    ts_plot.title(r'$T,s$ Graph for Water')
+    ts_plot.xlabel(r'$s$ [kJ/kg K]')
+    ts_plot.ylabel(r'$T$ [K]')
+    ts_plot.grid()
+    ts_plot.show()

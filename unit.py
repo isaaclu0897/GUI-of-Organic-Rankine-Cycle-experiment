@@ -10,8 +10,8 @@ Created on Mon Jan 22 07:24:12 2018
 # =============================================================================
 class P():
     
-    def Pa2Bar(p):
-        return p / 1e5
+    def Pa2Bar(P):
+        return P / 1e5
     
     def Pa2KPa(P):
         return P / 1e3
