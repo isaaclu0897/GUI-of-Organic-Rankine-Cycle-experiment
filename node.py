@@ -7,26 +7,30 @@ Created on Sun Jan 21 23:18:15 2018
 """
 from CoolProp.CoolProp import PropsSI
 from unit import P, T
+from json import dumps
 
-def fixpath():
-    """ set different path of OS """
-    from platform import system
-    if system() == 'Linux':
-        path = r'/opt/refprop'
-    else:
-        path = r'C:\Program Files (x86)\REFPROP'
-    import CoolProp.CoolProp as CP;CP.set_config_string(CP.ALTERNATIVE_REFPROP_PATH, path)
-    # CP.get_global_param_string("REFPROP_version")
-fixpath()
+# I don't want to use refprop.
+# def fixpath():
+#     """ set different path of OS """
+#     from platform import system
+#     if system() == 'Linux':
+#         path = r'/opt/refprop'
+#     else:
+#         path = r'C:\Program Files (x86)\REFPROP'
+#     import CoolProp.CoolProp as CP;CP.set_config_string(CP.ALTERNATIVE_REFPROP_PATH, path)
+#     # CP.get_global_param_string("REFPROP_version")
+# fixpath()
 class Node(object):
     
     # define the Props of the node
-    def __init__(self, name=None, nid=None, fluid="REFPROP::R245FA"):
+    def __init__(self, name=None, nid=None, fluid="R245FA"):
         self.fluid = fluid
         self.name = name
         self.nid = nid
         self._p = None
+        self._pSat = None
         self._t = None
+        self._tSat = None
         self._h = None
         self._s = None
         self._d = None
@@ -91,19 +95,17 @@ class Node(object):
         self._h = PropsSI("H", "P", self._p, "T", self._t, self.fluid)
         self._s = PropsSI("S", "P", self._p, "T", self._t, self.fluid)
         self._d = PropsSI("D", "P", self._p, "T", self._t, self.fluid)
-        self.q = PropsSI("Q", "P", self._p, "T", self._t, self.fluid)
+        # assume that Q is equal to 0
         self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
         self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
-        self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 0.5, self.fluid))
-
-        if self.q < 0:
+        self._over = self.t - self.tSat
+        
+        if self._over <= 0:
             self.q = 'subcool'
-        elif 0 <= self.q <= 1:
-            self.q = self.q
-            self.over = self.t - T.K2C(PropsSI("T", "P", self._p, "Q", 1, self.fluid))
         else:
             self.q = 'supderheat'
-    
+
+
     def pq(self):
         ''' change default unit
         
@@ -121,32 +123,43 @@ class Node(object):
         self.p = Presspsure
         self.t = Temperature
 
-    # print all of Props of the node
-    def __str__(self):
-        result = '{:^5}, {:^12}, {:^10.4f}, {:^12.5f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12}' \
-        .format(self.nid, self.name, self.p, self.t, self.h, self.s, self.d, self.q, self.over)
-        return result
-    
     def __repr__(self):
-        return '{} is a node object'.format(self.name)
+        nodeInfo = {
+            "fluid" : self.fluid,
+            "name" : self.name,
+            "nodeID" : self.nid,
+            "pressure" : self.p,
+            "pressure(Sat)" : self.pSat,
+            "temperature" : self.t,
+            "temperature(Sat)" : self.tSat,
+            "enthalpy(h)" : self.h,
+            "entropy(s)" : self.s,
+            "density" : self.d,
+            "quality" : self.q,
+            "over" : self._over
+        }
+
+        return dumps(nodeInfo, indent=4)
     
 #    # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
 #    def statusProps(self):
 #        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over]
     
-#   test
+#   
 if __name__ == '__main__':
-#    from CoolProp.CoolProp import PropsSI
-    import numpy as np
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
-    nodes = Node('point1', 1, "REFPROP::Water")
-    nodes.p = 1.01325
-    nodes.t = 100
-    nodes.pt()
-    msg = nodes.__str__()
-    print(nodes, '\n')
-    print('{:^5}, {:^12}, {:^10}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}, {:^12}\n' \
-          .format('id', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',  's ((KJ/Kg) * K)', 'd (Kg/m^3)', 'q', 'over'), msg)
-    print(PropsSI('P','T',[280,290],'Q',[0,1],'R134a'))
-#    print(PropsSI('P','T',np.array([280,290,300,280,290,300]).reshape(2,3),'Q',np.array([0,0.5,1,0.0,0.5,1]).reshape(2,3),'R134a'))
+    node = Node(None, None, "Water")
+    node.p = 1.01325
+    node.t = 100
+    node.pt()
+    print("---test node---")
+    print(node)
+    
+    # test PropsSI
+    import numpy as np
+    from CoolProp.CoolProp import PropsSI
+    print("---test PropsSI---")
+    print(PropsSI('T','P', 1.01325 * 1e5,'Q',0,'Water') - 273)
+    print(PropsSI('P','T',[25+273, 25+273],'Q',[0,1], "R245FA") / 1e5)
+    print(PropsSI(['H', 'S', 'D'],'P',[1.01325 * 1e5, 1.01325 * 1e5],'T',[20+273,50+273],'Water')/1000)
