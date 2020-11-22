@@ -1,0 +1,27 @@
+{
+  "array": [
+    1,
+    2,
+    3
+  ],
+  "boolean": true,
+  "color": "gold",
+  "null": null,
+  "number": 123,
+  "object": {
+    "a": "b",
+    "c": "d"
+  },
+  "string": "Hello World",
+  "P&ID": {
+    "photo": "./fig/500w_P&ID.png",
+    "Labels":{
+      "node1": {
+        "posx" : 20,
+        "posy" : 20
+      },
+      "node2": {}
+      
+    }
+  }
+}

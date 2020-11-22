@@ -129,7 +129,7 @@ def set_windows_GUI():
     return dia, fig
     
 
-def calc_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
+def calc_SaturationofCurve(fluid="R245FA", num=50):
     tcrit = PropsSI("Tcrit", fluid) - 0.00007
     tmin = PropsSI("Tmin", fluid) 
     T_array = np.linspace(tmin, tcrit, num) 
@@ -137,7 +137,7 @@ def calc_SaturationofCurve(fluid="REFPROP::R245FA", num=50):
     
     line = []
     for x in X_array: 
-        S = np.array([PropsSI("S", "Q", x, "T", t, "REFPROP::R245FA") for t in T_array]) 
+        S = np.array([PropsSI("S", "Q", x, "T", t, "R245FA") for t in T_array]) 
         line.append(lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8))
     return line
 

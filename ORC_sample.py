@@ -31,7 +31,7 @@ P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-import node
+from node import Node
 
 def data():
     pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
@@ -45,7 +45,7 @@ def data():
     return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
 
 def initNode(dev_list):
-        return [node.Node(nodes['name'], nodes['nid']) for nodes in dev_list]
+        return [Node(nodes['name'], nodes['nid']) for nodes in dev_list]
 
 def setAndCalcNode(nodes, dev_list):
     if ('P' or 'p') in dev_list[0].keys():

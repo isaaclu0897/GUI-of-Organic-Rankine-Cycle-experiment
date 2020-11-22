@@ -19,8 +19,13 @@ import os
 from openpyxl import Workbook, load_workbook
 import datetime
 
+from json import load
+with open('config.json', 'r') as f:
+    config = load(f)
+    del f
 
-class ORC_Status(tk.Frame):
+
+class P_and_I_Diagram(tk.Frame):
     offset_x = 50
     offset_y = 30
     
@@ -39,19 +44,22 @@ class ORC_Status(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
         
-        # create the canvas, size in pixels
-        self.canvas = tk.Canvas(master, width = 900, height = 800, bg = 'white')
+        ''' load img and create canvas'''
         # load the .gif image file, put gif file here
-        self.gif1 = tk.PhotoImage(file = './fig/500w_P&ID_4x3.png') # test gif, png and jpg, jpg can't use
+        self.img = tk.PhotoImage(file=config["P&ID"]["photo"]) # test gif, png and jpg, jpg can't use
+        
+        # create the canvas, size in pixels
+        self.canvas = tk.Canvas(master, width=self.img.width(), height=self.img.height(), bg='white')
+        self.canvas.pack(expand = 1, fill = tk.BOTH)
         # put gif image on canvas
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
-        self.canvas.create_image(0, 0, image=self.gif1, anchor=tk.NW)
-        self.canvas.pack(expand = 1, fill = tk.BOTH)
+        self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
         
+        ''''font'''
         self.fontprop = tkfont.Font(family='courier 10 pitch', size=18)# bitstream charter or courier 10 pitch
         self.fonteff = tkfont.Font(family='courier 10 pitch', size=30, weight='bold')# bitstream charter or courier 10 pitch
         
-        self.state = {'node1': {"p": None, "t": None},# can not use state1 = state2 = state3 = state4 = {}, because id will same
+        self.state = {'node1': {"p": 0, "t": None},# can not use state1 = state2 = state3 = state4 = {}, because id will same
                       'node2': {"p": None, "t": None},
                       'node3': {"p": None, "t": None},
                       'node4': {"p": None, "t": None}}
@@ -102,6 +110,8 @@ class ORC_Status(tk.Frame):
         for node, pos in self.heatExchangerPosition.items():
             self.valueHeatExchanger(node, pos['x'], pos['y'])
             
+    def create_text(self, posx, posy, text):
+        self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
     
     def labelWork(self, posx, posy, text):
         self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
@@ -123,58 +133,58 @@ class ORC_Status(tk.Frame):
         self.Eff = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*5, text = 'None', fill = 'blue', font=self.fontprop)
         self.Effi = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*6, text = 'None', fill = 'blue', font=self.fontprop)
     
-    def update_state(self, num, data):
-        self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
-        self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
+#     def update_state(self, num, data):
+#         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
+#         self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
     
-    def update_stateHX(self, data):
-        self.canvas.itemconfigure(self.stateHX['heater']['ti'], text=str(round(data[0].t, 1)))
-        self.canvas.itemconfigure(self.stateHX['heater']['to'], text=str(round(data[1].t, 1)))
-        self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[3].t, 1)))
-        self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[2].t, 1)))        
+#     def update_stateHX(self, data):
+#         self.canvas.itemconfigure(self.stateHX['heater']['ti'], text=str(round(data[0].t, 1)))
+#         self.canvas.itemconfigure(self.stateHX['heater']['to'], text=str(round(data[1].t, 1)))
+#         self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[3].t, 1)))
+#         self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[2].t, 1)))        
         
-    def update_eff(self, eff_num):
-        self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
-    def update_mdot(self, mdot_num):
-        self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 4)))
-    def update_Win(self, Win_num):
-        self.canvas.itemconfigure(self.Win, text=str(round(Win_num, 3)))
-    def update_Qin(self, Qin_num):
-        self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 2)))
-    def update_Wout(self, Wout_num):
-        self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 3)))
-    def update_Qout(self, Qout_num):
-        self.canvas.itemconfigure(self.Qout, text=str(round(Qout_num, 2)))
-    def update_Eff(self, Eff_num):
-        self.canvas.itemconfigure(self.Eff, text=str(round(Eff_num, 2)))
-    def update_Effi(self, Effi_num):
-        self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
-    def update_mdotWater(self, mdotWater_num):
-        self.mdotWater = mdotWater_num
-    def update_data(self, nodesSys, nodesHX):
-        for i in range(len(nodesSys)):
-            self.update_state(i+1, nodesSys[i])
+#     def update_eff(self, eff_num):
+#         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
+#     def update_mdot(self, mdot_num):
+#         self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 4)))
+#     def update_Win(self, Win_num):
+#         self.canvas.itemconfigure(self.Win, text=str(round(Win_num, 3)))
+#     def update_Qin(self, Qin_num):
+#         self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 2)))
+#     def update_Wout(self, Wout_num):
+#         self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 3)))
+#     def update_Qout(self, Qout_num):
+#         self.canvas.itemconfigure(self.Qout, text=str(round(Qout_num, 2)))
+#     def update_Eff(self, Eff_num):
+#         self.canvas.itemconfigure(self.Eff, text=str(round(Eff_num, 2)))
+#     def update_Effi(self, Effi_num):
+#         self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
+#     def update_mdotWater(self, mdotWater_num):
+#         self.mdotWater = mdotWater_num
+#     def update_data(self, nodesSys, nodesHX):
+#         for i in range(len(nodesSys)):
+#             self.update_state(i+1, nodesSys[i])
             
 
-        self.update_stateHX(nodesHX)
+#         self.update_stateHX(nodesHX)
 
-        eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
+#         eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
 
-        mdot = self.mdotWater*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
+#         mdot = self.mdotWater*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
         
-        Win = mdot * (nodesSys[1].h - nodesSys[0].h)
-        Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
-        Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
-        Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
+#         Win = mdot * (nodesSys[1].h - nodesSys[0].h)
+#         Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
+#         Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
+#         Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
         
-        self.update_eff(eff)
-        self.update_mdot(mdot)
-        self.update_Win(Win)
-        self.update_Qin(Qin)
-        self.update_Wout(Wout)
-        self.update_Qout(Qout)
-        self.update_Eff(eff)
-#        self.update_Effi(Effi)
+#         self.update_eff(eff)
+#         self.update_mdot(mdot)
+#         self.update_Win(Win)
+#         self.update_Qin(Qin)
+#         self.update_Wout(Wout)
+#         self.update_Qout(Qout)
+#         self.update_Eff(eff)
+# #        self.update_Effi(Effi)
         
 
 class ORC_Figure(tk.Frame):

@@ -13,8 +13,16 @@ def ORC_status(objlist, headers=['ID', 'name', 'p (bar)', 't (c)', 'h (KJ/Kg)',
                                  's ((KJ/Kg)*K)', 'd (Kg/m^3)', 'q', 'over']):
     table = []
     for nodei in objlist:
-        table.append([nodei.nid, nodei.name, nodei.p, round(nodei.t, 3), round(nodei.h, 3),\
-                      round(nodei.s, 4), round(nodei.d, 2), nodei.q, round(nodei.over, 1)])
+        table.append([
+            nodei.nid,
+            nodei.name,
+            nodei.p,
+            round(nodei.t, 3),
+            round(nodei.h, 3),
+            round(nodei.s, 4),
+            round(nodei.d, 2),
+            nodei.q,
+            round(nodei._over, 1)])
     
     print(tabulate(table, headers))
     
