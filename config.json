@@ -2,6 +2,8 @@
   "json_formator_onlone": "https://jsoneditoronline.org/#right=local.tekuxo&left=local.sofufe",
   "P&ID": {
     "photo": "./fig/500w_P&ID.png",
+    "font":"courier 10 pitch",
+    "fontsize":18,
     "P&T_Labels": {
       "node1": {
         "posx": 120,
