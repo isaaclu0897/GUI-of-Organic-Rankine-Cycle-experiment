@@ -1,27 +1,33 @@
 {
-  "array": [
-    1,
-    2,
-    3
-  ],
-  "boolean": true,
-  "color": "gold",
-  "null": null,
-  "number": 123,
-  "object": {
-    "a": "b",
-    "c": "d"
-  },
-  "string": "Hello World",
   "P&ID": {
     "photo": "./fig/500w_P&ID.png",
-    "Labels":{
+    "P&T_Labels":{
       "node1": {
-        "posx" : 20,
-        "posy" : 20
+        "posx" : 120,
+        "posy" : 410
       },
-      "node2": {}
-      
+      "node2": {
+        "posx" : 100,
+        "posy" : 110
+      },
+      "node3": {
+        "posx" : 450,
+        "posy" : 140
+      },
+      "node4": {
+        "posx" : 380,
+        "posy" : 480
+      }
+    },
+    "T_Labels":{
+      "node1": {
+        "posx" : 120,
+        "posy" : 410
+      },
+      "node2": {
+        "posx" : 100,
+        "posy" : 110
+      }
     }
   }
 }
