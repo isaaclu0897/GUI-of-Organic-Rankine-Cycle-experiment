@@ -104,9 +104,9 @@ class Node:
     @property
     def q(self):
         if self._q > 1:
-            value = "subcool"
-        elif self._q < 0:
             value = "superheat"
+        elif self._q < 0:
+            value = "subcool"
         else:
             value = self._q
         return value
