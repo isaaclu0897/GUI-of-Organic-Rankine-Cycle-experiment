@@ -24,19 +24,20 @@ from json import dumps
 class Node:
     ''' define the Props of the node
     '''
-    def __init__(self, name=None, nid=None, fluid="R245FA"):
+
+    def __init__(self, name="", nid="", fluid="R245FA"):
         self.fluid = fluid
         self.name = name
         self.nid = nid
-        self._p = None
-        self._pSat = None
-        self._t = None
-        self._tSat = None
-        self._h = None
-        self._s = None
-        self._d = None
-        self._q = None
-        self._over = None
+        self._p = 0
+        self._pSat = 0
+        self._t = 0
+        self._tSat = 0
+        self._h = 0
+        self._s = 0
+        self._d = 0
+        self._q = 0
+        self._over = 0
 
     @property
     def p(self):
@@ -127,7 +128,8 @@ class Node:
         the coolprop default unit is Pa & K, but I Accustomed to use Bar & C
         '''
         self._h, self._s, self._d = PropsSI(
-            ["H", "S", "D"], "P", self._p, "T", self._t, self.fluid)
+            ["H", "S", "D"], "P", self._p, "T", self._t, self.fluid
+        )
 
         # assume that Q is equal to 0
         self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
@@ -155,10 +157,37 @@ class Node:
 
         self._over = self.t - self.tSat
 
+    def ps(self):
+        ''' change default unit
+
+        the coolprop default unit is Pa & K, but I Accustomed to use Bar & C
+        '''
+
+        self._t, self._h, self._d, self._q = PropsSI(
+            ["T", "H", "D", "Q"], "P", self._p, "S", self._s, self.fluid
+        )
+
+        # assume that Q is equal to 0
+        self._pSat = PropsSI("P", "Q", 0, "T", self._t, self.fluid)
+        self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
+
+        self.over = self.t - self.tSat
+
+        if self._over <= 0:
+            self._q = -1
+        else:
+            self._q = 2
+
     # set Props of P & T
     def set_tp(self, temperature, presspsure):
         self.p = presspsure
         self.t = temperature
+
+    # print all of Props of the node
+    def __str__(self):
+        result = '{:^12}, {:^5}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12.2f}, {:^12}, {:^12.2f}' \
+            .format(self.name, self.nid, self.p, self.t, self.h, self.s, self.d, self.q, self._over)
+        return result
 
     def __repr__(self):
         node_info = {
@@ -186,13 +215,13 @@ if __name__ == '__main__':
     # 配合課本或 NIST檢查
     # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
     print("---test node---")
-    node1 = Node(None, 1, "Water")
+    node1 = Node(nid=1, fluid="Water")
     node1.p = 1.01325
     node1.t = 120
     node1.pt()
     print(node1)
 
-    node2 = Node(None, 2, "Water")
+    node2 = Node(nid=2, fluid="Water")
     node2.p = 1.01325
     node2.q = 0.5
     node2.pq()
