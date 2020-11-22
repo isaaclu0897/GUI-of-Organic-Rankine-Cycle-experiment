@@ -12,7 +12,7 @@ from unit import P, T, pps
 class Node(object):
     
     # define the Props of the node
-    def __init__(self, name=None, nid=None, fluid="REFPROP::R245FA"):
+    def __init__(self, name=None, nid=None, fluid="R245FA"):
         self.fluid = fluid
         self.name = name
         self.nid = nid
@@ -87,11 +87,11 @@ def main(tl, th, delta_subcool, delta_supheat, out, wan=False):
     delta_supheat = delta_supheat
     delta_subcool = delta_subcool
     
-    pl = PropsSI('P', 'T', (tl + delta_subcool) + 273.15, 'Q', 0, 'REFPROP::R245FA') / 1e5
+    pl = PropsSI('P', 'T', (tl + delta_subcool) + 273.15, 'Q', 0, 'R245FA') / 1e5
     if wan == True:
         ph = pl + 5
     else:
-        ph = PropsSI('P', 'T', (th - delta_supheat) + 273.15, 'Q', 0, 'REFPROP::R245FA') / 1e5
+        ph = PropsSI('P', 'T', (th - delta_supheat) + 273.15, 'Q', 0, 'R245FA') / 1e5
     
     points = [None, 'pump_in', 'pump_out', 'exp_in', 'exp_out']
     point = []
