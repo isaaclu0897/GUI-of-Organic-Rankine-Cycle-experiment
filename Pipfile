@@ -4,10 +4,11 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+spyder-kernels = "*"
 
 [packages]
-coolprop = "==6.4.0"
-matplotlib = "==3.2.2"
+matplotlib = "3.3.3"
+coolprop = "6.4.1"
 
 [requires]
 python_version = "3.6"
