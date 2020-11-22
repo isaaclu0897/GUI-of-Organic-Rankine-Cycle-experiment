@@ -33,8 +33,8 @@ class P_and_I_Diagram(tk.Frame):
     #                 "node2": {"x": 100, "y": 110},
     #                 "node3": {"x": 450, "y": 140},
     #                 "node4": {"x": 380, "y": 480}}
-    heatExchangerPosition = {"heater": {"x": 500, "y": 50},
-                             "cooler": {"x": 500, "y": 615}}
+    # heatExchangerPosition = {"heater": {"x": 500, "y": 50},
+    #                          "cooler": {"x": 500, "y": 615}}
     
     workPosition = {'x': 110,
                     'y': 500}
@@ -47,7 +47,9 @@ class P_and_I_Diagram(tk.Frame):
         self.canvasID = {}
         
         photoPath = config["P&ID"]["photo"]
-        # labels = config["P&ID"]["Labels"]
+        self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
+        self.config_T_Labels = config["P&ID"]["T_Labels"]
+        self.config_Labels = config["P&ID"]["Labels"]
         
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
@@ -68,20 +70,22 @@ class P_and_I_Diagram(tk.Frame):
         #               'node2': {"p": None, "t": None},
         #               'node3': {"p": None, "t": None},
         #               'node4': {"p": None, "t": None}}
-        self.stateHX = {'heater': {'ti': None, 'to': None}, 
-                        'cooler': {'ti': None, 'to': None}}
+        # self.stateHX = {'heater': {'ti': None, 'to': None}, 
+        #                 'cooler': {'ti': None, 'to': None}}
 
         # set label of pressure and temperature
         self.set_P_T_Labels()
         # # set value of pressure and temperature
         # self.valuePAndTSet()
         
-        self.labelHeatExchangerSet()
-        self.valueHeatExchangerSet()
+        self.set_T_Labels()
+        # self.labelHeatExchangerSet()
+        # self.valueHeatExchangerSet()
         
         # # set label of work
+        self.set_Labels()
         # self.labelWorkSet()
-        # # set value of work
+        # # # set value of work
         # self.valueWorkSet()
         
         # # set label of efficiency
@@ -96,11 +100,13 @@ class P_and_I_Diagram(tk.Frame):
     #     self.create_text(posx, posy, text='P')  
     #     self.create_text(posx, posy+self.offset_y, text='T')
     def set_P_T_Labels(self):
-        for name, pos in config["P&ID"]["P&T_Labels"].items():
-            self.canvasID["{}_label_P".format(name)] = self.create_text(pos["posx"], pos["posy"], text='P')
-            self.canvasID["{}_value_P".format(name)] = self.create_text(pos["posx"]+self.offset_x, pos["posy"], text='None')
-            self.canvasID["{}_label_T".format(name)] = self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
-            self.canvasID["{}_value_T".format(name)] = self.create_text(pos["posx"]+self.offset_x, pos["posy"]+self.offset_y, text='None')
+        for name, pos in self.config_P_T_Labels.items():
+            self.create_text(pos["posx"], pos["posy"], text='P')
+            self.canvasID["{}_value_P".format(name)] = \
+                self.create_text(pos["posx"]+self.offset_x, pos["posy"], text='None')
+            self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
+            self.canvasID["{}_value_T".format(name)] = \
+                self.create_text(pos["posx"]+self.offset_x, pos["posy"]+self.offset_y, text='None')
     # def valuePAndT(self, node, posx, posy, offestx=20):
     #     self.state[node]['p'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
     #     self.state[node]['t'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
@@ -111,41 +117,55 @@ class P_and_I_Diagram(tk.Frame):
     #         self.canvasID["{}_value_T".format(name)] = self.create_text(pos["posx"]+self.offset_x, pos["posy"]+self.offset_y, text='None')
     #         # self.canvasID["{}_value_P".format(name)] = self.state[node]['p'] = self.create_text(pos["posx"]+self.offset_x, pos["posy"], text='None')
     #         # self.canvasID["{}_value_P".format(name)] = self.state[node]['t'] = self.create_text(pos["posx"]+self.offset_x, pos["posy"]+self.offset_y, text='None')
+    def set_T_Labels(self):
+        for name, pos in self.config_T_Labels.items():
+            self.canvasID["{}_label_T".format(name)] = \
+                self.create_text(pos["posx"], pos["posy"], text='T')
+            self.canvasID["{}_value_T".format(name)] = \
+                self.create_text(pos["posx"]+self.offset_x, pos["posy"], text='None')
+            # self.canvasID["{}_label_T".format(name)] = self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
+            # self.canvasID["{}_value_T".format(name)] = self.create_text(pos["posx"]+self.offset_x, pos["posy"]+self.offset_y, text='None')
+    def set_Labels(self):
+        for name, pos in self.config_Labels.items():
+            self.canvasID["{}_label".format(name)] = \
+                self.create_text(pos["posx"], pos["posy"], text="{} {} {}".format(name, " "*14, pos["unit"]))
+            self.canvasID["{}_value".format(name)] = \
+                self.create_text(pos["posx"]+10, pos["posy"], text='None')
     
-    def labelHeatExchanger(self, posx, posy):
-        self.canvas.create_text(posx, posy, text='To', fill='blue', font=self.fontprop)  
-        self.canvas.create_text(posx, posy+self.offset_y, text='Ti', fill='blue', font=self.fontprop)
-    def labelHeatExchangerSet(self):
-        for pos in self.heatExchangerPosition.values():
-            self.labelHeatExchanger(pos["x"], pos["y"])
-    def valueHeatExchanger(self, node, posx, posy, offestx=20):
-        self.stateHX[node]['ti'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
-        self.stateHX[node]['to'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
-    def valueHeatExchangerSet(self):
-        for node, pos in self.heatExchangerPosition.items():
-            self.valueHeatExchanger(node, pos['x'], pos['y'])
+    # def labelHeatExchanger(self, posx, posy):
+    #     self.canvas.create_text(posx, posy, text='To', fill='blue', font=self.fontprop)  
+    #     self.canvas.create_text(posx, posy+self.offset_y, text='Ti', fill='blue', font=self.fontprop)
+    # def labelHeatExchangerSet(self):
+    #     for pos in self.heatExchangerPosition.values():
+    #         self.labelHeatExchanger(pos["x"], pos["y"])
+    # def valueHeatExchanger(self, node, posx, posy, offestx=20):
+    #     self.stateHX[node]['ti'] = self.canvas.create_text(posx+self.offset_x, posy, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.stateHX[node]['to'] = self.canvas.create_text(posx+self.offset_x, posy+self.offset_y,text = 'None', fill = 'blue', font=self.fontprop)
+    # def valueHeatExchangerSet(self):
+    #     for node, pos in self.heatExchangerPosition.items():
+    #         self.valueHeatExchanger(node, pos['x'], pos['y'])
             
 
     
-    def labelWork(self, posx, posy, text):
-        self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
-    def labelWorkSet(self):
-        self.labelWork(self.workPosition['x'], self.workPosition['y'], text = 'mdot{}kg/s'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y, text = 'Win {}kW'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*5, text = 'Eff{}%'.format(' '*12))
-        self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*6, text = 'Effi{}%'.format(' '*12))
-    def valueWorkSet(self, offestx=10):
-        posx = self.workPosition['x'] + offestx
-        self.mdot = self.canvas.create_text(posx, self.workPosition['y'],text = 'None', fill = 'blue', font=self.fontprop)
-        self.Win = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y, text = 'None', fill = 'blue', font=self.fontprop)
-        self.Qin = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*2, text = 'None', fill = 'blue', font=self.fontprop)
-        self.Wout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*3, text = 'None', fill = 'blue', font=self.fontprop)
-        self.Qout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*4, text = 'None', fill = 'blue', font=self.fontprop)
-        self.Eff = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*5, text = 'None', fill = 'blue', font=self.fontprop)
-        self.Effi = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*6, text = 'None', fill = 'blue', font=self.fontprop)
+    # def labelWork(self, posx, posy, text):
+    #     self.canvas.create_text(posx, posy, text=text, fill = 'blue', font=self.fontprop)
+    # def labelWorkSet(self):
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y'], text = 'mdot{}kg/s'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y, text = 'Win {}kW'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*2, text = 'Qin {}kW'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*3, text = 'Wout{}kW'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*4, text = 'Qout{}kW'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*5, text = 'Eff{}%'.format(' '*12))
+    #     self.labelWork(self.workPosition['x'], self.workPosition['y']+self.offset_y*6, text = 'Effi{}%'.format(' '*12))
+    # def valueWorkSet(self, offestx=10):
+    #     posx = self.workPosition['x'] + offestx
+    #     self.mdot = self.canvas.create_text(posx, self.workPosition['y'],text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Win = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Qin = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*2, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Wout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*3, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Qout = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*4, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Eff = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*5, text = 'None', fill = 'blue', font=self.fontprop)
+    #     self.Effi = self.canvas.create_text(posx, self.workPosition['y']+self.offset_y*6, text = 'None', fill = 'blue', font=self.fontprop)
     
 #     def update_state(self, num, data):
 #         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
