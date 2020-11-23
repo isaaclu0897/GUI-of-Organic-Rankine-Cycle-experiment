@@ -34,6 +34,7 @@ class P_and_I_Diagram(tk.Frame):
 
         self.canvasID = {}
 
+        ''' load config'''
         photoPath = config["P&ID"]["photo"]
         self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
         self.config_T_Labels = config["P&ID"]["T_Labels"]
@@ -52,13 +53,13 @@ class P_and_I_Diagram(tk.Frame):
         self.canvas.pack(expand=1, fill=tk.BOTH)
         # put gif image on canvas
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
-        self.canvasID["img"] = self.canvas.create_image(
-            0, 0, image=self.img, anchor=tk.NW)
+        self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
 
         ''''font'''
         self.fontprop = tkfont.Font(
             family=self.font, size=self.fontsize)  # bitstream charter or courier 10 pitch
 
+        ''''set label'''
         # set label of pressure and temperature
         self.set_P_T_Labels()
         self.set_T_Labels()
@@ -104,7 +105,9 @@ class P_and_I_Diagram(tk.Frame):
             self.canvasID["{}_value".format(name)] = \
                 self.create_text(pos["posx"]+10, pos["posy"], text='None')
 
-
+    def update_canvas_value(self, itemID, vlaue):
+        self.canvas.itemconfigure(itemID, text=str(vlaue))
+        # return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 #     def update_state(self, num, data):
 #         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
 #         self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
@@ -133,30 +136,30 @@ class P_and_I_Diagram(tk.Frame):
 #         self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
 #     def update_mdotWater(self, mdotWater_num):
 #         self.mdotWater = mdotWater_num
-#     def update_data(self, nodesSys, nodesHX):
-#         for i in range(len(nodesSys)):
-#             self.update_state(i+1, nodesSys[i])
+    def update_data(self, nodesSys, nodesHX):
+        for i in range(len(nodesSys)):
+            self.update_state(i+1, nodesSys[i])
 
+        self.update_stateHX(nodesHX)
 
-#         self.update_stateHX(nodesHX)
+        eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
 
-#         eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
+        mdot = self.mdotWater*4.2 * \
+            (nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
 
-#         mdot = self.mdotWater*4.2*(nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
+        Win = mdot * (nodesSys[1].h - nodesSys[0].h)
+        Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
+        Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
+        Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
 
-#         Win = mdot * (nodesSys[1].h - nodesSys[0].h)
-#         Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
-#         Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
-#         Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
-
-#         self.update_eff(eff)
-#         self.update_mdot(mdot)
-#         self.update_Win(Win)
-#         self.update_Qin(Qin)
-#         self.update_Wout(Wout)
-#         self.update_Qout(Qout)
-#         self.update_Eff(eff)
-# #        self.update_Effi(Effi)
+        self.update_eff(eff)
+        self.update_mdot(mdot)
+        self.update_Win(Win)
+        self.update_Qin(Qin)
+        self.update_Wout(Wout)
+        self.update_Qout(Qout)
+        self.update_Eff(eff)
+#        self.update_Effi(Effi)
 
 
 class ORC_Figure(tk.Frame):
@@ -266,6 +269,68 @@ class ORC_Figure(tk.Frame):
         self.updata_heatExchangerLine(heatExchangerLine_data)
 
         self.canvas.draw()
+
+
+class Scan_button(tk.Frame):
+    def __init__(self, master=None):
+        tk.Frame.__init__(self, master=None)
+
+        self.is_click = False
+
+        def btn_cmd_loop(func):
+            if self.is_click:
+                self.is_click = False
+                varScan.set('stop2scan')
+            else:
+                self.is_click = True
+                varScan.set('start2scan')
+                func()
+
+        varScan = tk.StringVar()
+        varScan.set('stop2scan')
+
+        labelScan = tk.Label(
+            master,
+            textvariable=varScan,
+            bg='white',
+            font=('Arial', 12),
+            width=15, height=2)
+        labelScan.pack()
+
+        button = tk.Button(
+            master,
+            text='click me',
+            width=15, height=2,
+            command=lambda: btn_cmd_loop(self.update_diagram))
+        button.pack()
+
+    def update_diagram(self):
+        print("update_diagram")
+        def innerfunc(text):
+            print(text)
+        # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
+        # readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
+    
+        # value = data.send(readings_TEMP, readings_PRESS)
+        # print(value)
+        # data.update(SM_dia, TH_dia)
+
+        # innerfunc()
+        
+        from threading import Timer
+        def timer(func, second=2, *arg):
+            func(*arg)
+            t = Timer(second, timer, args=(func, 3, *arg))
+            t.setDaemon(True)
+        
+            if t.daemon and self.is_click:
+                t.start()
+            else:
+                #        del readings_TEMP, readings_PRESS
+                return 0
+            
+        timer(innerfunc, 3, "good")
+        
 
 
 class SendData:
