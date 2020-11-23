@@ -6,6 +6,7 @@ Created on Mon Nov 19 15:01:08 2018
 @author: wei
 """
 
+from threading import Timer
 import tkinter as tk
 import tkinter.font as tkfont
 from matplotlib.figure import Figure
@@ -303,34 +304,47 @@ class Scan_button(tk.Frame):
             width=15, height=2,
             command=lambda: btn_cmd_loop(self.update_diagram))
         button.pack()
+        
+        ''' init v34970a '''
+        
 
     def update_diagram(self):
         print("update_diagram")
+
         def innerfunc(text):
             print(text)
+            self.scan_data()
+            self.update_P_and_I_Diagram()
+            self.update_T_s_Diagram()
         # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
         # readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-    
+
         # value = data.send(readings_TEMP, readings_PRESS)
         # print(value)
         # data.update(SM_dia, TH_dia)
 
         # innerfunc()
-        
-        from threading import Timer
+
         def timer(func, second=2, *arg):
             func(*arg)
             t = Timer(second, timer, args=(func, 3, *arg))
             t.setDaemon(True)
-        
+
             if t.daemon and self.is_click:
                 t.start()
             else:
-                #        del readings_TEMP, readings_PRESS
                 return 0
-            
-        timer(innerfunc, 3, "good")
-        
+
+        timer(innerfunc, 3, "**kw")
+
+    def scan_data():
+        print("scan_data")
+
+    def update_P_and_I_Diagram(self):
+        print("update P&ID")
+
+    def update_T_s_Diagram(self):
+        print("update T-s Diagram")
 
 
 class SendData:

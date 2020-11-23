@@ -107,25 +107,9 @@ def timer(func, second=2, *arg):
         #        del readings_TEMP, readings_PRESS
         return 0
 
-def update_diagram():
-    # update P_and_I_Diagram
-    # update ORC_Figure
-    pass
-    
-    def innerfunc(text):
-        print(text)
-        # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
-        # readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-    
-        # value = data.send(readings_TEMP, readings_PRESS)
-        # print(value)
-        # data.update(SM_dia, TH_dia)
-
-    # innerfunc()
-    timer(innerfunc, 3, "good")
-
 
 if __name__ == '__main__':
+    '''layout'''
     import tkinter as tk
     from GUIObj import ORC_Figure, P_and_I_Diagram, Scan_button
     window = tk.Tk()
@@ -134,67 +118,42 @@ if __name__ == '__main__':
 
     frame = tk.Frame(window).pack()
 
-    # left and right frame
+    ''' left and right frame '''
     frm_right = tk.Frame(frame)
     frm_right.pack(side='right')
-    tk.Label(frm_right, text='frame right').pack()
+    # tk.Label(frm_right, text='frame right').pack()
 
     frm_left = tk.Frame(frame)
     frm_left.pack(side='left')
-    tk.Label(frm_left, text='frame left').pack()
+    # tk.Label(frm_left, text='frame left').pack()
+    SM_dia = P_and_I_Diagram(frm_left)
 
-    # top and bottom of right frame
+    ''' top and bottom of right frame '''
     frm_right_top = tk.Frame(frm_right)
     frm_right_top.pack(side='top')
-    tk.Label(frm_right_top, text='frame right top').pack()
+    # tk.Label(frm_right_top, text='frame right top').pack()
+    # TH_dia = ORC_Figure(frm_right_top)
+    
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
-    tk.Label(frm_right_bottom, text='frame right bottom').pack()
+    # tk.Label(frm_right_bottom, text='frame right bottom').pack()
 
-    SM_dia = P_and_I_Diagram(frm_left)
-    # TH_dia = ORC_Figure(frm_right_top)
+    
+    
     # data = SendData()
     # data = SendData()
-
+    ''' right and left of right_bottom frame '''
     frm_right_bottom_left = tk.Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
-    tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
+    # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
+    Scan_button(frm_right_bottom_left)
     
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')
-    tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
+    # tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
 
-    
-    Scan_button(frm_right_bottom_left)
-    
-    # import sys
 
-    # def close(event):
-    #     window.withdraw() # if you want to bring it back
-    #     sys.exit() # if you want to exit the entire thing
-
-    # window.bind('<Escape>', close)
-    # varScan = tk.StringVar()
-    # labelScan = tk.Label(frm_right_bottom_left, textvariable=varScan, bg='white',
-    #                      font=('Arial', 12), width=15, height=2)
-    # labelScan.pack()
-
-    # varmdotWater = tk.StringVar()
-    # labelmdotWater = tk.Label(frm_right_bottom_right, textvariable=varmdotWater, bg='white',
-    #                           font=('Arial', 12), width=15, height=2)
-    # labelmdotWater.pack()
-
-    # on_click_loop = False
-
-    # def btn_cmd_loop(func):
-    #     global on_click_loop
-    #     if on_click_loop == False:
-    #         on_click_loop = True
-    #         varScan.set('start2scan')
-    #         func()
-    #     else:
-    #         on_click_loop = False
-    #         varScan.set('stop2scan')
+    window.bind("<Escape>", lambda x: window.destroy())
 
 
 #     def btn_cmd_one(func):
@@ -207,12 +166,6 @@ if __name__ == '__main__':
 #         data.update_mdotWater(float(mdotWater))
 #         labelmdotWater.config(text=str(mdotWater))
 
-    # buttonScan = tk.Button(
-    #     frm_right_bottom_left,
-    #     text='click me',
-    #     width=15, height=2,
-    #     command=lambda: btn_cmd_loop(update_diagram))
-    # buttonScan.pack()
 
 #     g = tk.Radiobutton(frm_right_bottom_right, text='熱水大流量',  variable=varmdotWater, value=0.29, \
 #                   command=good)
