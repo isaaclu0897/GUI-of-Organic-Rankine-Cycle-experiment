@@ -1,81 +1,359 @@
 {
-  "json_formator_onlone": "https://jsoneditoronline.org/#right=local.tekuxo&left=local.sofufe",
-  "P&ID": {
-    "photo": "./fig/500w_P&ID.png",
-    "font":"courier 10 pitch",
-    "fontsize":18,
-    "P&T_Labels": {
-      "node1": {
-        "posx": 120,
-        "posy": 410
-      },
-      "node2": {
-        "posx": 100,
-        "posy": 110
-      },
-      "node3": {
-        "posx": 450,
-        "posy": 140
-      },
-      "node4": {
-        "posx": 380,
-        "posy": 480
-      }
+    "json_formator_onlone": "https://jsoneditoronline.org/#right=local.tekuxo&left=local.sofufe",
+    "System": {
+        "pump": {
+            "in": {
+                "T": {
+                    "sensor": "default",
+                    "GUI": {
+                        "unit": "(default)C",
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": "default",
+                    "GUI": {
+                        "unit": "(default)Bar",
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "evaporator": {
+            "in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "expander": {
+            "in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "condenser": {
+            "in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "m_dot": {
+            "sensor": 1,
+            "GUI": {
+                "posx": 120,
+                "posy": 410,
+                "unit": "(default)kg/s"
+            }
+        },
+        "heater": {
+            "in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "cooler": {
+            "in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            }
+        },
+        "Win": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410,
+                "unit": "(default)kW"
+            },
+            "in_out": [
+                "pump_in",
+                "pump_out"
+            ]
+        },
+        "Wout": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410
+            },
+            "in_out": [
+                "expander_in",
+                "expander_out"
+            ]
+        },
+        "Qin": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410
+            },
+            "in_out": [
+                "evaporator_in",
+                "evaporator_out"
+            ]
+        },
+        "Qout": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410
+            },
+            "in_out": [
+                "condenser_in",
+                "condenser_out"
+            ]
+        },
+        "Eff": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410,
+                "unit": "(default)%"
+            }
+        },
+        "Ein": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410
+            }
+        },
+        "Eout": {
+            "GUI": {
+                "posx": 120,
+                "posy": 410
+            }
+        }
     },
-    "T_Labels": {
-      "heater_in": {
-        "posx": 500,
-        "posy": 50
-      },
-      "heater_out": {
-        "posx": 500,
-        "posy": 80
-      },
-      "cooler_in": {
-        "posx": 500,
-        "posy": 615
-      },
-      "cooler_out": {
-        "posx": 500,
-        "posy": 645
-      }
-    },
-    "Labels": {
-      "mdot": {
-        "unit": "kW",
-        "posx": 110,
-        "posy": 500
-      },
-      "Win": {
-        "unit": "kW",
-        "posx": 110,
-        "posy": 530
-      },
-      "Qin": {
-        "unit": "kW",
-        "posx": 110,
-        "posy": 560
-      },
-      "Wout": {
-        "unit": "kW",
-        "posx": 110,
-        "posy": 590
-      },
-      "Qout": {
-        "unit": "kW",
-        "posx": 110,
-        "posy": 620
-      },
-      "Eff": {
-        "unit": "%",
-        "posx": 110,
-        "posy": 650
-      },
-      "Effi": {
-        "unit": "%",
-        "posx": 110,
-        "posy": 680
-      }
+    "line": [
+        [
+            "p",
+            "pump_in",
+            "pump_out"
+        ],
+        [
+            "s",
+            "evaporator_in",
+            "Evaporator_out"
+        ],
+        [
+            "p",
+            "expander_in",
+            "expander_out"
+        ],
+        [
+            "s",
+            "consder_in",
+            "consder_out"
+        ],
+        [
+            "l",
+            "heater_in",
+            "heater_out"
+        ],
+        [
+            "l",
+            "cooler_in",
+            "cooler_out"
+        ]
+    ],
+    "P&ID": {
+        "photo": "./fig/500w_P&ID.png",
+        "P&T_Labels": {
+            "node1": {
+                "posx": 120,
+                "posy": 410
+            },
+            "node2": {
+                "posx": 100,
+                "posy": 110
+            },
+            "node3": {
+                "posx": 450,
+                "posy": 140
+            },
+            "node4": {
+                "posx": 380,
+                "posy": 480
+            }
+        },
+        "T_Labels": {
+            "heater_in": {
+                "posx": 500,
+                "posy": 50
+            },
+            "heater_out": {
+                "posx": 500,
+                "posy": 80
+            },
+            "cooler_in": {
+                "posx": 500,
+                "posy": 615
+            },
+            "cooler_out": {
+                "posx": 500,
+                "posy": 645
+            }
+        },
+        "Labels": {
+            "mdot": {
+                "unit": "kW",
+                "posx": 110,
+                "posy": 500
+            },
+            "Win": {
+                "unit": "kW",
+                "posx": 110,
+                "posy": 530
+            },
+            "Qin": {
+                "unit": "kW",
+                "posx": 110,
+                "posy": 560
+            },
+            "Wout": {
+                "unit": "kW",
+                "posx": 110,
+                "posy": 590
+            },
+            "Qout": {
+                "unit": "kW",
+                "posx": 110,
+                "posy": 620
+            },
+            "Eff": {
+                "unit": "%",
+                "posx": 110,
+                "posy": 650
+            },
+            "Effi": {
+                "unit": "%",
+                "posx": 110,
+                "posy": 680
+            }
+        }
     }
-  }
 }

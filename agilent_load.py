@@ -6,7 +6,7 @@ Created on Sun Jul  8 19:31:54 2018
 @author: wei
 """
  
-import visa
+import visa # you need agilent io lib
 import node
 from tabulate_text import ORC_status
 
