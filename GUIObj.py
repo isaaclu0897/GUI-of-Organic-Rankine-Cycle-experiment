@@ -26,6 +26,20 @@ with open('config.json', 'r') as f:
     del f
 
 
+def make_GUI_config():
+    node_config = config["System"]["node"]
+    attr_config = config["System"]["attribute"]
+
+    GUI_config = {}
+    for name in node_config:
+        for attr, value in node_config[name].items():
+            GUI_config[f"{name}_{attr}"] = value["GUI"]
+    for name, value in attr_config.items():
+        GUI_config[f"{name}"] = value["GUI"]
+
+    return GUI_config
+
+
 class P_and_I_Diagram(tk.Frame):
     offset_x = 50
     offset_y = 30
@@ -40,9 +54,10 @@ class P_and_I_Diagram(tk.Frame):
         self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
         self.config_T_Labels = config["P&ID"]["T_Labels"]
         self.config_Labels = config["P&ID"]["Labels"]
-        self.font = config["P&ID"]["font"]
-        self.fontsize = config["P&ID"]["fontsize"]
+        self.font = config["GUI"]["font"]
+        self.fontsize = config["GUI"]["fontsize"]
 
+        self.GUI_config = make_GUI_config()
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
@@ -61,50 +76,57 @@ class P_and_I_Diagram(tk.Frame):
             family=self.font, size=self.fontsize)  # bitstream charter or courier 10 pitch
 
         ''''set label'''
+        self.set_Labels()
         # set label of pressure and temperature
-        self.set_P_T_Labels()
-        self.set_T_Labels()
+        # self.set_P_T_Labels()
+        # self.set_T_Labels()
 
         # # set label of work
-        self.set_Labels()
 
         # set label of efficiency
-        fontTitle = tkfont.Font(
-            family='courier 10 pitch', size=30, weight='bold')
-        name = "429_ORC\nEff"
-        unit = "%"
-        self.canvas.create_text(280, 320, text="{} {} {}".format(
-            name, " "*14, unit), fill='green', font=fontTitle)
-        self.canvasID["{}_value".format(name)] = self.canvas.create_text(
-            300, 350, text="None", fill='green', font=fontTitle)
+        # fontTitle = tkfont.Font(
+        #     family='courier 10 pitch', size=30, weight='bold')
+        # name = "429_ORC\nEff"
+        # unit = "%"
+        # self.canvas.create_text(280, 320, text="{} {} {}".format(
+        #     name, " "*14, unit), fill='green', font=fontTitle)
+        # self.canvasID["{}_value".format(name)] = self.canvas.create_text(
+        #     300, 350, text="None", fill='green', font=fontTitle)
 
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 
-    def set_P_T_Labels(self):
-        for name, pos in self.config_P_T_Labels.items():
-            self.create_text(pos["posx"], pos["posy"], text='P')
-            self.canvasID["{}_value_P".format(name)] = \
-                self.create_text(pos["posx"]+self.offset_x,
-                                 pos["posy"], text='None')
-            self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
-            self.canvasID["{}_value_T".format(name)] = \
-                self.create_text(pos["posx"]+self.offset_x,
-                                 pos["posy"]+self.offset_y, text='None')
-
-    def set_T_Labels(self):
-        for name, pos in self.config_T_Labels.items():
-            self.create_text(pos["posx"], pos["posy"], text='T')
-            self.canvasID["{}_value_T".format(name)] = \
-                self.create_text(pos["posx"]+self.offset_x,
-                                 pos["posy"], text='None')
-
     def set_Labels(self):
-        for name, pos in self.config_Labels.items():
-            self.create_text(pos["posx"], pos["posy"], text="{} {} {}".format(
-                name, " "*14, pos["unit"]))
-            self.canvasID["{}_value".format(name)] = \
-                self.create_text(pos["posx"]+10, pos["posy"], text='None')
+        for k, v in self.GUI_config.items():
+            name = k.split("_")[-1]
+            self.create_text(v["posx"], v["posy"], text=f"{name}")
+            self.canvasID[f"{k}"] = self.create_text(
+                v["posx"]+self.offset_x, v["posy"], text="None")
+
+    # def set_P_T_Labels(self):
+    #     for name, pos in self.config_P_T_Labels.items():
+    #         self.create_text(pos["posx"], pos["posy"], text='P')
+    #         self.canvasID["{}_value_P".format(name)] = \
+    #             self.create_text(pos["posx"]+self.offset_x,
+    #                              pos["posy"], text='None')
+    #         self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
+    #         self.canvasID["{}_value_T".format(name)] = \
+    #             self.create_text(pos["posx"]+self.offset_x,
+    #                              pos["posy"]+self.offset_y, text='None')
+
+    # def set_T_Labels(self):
+    #     for name, pos in self.config_T_Labels.items():
+    #         self.create_text(pos["posx"], pos["posy"], text='T')
+    #         self.canvasID["{}_value_T".format(name)] = \
+    #             self.create_text(pos["posx"]+self.offset_x,
+    #                              pos["posy"], text='None')
+
+    # def set_Labels(self):
+    #     for name, pos in self.config_Labels.items():
+    #         self.create_text(pos["posx"], pos["posy"], text="{} {} {}".format(
+    #             name, " "*14, pos["unit"]))
+    #         self.canvasID["{}_value".format(name)] = \
+    #             self.create_text(pos["posx"]+10, pos["posy"], text='None')
 
     def update_canvas_value(self, itemID, vlaue):
         self.canvas.itemconfigure(itemID, text=str(vlaue))
@@ -304,9 +326,8 @@ class Scan_button(tk.Frame):
             width=15, height=2,
             command=lambda: btn_cmd_loop(self.update_diagram))
         button.pack()
-        
+
         ''' init v34970a '''
-        
 
     def update_diagram(self):
         print("update_diagram")
