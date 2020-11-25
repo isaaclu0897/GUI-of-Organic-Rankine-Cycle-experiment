@@ -16,7 +16,7 @@
                     "GUI": {
                         "unit": "system default(Bar)",
                         "posx": 120,
-                        "posy": 410
+                        "posy": 440
                     }
                 }
             },
@@ -24,15 +24,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 }
             },
@@ -40,15 +40,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 100,
+                        "posy": 110
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 100,
+                        "posy": 140
                     }
                 }
             },
@@ -56,15 +56,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 450,
+                        "posy": 140
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 450,
+                        "posy": 170
                     }
                 }
             },
@@ -72,15 +72,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 }
             },
@@ -88,15 +88,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 }
             },
@@ -104,15 +104,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 380,
+                        "posy": 480
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 380,
+                        "posy": 510
                     }
                 }
             },
@@ -120,15 +120,15 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 0,
+                        "posy": 0
                     }
                 }
             },
@@ -136,8 +136,8 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 500,
+                        "posy": 50
                     }
                 }
             },
@@ -145,8 +145,8 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 500,
+                        "posy": 80
                     }
                 }
             },
@@ -154,8 +154,8 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 500,
+                        "posy": 615
                     }
                 }
             },
@@ -163,8 +163,8 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 120,
-                        "posy": 410
+                        "posx": 500,
+                        "posy": 645
                     }
                 }
             }
@@ -173,15 +173,15 @@
             "mDot": {
                 "sensor": 1,
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410,
+                    "posx": 110,
+                    "posy": 500,
                     "unit": "system default(kg/s)"
                 }
             },
             "Win": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410,
+                    "posx": 110,
+                    "posy": 530,
                     "unit": "system default(kW)"
                 },
                 "in_out": [
@@ -191,8 +191,8 @@
             },
             "Wout": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410
+                    "posx": 110,
+                    "posy": 560
                 },
                 "in_out": [
                     "expander_in",
@@ -201,8 +201,8 @@
             },
             "Qin": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410
+                    "posx": 110,
+                    "posy": 590
                 },
                 "in_out": [
                     "evaporator_in",
@@ -211,8 +211,8 @@
             },
             "Qout": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410
+                    "posx": 110,
+                    "posy": 620
                 },
                 "in_out": [
                     "condenser_in",
@@ -221,22 +221,22 @@
             },
             "Eff": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410,
+                    "posx": 110,
+                    "posy": 650,
                     "unit": "system default(%)",
                     "fontsize": 24
                 }
             },
             "Ein": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410
+                    "posx": 110,
+                    "posy": 680
                 }
             },
             "Eout": {
                 "GUI": {
-                    "posx": 120,
-                    "posy": 410
+                    "posx": 110,
+                    "posy": 710
                 }
             }
         }
