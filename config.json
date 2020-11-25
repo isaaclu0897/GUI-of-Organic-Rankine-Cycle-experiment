@@ -1,44 +1,26 @@
 {
     "json_formator_onlone": "https://jsoneditoronline.org/#right=local.tekuxo&left=local.sofufe",
     "System": {
-        "pump": {
-            "in": {
+        "node": {
+            "pump_in": {
                 "T": {
-                    "sensor": "default",
+                    "sensor": "system default",
                     "GUI": {
-                        "unit": "(default)C",
+                        "unit": "system default(C)",
                         "posx": 120,
                         "posy": 410
                     }
                 },
                 "P": {
-                    "sensor": "default",
+                    "sensor": "system default",
                     "GUI": {
-                        "unit": "(default)Bar",
+                        "unit": "system default(Bar)",
                         "posx": 120,
                         "posy": 410
                     }
                 }
             },
-            "out": {
-                "T": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                },
-                "P": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                }
-            }
-        },
-        "evaporator": {
-            "in": {
+            "pump_out": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -54,25 +36,7 @@
                     }
                 }
             },
-            "out": {
-                "T": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                },
-                "P": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                }
-            }
-        },
-        "expander": {
-            "in": {
+            "evaporator_in": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -88,25 +52,7 @@
                     }
                 }
             },
-            "out": {
-                "T": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                },
-                "P": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
-                }
-            }
-        },
-        "condenser": {
-            "in": {
+            "evaporator_out": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -122,7 +68,7 @@
                     }
                 }
             },
-            "out": {
+            "expander_in": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -137,18 +83,56 @@
                         "posy": 410
                     }
                 }
-            }
-        },
-        "m_dot": {
-            "sensor": 1,
-            "GUI": {
-                "posx": 120,
-                "posy": 410,
-                "unit": "(default)kg/s"
-            }
-        },
-        "heater": {
-            "in": {
+            },
+            "expander_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "condenser_in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "condenser_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "heater_in": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -157,7 +141,25 @@
                     }
                 }
             },
-            "out": {
+            "heater_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "cooler_in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 120,
+                        "posy": 410
+                    }
+                }
+            },
+            "cooler_out": {
                 "T": {
                     "sensor": 1,
                     "GUI": {
@@ -167,84 +169,75 @@
                 }
             }
         },
-        "cooler": {
-            "in": {
-                "T": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
+        "attribute": {
+            "mDot": {
+                "sensor": 1,
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410,
+                    "unit": "system default(kg/s)"
                 }
             },
-            "out": {
-                "T": {
-                    "sensor": 1,
-                    "GUI": {
-                        "posx": 120,
-                        "posy": 410
-                    }
+            "Win": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410,
+                    "unit": "system default(kW)"
+                },
+                "in_out": [
+                    "pump_in",
+                    "pump_out"
+                ]
+            },
+            "Wout": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410
+                },
+                "in_out": [
+                    "expander_in",
+                    "expander_out"
+                ]
+            },
+            "Qin": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410
+                },
+                "in_out": [
+                    "evaporator_in",
+                    "evaporator_out"
+                ]
+            },
+            "Qout": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410
+                },
+                "in_out": [
+                    "condenser_in",
+                    "condenser_out"
+                ]
+            },
+            "Eff": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410,
+                    "unit": "system default(%)",
+                    "fontsize": 24
                 }
-            }
-        },
-        "Win": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410,
-                "unit": "(default)kW"
             },
-            "in_out": [
-                "pump_in",
-                "pump_out"
-            ]
-        },
-        "Wout": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410
+            "Ein": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410
+                }
             },
-            "in_out": [
-                "expander_in",
-                "expander_out"
-            ]
-        },
-        "Qin": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410
-            },
-            "in_out": [
-                "evaporator_in",
-                "evaporator_out"
-            ]
-        },
-        "Qout": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410
-            },
-            "in_out": [
-                "condenser_in",
-                "condenser_out"
-            ]
-        },
-        "Eff": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410,
-                "unit": "(default)%"
-            }
-        },
-        "Ein": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410
-            }
-        },
-        "Eout": {
-            "GUI": {
-                "posx": 120,
-                "posy": 410
+            "Eout": {
+                "GUI": {
+                    "posx": 120,
+                    "posy": 410
+                }
             }
         }
     },
@@ -355,5 +348,10 @@
                 "posy": 680
             }
         }
+    },
+    "GUI": {
+        "photo": "./fig/500w_P&ID.png",
+        "font": "",
+        "fontsize": 18
     }
 }
