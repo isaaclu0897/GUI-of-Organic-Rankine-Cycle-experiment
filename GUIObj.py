@@ -127,44 +127,6 @@ class P_and_I_Diagram(tk.Frame):
             else:
                 self.create_text(v["posx"], v["posy"], text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
-    # def set_Labels(self):
-    #     for k, v in self.GUI_config.items():
-    #         name = k.split("_")[-1]
-    #         unit = ""
-    #         # print(name)
-    #         if name == "mDot":
-    #             unit = "kg/s"
-    #         elif name in ["Win", "Wout", "Qin", "Qout"]:
-    #             unit = "kW"
-                
-    #         if unit:
-    #             self.create_text(v["posx"], v["posy"], text=f"{name:_<5}{'':_^5}{unit:_>5}")
-    #             self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':_^5}")
-
-    # def set_P_T_Labels(self):
-    #     for name, pos in self.config_P_T_Labels.items():
-    #         self.create_text(pos["posx"], pos["posy"], text='P')
-    #         self.canvasID["{}_value_P".format(name)] = \
-    #             self.create_text(pos["posx"]+self.offset_x,
-    #                              pos["posy"], text='None')
-    #         self.create_text(pos["posx"], pos["posy"]+self.offset_y, text='T')
-    #         self.canvasID["{}_value_T".format(name)] = \
-    #             self.create_text(pos["posx"]+self.offset_x,
-    #                              pos["posy"]+self.offset_y, text='None')
-
-    # def set_T_Labels(self):
-    #     for name, pos in self.config_T_Labels.items():
-    #         self.create_text(pos["posx"], pos["posy"], text='T')
-    #         self.canvasID["{}_value_T".format(name)] = \
-    #             self.create_text(pos["posx"]+self.offset_x,
-    #                              pos["posy"], text='None')
-
-    # def set_Labels(self):
-    #     for name, pos in self.config_Labels.items():
-    #         self.create_text(pos["posx"], pos["posy"], text="{} {} {}".format(
-    #             name, " "*14, pos["unit"]))
-    #         self.canvasID["{}_value".format(name)] = \
-    #             self.create_text(pos["posx"]+10, pos["posy"], text='None')
 
     def update_canvas_value(self, itemID, vlaue):
         self.canvas.itemconfigure(itemID, text=str(vlaue))
