@@ -351,7 +351,7 @@
     },
     "GUI": {
         "path": "./fig/500w_P&ID.png",
-        "size_factor" : 0.9,
+        "scaling_factor" : 0.9,
         "font": "",
         "fontsize": 18
     }

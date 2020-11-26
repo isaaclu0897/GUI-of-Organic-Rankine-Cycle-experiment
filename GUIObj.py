@@ -42,6 +42,7 @@ def make_GUI_config():
     return GUI_config
 
 
+
 class P_and_I_Diagram(tk.Frame):
     offset_x = 50
     offset_y = 30
@@ -53,27 +54,18 @@ class P_and_I_Diagram(tk.Frame):
 
         ''' load config'''
         self.photo_config = config["GUI"]
-        # self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
-        # self.config_T_Labels = config["P&ID"]["T_Labels"]
-        # self.config_Labels = config["P&ID"]["Labels"]
-        self.font = self.photo_config["font"]
-        self.fontsize = self.photo_config["fontsize"]
-
         self.GUI_config = make_GUI_config()
+        self.font = self.photo_config["font"]
+        self.scaling_factor = self.photo_config["scaling_factor"]
+        self.fontsize = self.scaling(self.photo_config["fontsize"])
+
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
         image = Image.open(self.photo_config["path"])
-        print(image.width, image.height)
-        factor = self.photo_config["size_factor"]
-        w, h = int(image.width*factor), int(image.height*factor)
-        # self.img1 = image
-        # image.size
-        # image.width*0.5, image.height*0.5
+        w, h = self.scaling(image.width), self.scaling(image.height)
         image = image.resize((w, h), Image.ANTIALIAS)
         self.img = ImageTk.PhotoImage(image)
-        print(self.img.width(), self.img.height())
-        # print(self.img.zoom(20, 50))
         # create the canvas, size in pixels
         self.canvas = tk.Canvas(
             master, width=self.img.width(), height=self.img.height(), bg='white')
@@ -102,12 +94,15 @@ class P_and_I_Diagram(tk.Frame):
     def create_img(self):
         pass
         
-        
+    def scaling(self, value):
+        return int(value * self.scaling_factor)
+    
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 
     def set_Labels(self):
         for k, v in self.GUI_config.items():
+            v["posx"], v["posy"] = self.scaling(v["posx"]), self.scaling(v["posy"])
             # pass 
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
