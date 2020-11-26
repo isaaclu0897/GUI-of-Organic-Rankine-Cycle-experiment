@@ -7,7 +7,7 @@
                     "sensor": "system default",
                     "GUI": {
                         "unit": "system default(C)",
-                        "posx": 120,
+                        "posx": 160,
                         "posy": 410
                     }
                 },
@@ -15,7 +15,7 @@
                     "sensor": "system default",
                     "GUI": {
                         "unit": "system default(Bar)",
-                        "posx": 120,
+                        "posx": 160,
                         "posy": 440
                     }
                 }
@@ -133,7 +133,7 @@
                 }
             },
             "heater_in": {
-                "T": {
+                "Ti": {
                     "sensor": 1,
                     "GUI": {
                         "posx": 500,
@@ -142,7 +142,7 @@
                 }
             },
             "heater_out": {
-                "T": {
+                "To": {
                     "sensor": 1,
                     "GUI": {
                         "posx": 500,
@@ -151,7 +151,7 @@
                 }
             },
             "cooler_in": {
-                "T": {
+                "Ti": {
                     "sensor": 1,
                     "GUI": {
                         "posx": 500,
@@ -160,7 +160,7 @@
                 }
             },
             "cooler_out": {
-                "T": {
+                "To": {
                     "sensor": 1,
                     "GUI": {
                         "posx": 500,

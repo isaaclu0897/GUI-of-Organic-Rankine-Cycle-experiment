@@ -62,7 +62,7 @@ class P_and_I_Diagram(tk.Frame):
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
         self.img = tk.PhotoImage(file=photoPath)
-
+        print(self.img.width(), self.img.height())
         # create the canvas, size in pixels
         self.canvas = tk.Canvas(
             master, width=self.img.width(), height=self.img.height(), bg='white')
@@ -76,12 +76,8 @@ class P_and_I_Diagram(tk.Frame):
             family=self.font, size=self.fontsize)  # bitstream charter or courier 10 pitch
 
         ''''set label'''
-        self.set_Labels()
-        # set label of pressure and temperature
-        # self.set_P_T_Labels()
-        # self.set_T_Labels()
-
-        # # set label of work
+        self.set_T_P_Labels()
+        # self.set_Labels()
 
         # set label of efficiency
         # fontTitle = tkfont.Font(
@@ -96,12 +92,46 @@ class P_and_I_Diagram(tk.Frame):
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 
+    def set_T_P_Labels(self):
+        for k, v in self.GUI_config.items():
+            print(k, v)
+            # pass 
+            if v["posx"] == 0 or v["posy"] == 0:
+                continue
+            label_name = k.split("_")[-1]
+            # default unit
+            if "T" in label_name:
+                unit = "C"
+            elif "P" in label_name:
+                unit = "B"
+            elif label_name in ["Win", "Wout", "Qin", "Qout"]:
+                unit = "kW"
+            elif label_name in ["Eff", "Ein", "Eout"]:
+                unit = "%"
+            elif label_name in ["mDot"]:
+                unit = "kg/s"
+            else:
+                unit = "?"
+            
+            if unit in ["C", "B"]:
+                self.create_text(v["posx"], v["posy"], text=f"{label_name:<7}{'':^5}{unit:>5}")
+                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
+            else:
+                self.create_text(v["posx"], v["posy"], text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
+                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
     def set_Labels(self):
         for k, v in self.GUI_config.items():
             name = k.split("_")[-1]
-            self.create_text(v["posx"], v["posy"], text=f"{name}")
-            self.canvasID[f"{k}"] = self.create_text(
-                v["posx"]+self.offset_x, v["posy"], text="None")
+            unit = ""
+            # print(name)
+            if name == "mDot":
+                unit = "kg/s"
+            elif name in ["Win", "Wout", "Qin", "Qout"]:
+                unit = "kW"
+                
+            if unit:
+                self.create_text(v["posx"], v["posy"], text=f"{name:_<5}{'':_^5}{unit:_>5}")
+                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':_^5}")
 
     # def set_P_T_Labels(self):
     #     for name, pos in self.config_P_T_Labels.items():
