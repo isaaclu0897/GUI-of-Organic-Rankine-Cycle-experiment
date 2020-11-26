@@ -56,14 +56,14 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 450,
+                        "posx": 490,
                         "posy": 140
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 450,
+                        "posx": 490,
                         "posy": 170
                     }
                 }
@@ -104,14 +104,14 @@
                 "T": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 380,
+                        "posx": 430,
                         "posy": 480
                     }
                 },
                 "P": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 380,
+                        "posx": 430,
                         "posy": 510
                     }
                 }
@@ -136,7 +136,7 @@
                 "Ti": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 500,
+                        "posx": 530,
                         "posy": 50
                     }
                 }
@@ -145,7 +145,7 @@
                 "To": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 500,
+                        "posx": 530,
                         "posy": 80
                     }
                 }
@@ -154,8 +154,8 @@
                 "Ti": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 500,
-                        "posy": 615
+                        "posx": 570,
+                        "posy": 655
                     }
                 }
             },
@@ -163,8 +163,8 @@
                 "To": {
                     "sensor": 1,
                     "GUI": {
-                        "posx": 500,
-                        "posy": 645
+                        "posx": 570,
+                        "posy": 685
                     }
                 }
             }
@@ -351,7 +351,7 @@
     },
     "GUI": {
         "path": "./fig/500w_P&ID.png",
-        "scaling_factor" : 0.9,
+        "scaling_factor" : 0.8,
         "font": "",
         "fontsize": 18
     }
