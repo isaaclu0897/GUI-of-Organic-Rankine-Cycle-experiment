@@ -9,6 +9,8 @@ Created on Mon Nov 19 15:01:08 2018
 from threading import Timer
 import tkinter as tk
 import tkinter.font as tkfont
+from PIL import ImageTk, Image
+
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -50,19 +52,28 @@ class P_and_I_Diagram(tk.Frame):
         self.canvasID = {}
 
         ''' load config'''
-        photoPath = config["P&ID"]["photo"]
-        self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
-        self.config_T_Labels = config["P&ID"]["T_Labels"]
-        self.config_Labels = config["P&ID"]["Labels"]
-        self.font = config["GUI"]["font"]
-        self.fontsize = config["GUI"]["fontsize"]
+        self.photo_config = config["GUI"]
+        # self.config_P_T_Labels = config["P&ID"]["P&T_Labels"]
+        # self.config_T_Labels = config["P&ID"]["T_Labels"]
+        # self.config_Labels = config["P&ID"]["Labels"]
+        self.font = self.photo_config["font"]
+        self.fontsize = self.photo_config["fontsize"]
 
         self.GUI_config = make_GUI_config()
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
-        self.img = tk.PhotoImage(file=photoPath)
+        image = Image.open(self.photo_config["path"])
+        print(image.width, image.height)
+        factor = self.photo_config["size_factor"]
+        w, h = int(image.width*factor), int(image.height*factor)
+        # self.img1 = image
+        # image.size
+        # image.width*0.5, image.height*0.5
+        image = image.resize((w, h), Image.ANTIALIAS)
+        self.img = ImageTk.PhotoImage(image)
         print(self.img.width(), self.img.height())
+        # print(self.img.zoom(20, 50))
         # create the canvas, size in pixels
         self.canvas = tk.Canvas(
             master, width=self.img.width(), height=self.img.height(), bg='white')
@@ -76,8 +87,7 @@ class P_and_I_Diagram(tk.Frame):
             family=self.font, size=self.fontsize)  # bitstream charter or courier 10 pitch
 
         ''''set label'''
-        self.set_T_P_Labels()
-        # self.set_Labels()
+        self.set_Labels()
 
         # set label of efficiency
         # fontTitle = tkfont.Font(
@@ -89,12 +99,15 @@ class P_and_I_Diagram(tk.Frame):
         # self.canvasID["{}_value".format(name)] = self.canvas.create_text(
         #     300, 350, text="None", fill='green', font=fontTitle)
 
+    def create_img(self):
+        pass
+        
+        
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 
-    def set_T_P_Labels(self):
+    def set_Labels(self):
         for k, v in self.GUI_config.items():
-            print(k, v)
             # pass 
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
@@ -119,19 +132,19 @@ class P_and_I_Diagram(tk.Frame):
             else:
                 self.create_text(v["posx"], v["posy"], text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
-    def set_Labels(self):
-        for k, v in self.GUI_config.items():
-            name = k.split("_")[-1]
-            unit = ""
-            # print(name)
-            if name == "mDot":
-                unit = "kg/s"
-            elif name in ["Win", "Wout", "Qin", "Qout"]:
-                unit = "kW"
+    # def set_Labels(self):
+    #     for k, v in self.GUI_config.items():
+    #         name = k.split("_")[-1]
+    #         unit = ""
+    #         # print(name)
+    #         if name == "mDot":
+    #             unit = "kg/s"
+    #         elif name in ["Win", "Wout", "Qin", "Qout"]:
+    #             unit = "kW"
                 
-            if unit:
-                self.create_text(v["posx"], v["posy"], text=f"{name:_<5}{'':_^5}{unit:_>5}")
-                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':_^5}")
+    #         if unit:
+    #             self.create_text(v["posx"], v["posy"], text=f"{name:_<5}{'':_^5}{unit:_>5}")
+    #             self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':_^5}")
 
     # def set_P_T_Labels(self):
     #     for name, pos in self.config_P_T_Labels.items():
