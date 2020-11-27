@@ -9,7 +9,7 @@ Created on Mon Nov 19 15:01:08 2018
 from threading import Timer
 import tkinter as tk
 import tkinter.font as tkfont
-from PIL import ImageTk, Image
+
 
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
@@ -22,26 +22,6 @@ import os
 from openpyxl import Workbook, load_workbook
 import datetime
 
-from json import load
-with open('config.json', 'r') as f:
-    config = load(f)
-    del f
-
-
-def make_GUI_config():
-    node_config = config["System"]["node"]
-    attr_config = config["System"]["attribute"]
-
-    GUI_config = {}
-    for name in node_config:
-        for attr, value in node_config[name].items():
-            GUI_config[f"{name}_{attr}"] = value["GUI"]
-    for name, value in attr_config.items():
-        GUI_config[f"{name}"] = value["GUI"]
-
-    return GUI_config
-
-
 
 class P_and_I_Diagram(tk.Frame):
     offset_x = 50
@@ -53,8 +33,8 @@ class P_and_I_Diagram(tk.Frame):
         self.canvasID = {}
 
         ''' load config'''
-        self.photo_config = config["GUI"]
-        self.GUI_config = make_GUI_config()
+        # self.photo_config = config["GUI"]
+        # self.GUI_config = make_GUI_config()
         self.font = self.photo_config["font"]
         self.scaling_factor = self.photo_config["scaling_factor"]
         self.fontsize = self.scaling(self.photo_config["fontsize"])
@@ -62,10 +42,8 @@ class P_and_I_Diagram(tk.Frame):
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
-        image = Image.open(self.photo_config["path"])
-        w, h = self.scaling(image.width), self.scaling(image.height)
-        image = image.resize((w, h), Image.ANTIALIAS)
-        self.img = ImageTk.PhotoImage(image)
+        
+
         # create the canvas, size in pixels
         self.canvas = tk.Canvas(
             master, width=self.img.width(), height=self.img.height(), bg='white')
@@ -93,9 +71,6 @@ class P_and_I_Diagram(tk.Frame):
 
     def create_img(self):
         pass
-        
-    def scaling(self, value):
-        return int(value * self.scaling_factor)
     
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
