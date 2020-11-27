@@ -9,39 +9,16 @@ Created on Fri Nov 27 23:19:47 2020
 from json import load
 from PIL import ImageTk, Image
 
-
-class DictX(dict):
-    def __getattr__(self, key):
-        try:
-            return self[key]
-        except KeyError as k:
-            raise AttributeError(k)
-
-    def __setattr__(self, key, value):
-        self[key] = value
-
-    def __delattr__(self, key):
-        try:
-            del self[key]
-        except KeyError as k:
-            raise AttributeError(k)
-
-def dictx(func):
-    def warp():
-        return DictX(func())
-    return warp
-
-@dictx
+''' import config '''
 def _import_config():
     with open('config.json', 'r') as f:
-        config = load(f)
+        config = load(f)        
         del f
     return config
 
 config = _import_config()
 
-''' --- '''
-
+''' import label config '''
 def _make_LABEL_config():
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
@@ -58,9 +35,17 @@ def _make_LABEL_config():
 
 LABEL = _make_LABEL_config()
 
-GUI = DictX(config["GUI"])
+''' import GUI config '''
+def _make_GUI_config():
+    return config["GUI"]
 
-image = Image.open(GUI["path"])
+GUI = _make_GUI_config()
+
+''' import  '''
+
+GUI.img = Image.open(GUI.path)
+
+print(type(config["System"]))
 
 # w, h = self.scaling(image.width), self.scaling(image.height)
 # image = image.resize((w, h), Image.ANTIALIAS)
