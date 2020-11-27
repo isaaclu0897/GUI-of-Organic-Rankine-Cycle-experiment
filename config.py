@@ -7,9 +7,9 @@ Created on Fri Nov 27 23:19:47 2020
 """
 
 from json import load
-from PIL import ImageTk, Image
-import tkinter as tk
-tk.Tk() # avoid [Too early to create image]
+from PIL import Image
+from PIL import ImageTk
+
 
 ''' import config '''
 
@@ -58,8 +58,9 @@ def _resize(value):
     return int(value * GUI["scaling_factor"])
 
 
-GUI["_image"] = Image.open(GUI["path"])
-GUI["_image"] = GUI["_image"].resize(
-    (_resize(GUI["_image"].width), _resize(GUI["_image"].height)), Image.ANTIALIAS)
-GUI["photo"] = ImageTk.PhotoImage(GUI["_image"])
+GUI["image"] = Image.open(GUI["path"])
+GUI["image"] = GUI["image"].resize(
+    (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
 
+def import_photo():
+    return ImageTk.PhotoImage(GUI["image"])

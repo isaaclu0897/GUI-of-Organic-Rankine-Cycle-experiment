@@ -21,7 +21,8 @@ from ORC_sample import initNode, setAndCalcNode
 import os
 from openpyxl import Workbook, load_workbook
 import datetime
-
+import config as cfg
+from PIL import ImageTk
 
 class P_and_I_Diagram(tk.Frame):
     offset_x = 50
@@ -35,22 +36,23 @@ class P_and_I_Diagram(tk.Frame):
         ''' load config'''
         # self.photo_config = config["GUI"]
         # self.GUI_config = make_GUI_config()
-        self.font = self.photo_config["font"]
-        self.scaling_factor = self.photo_config["scaling_factor"]
-        self.fontsize = self.scaling(self.photo_config["fontsize"])
-
+        self.font = ""
+        self.scaling_factor = cfg.GUI["scaling_factor"]
+        self.fontsize = cfg.GUI["fontsize"]
+        
         ''' load img and create canvas'''
         # load the .gif image file, put gif file here
         # test gif, png and jpg, jpg can't use
-        
-
+        self.photo = cfg.import_photo()
         # create the canvas, size in pixels
-        self.canvas = tk.Canvas(
-            master, width=self.img.width(), height=self.img.height(), bg='white')
+        self.canvas = tk.Canvas(master,
+                                width=self.photo.width(),
+                                height=self.photo.height(),
+                                bg='white')
         self.canvas.pack(expand=1, fill=tk.BOTH)
         # put gif image on canvas
         # pic's upper left corner (NW) on the canvas is at x=50 y=10
-        self.canvas.create_image(0, 0, image=self.img, anchor=tk.NW)
+        self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
         ''''font'''
         self.fontprop = tkfont.Font(
@@ -71,14 +73,15 @@ class P_and_I_Diagram(tk.Frame):
 
     def create_img(self):
         pass
-    
+
     def create_text(self, posx, posy, text):
         return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 
     def set_Labels(self):
-        for k, v in self.GUI_config.items():
-            v["posx"], v["posy"] = self.scaling(v["posx"]), self.scaling(v["posy"])
-            # pass 
+        for k, v in cfg.LABEL.items():
+            # v["posx"], v["posy"] = self.scaling(
+            #     v["posx"]), self.scaling(v["posy"])
+            # pass
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
             label_name = k.split("_")[-1]
@@ -95,13 +98,17 @@ class P_and_I_Diagram(tk.Frame):
                 unit = "kg/s"
             else:
                 unit = "?"
-            
+
             if unit in ["C", "B"]:
-                self.create_text(v["posx"], v["posy"], text=f"{label_name:<7}{'':^5}{unit:>5}")
-                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
+                self.create_text(v["posx"], v["posy"],
+                                 text=f"{label_name:<7}{'':^5}{unit:>5}")
+                self.canvasID[f"{k}"] = self.create_text(
+                    v["posx"], v["posy"], text=f"{'None':^6}")
             else:
-                self.create_text(v["posx"], v["posy"], text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
-                self.canvasID[f"{k}"] = self.create_text(v["posx"], v["posy"], text=f"{'None':^6}")
+                self.create_text(v["posx"], v["posy"],
+                                 text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
+                self.canvasID[f"{k}"] = self.create_text(
+                    v["posx"], v["posy"], text=f"{'None':^6}")
 
     def update_canvas_value(self, itemID, vlaue):
         self.canvas.itemconfigure(itemID, text=str(vlaue))
