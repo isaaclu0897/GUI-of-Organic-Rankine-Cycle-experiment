@@ -6,7 +6,9 @@ Created on Fri Nov 27 23:19:47 2020
 @author: wei
 """
 
+from json import load
 from PIL import ImageTk, Image
+
 
 class DictX(dict):
     def __getattr__(self, key):
@@ -24,10 +26,21 @@ class DictX(dict):
         except KeyError as k:
             raise AttributeError(k)
 
-from json import load
-with open('config.json', 'r') as f:
-    config = load(f)
-    del f
+def dictx(func):
+    def warp():
+        return DictX(func())
+    return warp
+
+@dictx
+def _import_config():
+    with open('config.json', 'r') as f:
+        config = load(f)
+        del f
+    return config
+
+config = _import_config()
+
+''' --- '''
 
 def _make_LABEL_config():
     node_config = config["System"]["node"]
@@ -41,6 +54,7 @@ def _make_LABEL_config():
         LABEL_config[f"{name}"] = value["GUI"]
 
     return LABEL_config
+
 
 LABEL = _make_LABEL_config()
 
