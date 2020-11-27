@@ -8,17 +8,24 @@ Created on Fri Nov 27 23:19:47 2020
 
 from json import load
 from PIL import ImageTk, Image
+import tkinter as tk
+tk.Tk() # avoid [Too early to create image]
 
 ''' import config '''
+
+
 def _import_config():
     with open('config.json', 'r') as f:
-        config = load(f)        
+        config = load(f)
         del f
     return config
+
 
 config = _import_config()
 
 ''' import label config '''
+
+
 def _make_LABEL_config():
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
@@ -36,20 +43,23 @@ def _make_LABEL_config():
 LABEL = _make_LABEL_config()
 
 ''' import GUI config '''
+
+
 def _make_GUI_config():
     return config["GUI"]
 
+
 GUI = _make_GUI_config()
 
-''' import  '''
+''' import photo '''
 
-GUI.img = Image.open(GUI.path)
 
-print(type(config["System"]))
+def _resize(value):
+    return int(value * GUI["scaling_factor"])
 
-# w, h = self.scaling(image.width), self.scaling(image.height)
-# image = image.resize((w, h), Image.ANTIALIAS)
-# self.img = ImageTk.PhotoImage(image)
 
-#     def scaling(self, value):
-#         return int(value * self.scaling_factor)
+GUI["_image"] = Image.open(GUI["path"])
+GUI["_image"] = GUI["_image"].resize(
+    (_resize(GUI["_image"].width), _resize(GUI["_image"].height)), Image.ANTIALIAS)
+GUI["photo"] = ImageTk.PhotoImage(GUI["_image"])
+
