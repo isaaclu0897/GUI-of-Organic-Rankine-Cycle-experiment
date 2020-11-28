@@ -10,7 +10,7 @@ import visa  # you need agilent io lib
 import node
 from tabulate_text import ORC_status
 import config as cfg
-import realtime_data as d
+from realtime_data import data
 
 # =============================================================================
 # load the data
@@ -112,7 +112,7 @@ class test_device:
     def query(self, query):
         value = "0"
         query = query.split(",")[-1]
-        print(query)
+        # print(query)
         if query == "(@101)":
             value = "21.8600"
         elif query == "(@102)":
@@ -153,20 +153,21 @@ class test_V34972A:
         self.device = test_device()
 
     def scan(self):
+        print("scan_data")
         for ch, items in cfg.SENSOR.items():
             name = items["name"]
             sensor_type = items["type"]
-            print(name, sensor_type)
+            # print(name, sensor_type)
             if "T" == sensor_type:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
-                d.data[f"{name}"].t = float(t)
+                data[f"{name}"].t = float(t)
             elif sensor_type in ["Ti", "To"]:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
-                d.data[f"{name}_T"] = float(t)
+                data[f"{name}_T"] = float(t)
             elif "P" == sensor_type:
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
                 self.device.write(query)
@@ -175,16 +176,16 @@ class test_V34972A:
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
                 self.device.write(query)
                 p = self.device.query(f':READ?,({ch})')
-                d.data[f"{name}"].p = float(p)
+                data[f"{name}"].p = float(p)
             else:
                 pass
-        return d.data
+        return data
 
 
 if __name__ == "__main__":
     # scan()
     # pass
     dev = test_V34972A()
-    data = dev.scan()
-    print(data)
+    a = dev.scan()
+    print(a)
     # print(nodes)

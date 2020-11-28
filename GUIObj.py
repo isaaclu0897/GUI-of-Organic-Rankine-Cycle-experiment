@@ -22,7 +22,8 @@ import os
 from openpyxl import Workbook, load_workbook
 import datetime
 import config as cfg
-from PIL import ImageTk
+import agilent_load as agilent
+from realtime_data import data
 
 
 class P_and_I_Diagram(tk.Frame):
@@ -52,6 +53,8 @@ class P_and_I_Diagram(tk.Frame):
 
         ''''set label'''
         self.set_Labels()
+        
+
 
         # set label of efficiency
         # fontTitle = tkfont.Font(
@@ -68,10 +71,6 @@ class P_and_I_Diagram(tk.Frame):
 
     def set_Labels(self):
         for k, v in cfg.LABEL.items():
-            # v["posx"], v["posy"] = self.scaling(
-            #     v["posx"]), self.scaling(v["posy"])
-            # pass
-            print(v)
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
             label_name = k.split("_")[-1]
@@ -131,6 +130,9 @@ class P_and_I_Diagram(tk.Frame):
 #         self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
 #     def update_mdotWater(self, mdotWater_num):
 #         self.mdotWater = mdotWater_num
+    def update(self):
+        self.update_canvas_value(3, 55)
+        pass
     def update_data(self, nodesSys, nodesHX):
         for i in range(len(nodesSys)):
             self.update_state(i+1, nodesSys[i])
@@ -299,14 +301,16 @@ class Scan_button(tk.Frame):
             command=lambda: btn_cmd_loop(self.update_diagram))
         button.pack()
 
-        ''' init v34970a '''
+        ''' init v34970A '''
+        self.dev = agilent.test_V34972A()
 
     def update_diagram(self):
         print("update_diagram")
 
         def innerfunc(text):
             print(text)
-            self.scan_data()
+            self.dev.scan()
+            self.calc_nodes()
             self.update_P_and_I_Diagram()
             self.update_T_s_Diagram()
         # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
@@ -329,12 +333,14 @@ class Scan_button(tk.Frame):
                 return 0
 
         timer(innerfunc, 3, "**kw")
-
-    def scan_data():
-        print("scan_data")
-
+    
+    def calc_nodes(self):
+        print("calc_nodes")
+        print(data)
+        
     def update_P_and_I_Diagram(self):
         print("update P&ID")
+        print(self.master)
 
     def update_T_s_Diagram(self):
         print("update T-s Diagram")
