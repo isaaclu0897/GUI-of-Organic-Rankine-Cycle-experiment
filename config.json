@@ -273,86 +273,13 @@
             "cooler_out"
         ]
     ],
-    "P&ID": {
-        "photo": "./fig/500w_P&ID.png",
-        "P&T_Labels": {
-            "node1": {
-                "posx": 120,
-                "posy": 410
-            },
-            "node2": {
-                "posx": 100,
-                "posy": 110
-            },
-            "node3": {
-                "posx": 450,
-                "posy": 140
-            },
-            "node4": {
-                "posx": 380,
-                "posy": 480
-            }
-        },
-        "T_Labels": {
-            "heater_in": {
-                "posx": 500,
-                "posy": 50
-            },
-            "heater_out": {
-                "posx": 500,
-                "posy": 80
-            },
-            "cooler_in": {
-                "posx": 500,
-                "posy": 615
-            },
-            "cooler_out": {
-                "posx": 500,
-                "posy": 645
-            }
-        },
-        "Labels": {
-            "mdot": {
-                "unit": "kW",
-                "posx": 110,
-                "posy": 500
-            },
-            "Win": {
-                "unit": "kW",
-                "posx": 110,
-                "posy": 530
-            },
-            "Qin": {
-                "unit": "kW",
-                "posx": 110,
-                "posy": 560
-            },
-            "Wout": {
-                "unit": "kW",
-                "posx": 110,
-                "posy": 590
-            },
-            "Qout": {
-                "unit": "kW",
-                "posx": 110,
-                "posy": 620
-            },
-            "Eff": {
-                "unit": "%",
-                "posx": 110,
-                "posy": 650
-            },
-            "Effi": {
-                "unit": "%",
-                "posx": 110,
-                "posy": 680
-            }
-        }
-    },
     "GUI": {
         "path": "./fig/500w_P&ID.png",
-        "scaling_factor" : 0.8,
+        "scaling_factor": 0.8,
         "font": "",
         "fontsize": 18
+    },
+    "v34970A":{
+        "USB_address" : "USB0::0x0957::0x2007::MY49017447::0::INSTR"
     }
 }

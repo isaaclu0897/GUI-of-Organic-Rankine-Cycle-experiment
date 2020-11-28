@@ -10,13 +10,17 @@ from json import load
 from PIL import Image
 from PIL import ImageTk
 
-''' resize function '''
+
 def _resize(value):
+    ''' resize function '''
     return int(value * config["GUI"]["scaling_factor"])
 
-''' import config '''
+
+# %%
+
 
 def _import_config():
+    ''' import config '''
     with open('config.json', 'r') as f:
         config = load(f)
         del f
@@ -24,9 +28,11 @@ def _import_config():
 
 
 config = _import_config()
+# %%
 
-''' import label config '''
+
 def _make_LABEL_config():
+    ''' import label config '''
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
 
@@ -39,33 +45,46 @@ def _make_LABEL_config():
 
     return LABEL_config
 
+
 def _resize_LABEL_config():
     for key, GUI_attr in LABEL.items():
         GUI_attr["posx"] = _resize(GUI_attr["posx"])
         GUI_attr["posy"] = _resize(GUI_attr["posy"])
 
+
 LABEL = _make_LABEL_config()
 _resize_LABEL_config()
+# %%
 
-''' import GUI config '''
 
 def _make_GUI_config():
+    ''' import GUI config '''
     return config["GUI"]
+
+
 def _resize_GUI_fontsize():
     GUI["fontsize"] = _resize(GUI["fontsize"])
+
 
 GUI = _make_GUI_config()
 _resize_GUI_fontsize()
 
-''' import photo
-load the .gif image file, put gif file here
-test gif, png and jpg, jpg can't use
-'''
+
 GUI["image"] = Image.open(GUI["path"])
 GUI["image"] = GUI["image"].resize(
     (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
 
+
 def import_photo():
+    ''' import photo
+    load the .gif image file, put gif file here
+    test gif, png and jpg, jpg can't use
+    '''
     return ImageTk.PhotoImage(GUI["image"])
 
+#%%
 
+def _import_v34970A():
+    return config["v34970A"]
+
+v34970A = _import_v34970A()

@@ -24,6 +24,7 @@ import datetime
 import config as cfg
 from PIL import ImageTk
 
+
 class P_and_I_Diagram(tk.Frame):
     offset_x = 50
     offset_y = 30
@@ -32,7 +33,7 @@ class P_and_I_Diagram(tk.Frame):
         tk.Frame.__init__(self, master=None)
 
         self.canvasID = {}
-        
+
         ''' load img and create canvas '''
         self.photo = cfg.import_photo()
         # create the canvas, size in pixels
@@ -46,7 +47,8 @@ class P_and_I_Diagram(tk.Frame):
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
         ''''font'''
-        self.fontprop = tkfont.Font(size=cfg.GUI["fontsize"])  # bitstream charter or courier 10 pitch
+        self.fontprop = tkfont.Font(
+            size=cfg.GUI["fontsize"])  # bitstream charter or courier 10 pitch
 
         ''''set label'''
         self.set_Labels()
@@ -61,17 +63,15 @@ class P_and_I_Diagram(tk.Frame):
         # self.canvasID["{}_value".format(name)] = self.canvas.create_text(
         #     300, 350, text="None", fill='green', font=fontTitle)
 
-    def create_img(self):
-        pass
-
-    def create_text(self, posx, posy, text):
-        return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
+    def create_text(self, x, y, t):
+        return self.canvas.create_text(x, y, text=t, fill='blue', font=self.fontprop)
 
     def set_Labels(self):
         for k, v in cfg.LABEL.items():
             # v["posx"], v["posy"] = self.scaling(
             #     v["posx"]), self.scaling(v["posy"])
             # pass
+            print(v)
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
             label_name = k.split("_")[-1]
@@ -91,14 +91,14 @@ class P_and_I_Diagram(tk.Frame):
 
             if unit in ["C", "B"]:
                 self.create_text(v["posx"], v["posy"],
-                                 text=f"{label_name:<7}{'':^5}{unit:>5}")
+                                 f"{label_name:<7}{'':^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(
-                    v["posx"], v["posy"], text=f"{'None':^6}")
+                    v["posx"], v["posy"], f"{'None':^6}")
             else:
                 self.create_text(v["posx"], v["posy"],
-                                 text=f"{label_name:<5}{' '*16:^5}{unit:>5}")
+                                 f"{label_name:<5}{' '*16:^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(
-                    v["posx"], v["posy"], text=f"{'None':^6}")
+                    v["posx"], v["posy"], f"{'None':^6}")
 
     def update_canvas_value(self, itemID, vlaue):
         self.canvas.itemconfigure(itemID, text=str(vlaue))
