@@ -67,42 +67,6 @@
                         "posy": 510
                     }
                 }
-            },
-            "heater-in": {
-                "Ti": {
-                    "sensor": "@105",
-                    "GUI": {
-                        "posx": 530,
-                        "posy": 50
-                    }
-                }
-            },
-            "heater-out": {
-                "To": {
-                    "sensor": "@106",
-                    "GUI": {
-                        "posx": 530,
-                        "posy": 80
-                    }
-                }
-            },
-            "cooler-in": {
-                "Ti": {
-                    "sensor": "@107",
-                    "GUI": {
-                        "posx": 570,
-                        "posy": 655
-                    }
-                }
-            },
-            "cooler-out": {
-                "To": {
-                    "sensor": "@108",
-                    "GUI": {
-                        "posx": 570,
-                        "posy": 685
-                    }
-                }
             }
         },
         "attribute": {
@@ -177,6 +141,46 @@
             }
         }
     },
+    "OtherSystem": {
+        "node": {
+            "heater-in": {
+                "Ti": {
+                    "sensor": "@105",
+                    "GUI": {
+                        "posx": 530,
+                        "posy": 50
+                    }
+                }
+            },
+            "heater-out": {
+                "To": {
+                    "sensor": "@106",
+                    "GUI": {
+                        "posx": 530,
+                        "posy": 80
+                    }
+                }
+            },
+            "cooler-in": {
+                "Ti": {
+                    "sensor": "@107",
+                    "GUI": {
+                        "posx": 570,
+                        "posy": 655
+                    }
+                }
+            },
+            "cooler-out": {
+                "To": {
+                    "sensor": "@108",
+                    "GUI": {
+                        "posx": 570,
+                        "posy": 685
+                    }
+                }
+            }
+        }
+    },
     "line": [
         [
             "p",
@@ -215,7 +219,7 @@
         "font": "",
         "fontsize": 18
     },
-    "v34970A":{
-        "USB_address" : "USB0::0x0957::0x2007::MY49017447::0::INSTR"
+    "v34970A": {
+        "USB_address": "USB0::0x0957::0x2007::MY49017447::0::INSTR"
     }
 }

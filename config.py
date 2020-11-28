@@ -35,11 +35,17 @@ def _make_LABEL_config():
     ''' import label config '''
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
+    node_config_o = config["OtherSystem"]["node"]
 
     LABEL_config = {}
     for name in node_config:
         for attr, value in node_config[name].items():
-            LABEL_config[f"{name}_{attr}"] = value["GUI"]
+            if "GUI" in value:
+                LABEL_config[f"{name}_{attr}"] = value["GUI"]
+    for name in node_config_o:
+        for attr, value in node_config_o[name].items():
+            if "GUI" in value:
+                LABEL_config[f"{name}_{attr}"] = value["GUI"]
     for name, value in attr_config.items():
         LABEL_config[f"{name}"] = value["GUI"]
 
@@ -95,15 +101,23 @@ def _make_SENSOR_config():
     ''' import sensor config '''
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
+    node_config_o = config["OtherSystem"]["node"]
 
     SENSOR_config = {}
     for name in node_config:
         for attr, value in node_config[name].items():
             if "sensor" in value:
-                SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+                # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+                SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : attr	}
+    for name in node_config_o:
+        for attr, value in node_config_o[name].items():
+            if "sensor" in value:
+                # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+                SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : attr	}
     for name, value in attr_config.items():
         if "sensor" in value:
-            SENSOR_config[f"{name}"] = value["sensor"]
+            # SENSOR_config[f"{name}"] = value["sensor"]
+            SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : name	}
 
     return SENSOR_config 
 

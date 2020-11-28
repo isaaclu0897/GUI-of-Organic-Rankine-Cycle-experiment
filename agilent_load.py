@@ -71,7 +71,7 @@ def scan():
 #    rm.close()
 
 
-nodes = {}
+data = {}
 
 
 class V34972A:
@@ -115,6 +115,20 @@ class test_device:
         query = query.split(",")[-1]
         if query == "(@101)":
             value = "25.5000"
+        elif query == "(@102)":
+            value = "26.5000"
+        elif query == "(@103)":
+            value = "80.5000"
+        elif query == "(@104)":
+            value = "65.5000"
+        elif query == "(@105)":
+            value = "100.5000"
+        elif query == "(@106)":
+            value = "81.5000"
+        elif query == "(@107)":
+            value = "25.5000"
+        elif query == "(@108)":
+            value = "31.5000"
         
         return value
     def write(self, query):
