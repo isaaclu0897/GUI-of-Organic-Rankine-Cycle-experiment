@@ -20,6 +20,22 @@
                     }
                 }
             },
+            "pump_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                }
+            },
             "evaporator_in": {
                 "T": {
                     "sensor": "@102",
@@ -52,6 +68,38 @@
                     }
                 }
             },
+            "expander_in": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                }
+            },
+            "expander_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                }
+            },
             "condenser_in": {
                 "T": {
                     "sensor": "@104",
@@ -65,6 +113,22 @@
                     "GUI": {
                         "posx": 430,
                         "posy": 510
+                    }
+                }
+            },
+            "condenser_out": {
+                "T": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
+                    }
+                },
+                "P": {
+                    "sensor": 1,
+                    "GUI": {
+                        "posx": 0,
+                        "posy": 0
                     }
                 }
             },

@@ -88,3 +88,23 @@ def _import_v34970A():
     return config["v34970A"]
 
 v34970A = _import_v34970A()
+
+#%%
+
+def _make_SENSOR_config():
+    ''' import sensor config '''
+    node_config = config["System"]["node"]
+    attr_config = config["System"]["attribute"]
+
+    SENSOR_config = {}
+    for name in node_config:
+        for attr, value in node_config[name].items():
+            if "sensor" in value:
+                SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+    for name, value in attr_config.items():
+        if "sensor" in value:
+            SENSOR_config[f"{name}"] = value["sensor"]
+
+    return SENSOR_config 
+
+SENSOR = _make_SENSOR_config()

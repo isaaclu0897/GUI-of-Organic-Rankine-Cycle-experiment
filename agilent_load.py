@@ -70,28 +70,30 @@ def scan():
 
 #    rm.close()
 
+nodes = {}
 
 class V34972A:
+    probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
+    range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
+    gain_PRESS, state_PRESS = 2.1, 1
+
     def __init__(self):
         rm = visa.ResourceManager()
-        v34972A = rm.open_resource(cfg.v34972A["USB_address"])
+        self.device = rm.open_resource(cfg.v34972A["USB_address"])
+        
 
-        probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
-        range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
-        gain_PRESS, state_PRESS = 2.1, 1
+    def scan(self):
+        self.device.query(':MEASure:TEMPerature? %s,%s,(%s)' % (
+            self.probe_type_TEMP, self.type_TEMP, self.ch_TEMP))
 
-        v34972A.query(':MEASure:TEMPerature? %s,%s,(%s)' %
-                      (probe_type_TEMP, type_TEMP, ch_TEMP))
-
-        v34972A.write(':CONFigure:VOLTage:DC %G,%G,(%s)' %
-                      (range_PRESS, resolution_PRESS, ch_PRESS))
-        v34972A.write(':CALCulate:SCALe:GAIN %G,(%s)' % (gain_PRESS, ch_PRESS))
-        v34972A.write(':CALCulate:SCALe:STATe %d,(%s)' %
-                      (state_PRESS, ch_PRESS))
-
-        # scans_TEMP
+        self.device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (
+            self.range_PRESS, self.resolution_PRESS, self.ch_PRESS))
+        self.device.write(':CALCulate:SCALe:GAIN %G,(%s)' %
+                          (self.gain_PRESS, self.ch_PRESS))
+        self.device.write(':CALCulate:SCALe:STATe %d,(%s)' %
+                          (self.state_PRESS, self.ch_PRESS))
 
 
 if __name__ == "__main__":
     # scan()
-    dev = V34972A()
+    pass
