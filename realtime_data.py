@@ -26,6 +26,9 @@ _make_system_attr_shell()
 def _make_other_system_nodes_shell():
     for name in cfg.config["OtherSystem"]["node"]:
         for attr in cfg.config["OtherSystem"]["node"][f"{name}"]:
-            data[f"{name}"] = {f"{attr}":0}
+            data[f"{name}_T"] = 0
 
 _make_other_system_nodes_shell()
+
+if __name__ == "__main__":
+    print(data)

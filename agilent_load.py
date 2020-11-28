@@ -103,7 +103,13 @@ class V34972A:
                 nodes[f"{name}"].p = float(p)
             else:
                 pass
-
+    pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
+    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2, 'P' : 6.44, 'T' : 22.55}
+    EVPo  = {'name' : 'evaparator_outlet',  'nid' : 3, 'P' : 6.11, 'T' : 88.31}
+    EXPi  = {'name' : 'expander_inlet',     'nid' : 4, 'P' : 6.27, 'T' : 88.28}
+    EXPo  = {'name' : 'expander_outlet',    'nid' : 5, 'P' : 2.05, 'T' : 64.03}
+    CDSi  = {'name' : 'condenser_inlet',    'nid' : 6, 'P' : 1.99, 'T' : 56.68}
+    CDSo  = {'name' : 'condenser_outlet',   'nid' : 7, 'P' : 1.98, 'T' : 22.12}
 
 class test_device:
     def __init__(self):
@@ -111,22 +117,31 @@ class test_device:
     def query(self, query):
         value = "0"
         query = query.split(",")[-1]
+        print(query)
         if query == "(@101)":
-            value = "25.5000"
+            value = "21.8600"
         elif query == "(@102)":
-            value = "26.5000"
+            value = "22.5500"
         elif query == "(@103)":
-            value = "80.5000"
+            value = "88.3100"
         elif query == "(@104)":
-            value = "65.5000"
+            value = "64.0300"
         elif query == "(@105)":
             value = "100.5000"
         elif query == "(@106)":
-            value = "81.5000"
+            value = "90.5000"
         elif query == "(@107)":
             value = "25.5000"
         elif query == "(@108)":
-            value = "31.5000"
+            value = "35.5000"
+        elif query == "(@201)":
+            value = "2.01000"
+        elif query == "(@202)":
+            value = "6.44000"
+        elif query == "(@203)":
+            value = "6.11000"
+        elif query == "(@204)":
+            value = "2.05000"
         
         return value
     def write(self, query):
@@ -143,34 +158,39 @@ class test_V34972A:
         self.device = test_device()
 
     def scan(self):
-        for k, ch in cfg.SENSOR.items():
-            name =  k.split("_")[0]
-            sensor_type = k.split("_")[-1]
-            if name not in nodes:
-                nodes[f"{name}"] = node.Node()
-
-            if "T" in sensor_type:
+        for ch, items in cfg.SENSOR.items():
+            name =  items["name"]
+            sensor_type = items["type"]
+            print(name, sensor_type)
+            if "T" == sensor_type:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
-                print(query)
                 t = self.device.query(query)
-                nodes[f"{name}"].t = float(t)
-            elif "P" in sensor_type:
+                d.data[f"{name}"].t = float(t)
+            elif sensor_type in ["Ti", "To"]:
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    'TCouple', 'T', ch)
+                t = self.device.query(query)
+                d.data[f"{name}_T"] = float(t)
+            elif "P" == sensor_type:
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
                 self.device.write(query)
                 query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
                 self.device.write(query)
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
                 self.device.write(query)
-                p = self.device.query(':READ?')
-                nodes[f"{name}"].p = float(p)
+                # p = self.device.query(':READ?')
+                p = self.device.query(f':READ?,({ch})')
+                d.data[f"{name}"].p = float(p)
             else:
                 pass
+        return d.data
 
 
 if __name__ == "__main__":
     # scan()
-    pass
-    # dev = test_V34972A()
-    # dev.scan()
+    # pass
+    dev = test_V34972A()
+    data = dev.scan()
+    print(data)
     # print(nodes)
