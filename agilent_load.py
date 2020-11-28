@@ -103,17 +103,12 @@ class V34972A:
                 nodes[f"{name}"].p = float(p)
             else:
                 pass
-    pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
-    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2, 'P' : 6.44, 'T' : 22.55}
-    EVPo  = {'name' : 'evaparator_outlet',  'nid' : 3, 'P' : 6.11, 'T' : 88.31}
-    EXPi  = {'name' : 'expander_inlet',     'nid' : 4, 'P' : 6.27, 'T' : 88.28}
-    EXPo  = {'name' : 'expander_outlet',    'nid' : 5, 'P' : 2.05, 'T' : 64.03}
-    CDSi  = {'name' : 'condenser_inlet',    'nid' : 6, 'P' : 1.99, 'T' : 56.68}
-    CDSo  = {'name' : 'condenser_outlet',   'nid' : 7, 'P' : 1.98, 'T' : 22.12}
+
 
 class test_device:
     def __init__(self):
         pass
+
     def query(self, query):
         value = "0"
         query = query.split(",")[-1]
@@ -142,10 +137,12 @@ class test_device:
             value = "6.11000"
         elif query == "(@204)":
             value = "2.05000"
-        
+
         return value
+
     def write(self, query):
         pass
+
 
 class test_V34972A:
     # probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
@@ -153,13 +150,11 @@ class test_V34972A:
     # gain_PRESS, state_PRESS = 2.1, 1
 
     def __init__(self):
-        pass
-        # rm = visa.ResourceManager()
         self.device = test_device()
 
     def scan(self):
         for ch, items in cfg.SENSOR.items():
-            name =  items["name"]
+            name = items["name"]
             sensor_type = items["type"]
             print(name, sensor_type)
             if "T" == sensor_type:
@@ -179,7 +174,6 @@ class test_V34972A:
                 self.device.write(query)
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
                 self.device.write(query)
-                # p = self.device.query(':READ?')
                 p = self.device.query(f':READ?,({ch})')
                 d.data[f"{name}"].p = float(p)
             else:
