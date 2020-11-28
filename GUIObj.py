@@ -32,17 +32,8 @@ class P_and_I_Diagram(tk.Frame):
         tk.Frame.__init__(self, master=None)
 
         self.canvasID = {}
-
-        ''' load config'''
-        # self.photo_config = config["GUI"]
-        # self.GUI_config = make_GUI_config()
-        self.font = ""
-        self.scaling_factor = cfg.GUI["scaling_factor"]
-        self.fontsize = cfg.GUI["fontsize"]
         
-        ''' load img and create canvas'''
-        # load the .gif image file, put gif file here
-        # test gif, png and jpg, jpg can't use
+        ''' load img and create canvas '''
         self.photo = cfg.import_photo()
         # create the canvas, size in pixels
         self.canvas = tk.Canvas(master,
@@ -55,8 +46,7 @@ class P_and_I_Diagram(tk.Frame):
         self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
 
         ''''font'''
-        self.fontprop = tkfont.Font(
-            family=self.font, size=self.fontsize)  # bitstream charter or courier 10 pitch
+        self.fontprop = tkfont.Font(size=cfg.GUI["fontsize"])  # bitstream charter or courier 10 pitch
 
         ''''set label'''
         self.set_Labels()

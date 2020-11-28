@@ -14,5 +14,10 @@ print(cfg.LABEL)
 print("\n----- GUI -----")
 print(cfg.GUI)
 
-print("\n----- GUI -----")
-
+print("\n----- font -----")
+def list_font():
+    import tkinter as tk
+    import tkinter.font as tkFont
+    tk.Tk()
+    return list(tkFont.families())
+print(list_font())

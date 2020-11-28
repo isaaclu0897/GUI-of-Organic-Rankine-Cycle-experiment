@@ -57,12 +57,15 @@ def _resize_GUI_fontsize():
 GUI = _make_GUI_config()
 _resize_GUI_fontsize()
 
-''' import photo '''
-
-
+''' import photo
+load the .gif image file, put gif file here
+test gif, png and jpg, jpg can't use
+'''
 GUI["image"] = Image.open(GUI["path"])
 GUI["image"] = GUI["image"].resize(
     (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
 
 def import_photo():
     return ImageTk.PhotoImage(GUI["image"])
+
+
