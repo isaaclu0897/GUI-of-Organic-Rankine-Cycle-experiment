@@ -2,7 +2,7 @@
     "json_formator_onlone": "https://jsoneditoronline.org/#right=local.tekuxo&left=local.sofufe",
     "System": {
         "node": {
-            "pump_in": {
+            "pump-in": {
                 "T": {
                     "sensor": "@101",
                     "GUI": {
@@ -20,7 +20,7 @@
                     }
                 }
             },
-            "evaporator_in": {
+            "evaporator-in": {
                 "T": {
                     "sensor": "@102",
                     "GUI": {
@@ -36,7 +36,7 @@
                     }
                 }
             },
-            "evaporator_out": {
+            "evaporator-out": {
                 "T": {
                     "sensor": "@103",
                     "GUI": {
@@ -52,7 +52,7 @@
                     }
                 }
             },
-            "condenser_in": {
+            "condenser-in": {
                 "T": {
                     "sensor": "@104",
                     "GUI": {
@@ -68,7 +68,7 @@
                     }
                 }
             },
-            "heater_in": {
+            "heater-in": {
                 "Ti": {
                     "sensor": "@105",
                     "GUI": {
@@ -77,7 +77,7 @@
                     }
                 }
             },
-            "heater_out": {
+            "heater-out": {
                 "To": {
                     "sensor": "@106",
                     "GUI": {
@@ -86,7 +86,7 @@
                     }
                 }
             },
-            "cooler_in": {
+            "cooler-in": {
                 "Ti": {
                     "sensor": "@107",
                     "GUI": {
@@ -95,7 +95,7 @@
                     }
                 }
             },
-            "cooler_out": {
+            "cooler-out": {
                 "To": {
                     "sensor": "@108",
                     "GUI": {

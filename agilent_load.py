@@ -70,30 +70,94 @@ def scan():
 
 #    rm.close()
 
+
 nodes = {}
 
+
 class V34972A:
-    probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
-    range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
-    gain_PRESS, state_PRESS = 2.1, 1
+    # probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
+    # range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
+    # gain_PRESS, state_PRESS = 2.1, 1
 
     def __init__(self):
         rm = visa.ResourceManager()
         self.device = rm.open_resource(cfg.v34972A["USB_address"])
-        
 
     def scan(self):
-        self.device.query(':MEASure:TEMPerature? %s,%s,(%s)' % (
-            self.probe_type_TEMP, self.type_TEMP, self.ch_TEMP))
+        for k, ch in cfg.SENSOR.items():
+            name, sensor_type = k.split("_")
+            if name not in nodes:
+                nodes[f"{name}"] = node.Node()
 
-        self.device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' % (
-            self.range_PRESS, self.resolution_PRESS, self.ch_PRESS))
-        self.device.write(':CALCulate:SCALe:GAIN %G,(%s)' %
-                          (self.gain_PRESS, self.ch_PRESS))
-        self.device.write(':CALCulate:SCALe:STATe %d,(%s)' %
-                          (self.state_PRESS, self.ch_PRESS))
+            if "T" in sensor_type:
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    'TCouple', 'T', ch)
+                t = self.device.query(query)
+                nodes[f"{name}"].t = float(t)
+            elif "P" in sensor_type:
+                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
+                self.device.write(query)
+                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
+                self.device.write(query)
+                query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
+                self.device.write(query)
+                p = self.device.query(':READ?')
+                nodes[f"{name}"].p = float(p)
+            else:
+                pass
+
+
+class test_device:
+    def __init__(self):
+        pass
+    def query(self, query):
+        value = "0"
+        query = query.split(",")[-1]
+        if query == "(@101)":
+            value = "25.5000"
+        
+        return value
+    def write(self, query):
+        pass
+
+class test_V34972A:
+    # probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
+    # range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
+    # gain_PRESS, state_PRESS = 2.1, 1
+
+    def __init__(self):
+        pass
+        # rm = visa.ResourceManager()
+        self.device = test_device()
+
+    def scan(self):
+        for k, ch in cfg.SENSOR.items():
+            name =  k.split("_")[0]
+            sensor_type = k.split("_")[-1]
+            if name not in nodes:
+                nodes[f"{name}"] = node.Node()
+
+            if "T" in sensor_type:
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    'TCouple', 'T', ch)
+                print(query)
+                t = self.device.query(query)
+                nodes[f"{name}"].t = float(t)
+            elif "P" in sensor_type:
+                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
+                self.device.write(query)
+                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
+                self.device.write(query)
+                query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
+                self.device.write(query)
+                p = self.device.query(':READ?')
+                nodes[f"{name}"].p = float(p)
+            else:
+                pass
 
 
 if __name__ == "__main__":
     # scan()
-    pass
+    dev = test_V34972A()
+    dev.scan()
+    # print(nodes)
