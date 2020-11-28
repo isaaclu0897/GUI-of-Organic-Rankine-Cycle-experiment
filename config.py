@@ -122,3 +122,10 @@ def _make_SENSOR_config():
     return SENSOR_config 
 
 SENSOR = _make_SENSOR_config()
+
+#%%
+
+# def _make_NODE_config():
+#     return config["System"]["node"]
+
+# NODE = _make_NODE_config()

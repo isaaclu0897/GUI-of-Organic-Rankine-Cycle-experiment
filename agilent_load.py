@@ -10,6 +10,7 @@ import visa  # you need agilent io lib
 import node
 from tabulate_text import ORC_status
 import config as cfg
+import realtime_data as d
 
 # =============================================================================
 # load the data
@@ -69,9 +70,6 @@ def scan():
 #     timer(innerfunc, 3)
 
 #    rm.close()
-
-
-data = {}
 
 
 class V34972A:
@@ -172,6 +170,7 @@ class test_V34972A:
 
 if __name__ == "__main__":
     # scan()
-    dev = test_V34972A()
-    dev.scan()
+    pass
+    # dev = test_V34972A()
+    # dev.scan()
     # print(nodes)
