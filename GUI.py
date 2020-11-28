@@ -126,13 +126,13 @@ if __name__ == '__main__':
     frm_left = tk.Frame(frame)
     frm_left.pack(side='left')
     # tk.Label(frm_left, text='frame left').pack()
-    SM_dia = P_and_I_Diagram(frm_left)
+    PID = P_and_I_Diagram(frm_left)
 
     ''' top and bottom of right frame '''
     frm_right_top = tk.Frame(frm_right)
     frm_right_top.pack(side='top')
     # tk.Label(frm_right_top, text='frame right top').pack()
-    # TH_dia = ORC_Figure(frm_right_top)
+    # Ts = ORC_Figure(frm_right_top)
     
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     frm_right_bottom_left = tk.Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
-    Scan_button(frm_right_bottom_left)
+    Scan_button(PID, frm_right_bottom_left)
     
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')

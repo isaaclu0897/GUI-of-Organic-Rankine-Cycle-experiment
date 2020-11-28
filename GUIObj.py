@@ -269,7 +269,8 @@ class ORC_Figure(tk.Frame):
 
 
 class Scan_button(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, PID, master=None):
+        self.PID = PID
         tk.Frame.__init__(self, master=None)
 
         self.is_click = False
@@ -340,7 +341,7 @@ class Scan_button(tk.Frame):
         
     def update_P_and_I_Diagram(self):
         print("update P&ID")
-        print(self.master)
+        print(self.PID.update())
 
     def update_T_s_Diagram(self):
         print("update T-s Diagram")
