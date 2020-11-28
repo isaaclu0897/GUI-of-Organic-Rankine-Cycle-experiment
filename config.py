@@ -10,9 +10,11 @@ from json import load
 from PIL import Image
 from PIL import ImageTk
 
+''' resize function '''
+def _resize(value):
+    return int(value * config["GUI"]["scaling_factor"])
 
 ''' import config '''
-
 
 def _import_config():
     with open('config.json', 'r') as f:
@@ -24,8 +26,6 @@ def _import_config():
 config = _import_config()
 
 ''' import label config '''
-
-
 def _make_LABEL_config():
     node_config = config["System"]["node"]
     attr_config = config["System"]["attribute"]
@@ -39,23 +39,25 @@ def _make_LABEL_config():
 
     return LABEL_config
 
+def _resize_LABEL_config():
+    for key, GUI_attr in LABEL.items():
+        GUI_attr["posx"] = _resize(GUI_attr["posx"])
+        GUI_attr["posy"] = _resize(GUI_attr["posy"])
 
 LABEL = _make_LABEL_config()
+_resize_LABEL_config()
 
 ''' import GUI config '''
 
-
 def _make_GUI_config():
     return config["GUI"]
-
+def _resize_GUI_fontsize():
+    GUI["fontsize"] = _resize(GUI["fontsize"])
 
 GUI = _make_GUI_config()
+_resize_GUI_fontsize()
 
 ''' import photo '''
-
-
-def _resize(value):
-    return int(value * GUI["scaling_factor"])
 
 
 GUI["image"] = Image.open(GUI["path"])
