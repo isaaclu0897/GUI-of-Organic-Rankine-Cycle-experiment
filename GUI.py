@@ -146,7 +146,7 @@ if __name__ == '__main__':
     frm_right_bottom_left = tk.Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
-    Scan_button(PID, frm_right_bottom_left)
+    Scan_button(frm_right_bottom_left, PID.update)
     
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')

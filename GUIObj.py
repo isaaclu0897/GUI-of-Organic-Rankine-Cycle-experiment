@@ -53,8 +53,6 @@ class P_and_I_Diagram(tk.Frame):
 
         ''''set label'''
         self.set_Labels()
-        
-
 
         # set label of efficiency
         # fontTitle = tkfont.Font(
@@ -131,8 +129,10 @@ class P_and_I_Diagram(tk.Frame):
 #     def update_mdotWater(self, mdotWater_num):
 #         self.mdotWater = mdotWater_num
     def update(self):
+        print("P_and_I_Diagram update")
         self.update_canvas_value(3, 55)
         pass
+
     def update_data(self, nodesSys, nodesHX):
         for i in range(len(nodesSys)):
             self.update_state(i+1, nodesSys[i])
@@ -269,9 +269,16 @@ class ORC_Figure(tk.Frame):
 
 
 class Scan_button(tk.Frame):
-    def __init__(self, PID, master=None):
-        self.PID = PID
+    def __init__(self, master=None, *callbacks):
         tk.Frame.__init__(self, master=None)
+
+        self.update_funcs = []
+        for func in callbacks:
+            if callable(func):
+                self.update_funcs.append(func)
+            else:
+                def func(): return print("this is not a func")
+                self.update_funcs.append(func)
 
         self.is_click = False
 
@@ -305,15 +312,18 @@ class Scan_button(tk.Frame):
         ''' init v34970A '''
         self.dev = agilent.test_V34972A()
 
+    def call_update_funcs(self):
+        for func in self.update_funcs:
+            func()
+
     def update_diagram(self):
         print("update_diagram")
 
         def innerfunc(text):
-            print(text)
+            # print(text)
             self.dev.scan()
             self.calc_nodes()
-            self.update_P_and_I_Diagram()
-            self.update_T_s_Diagram()
+            self.call_update_funcs()
         # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
         # readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
 
@@ -334,11 +344,11 @@ class Scan_button(tk.Frame):
                 return 0
 
         timer(innerfunc, 3, "**kw")
-    
+
     def calc_nodes(self):
         print("calc_nodes")
-        print(data)
-        
+        # print(data)
+
     def update_P_and_I_Diagram(self):
         print("update P&ID")
         print(self.PID.update())
