@@ -262,7 +262,14 @@ class ORC_Figure(tk.Frame):
                 s.append(data[f"{point_name}"].s)
                 T.append(data[f"{point_name}"].t)
         elif line_type == "s":
-            for point_name in points:
+            if line_name == "pumping":
+                process = ProcessPlot(data[f"{points[0]}"], data[f"{points[1]}"], 'isos')
+                process.test_iso_line()
+                process.calc_iso()
+                s = process.Isa
+                T = process.Ita
+                # print(process.Isa, process.Ita)
+                # print(a)
                 pass
         self.lines[f"{line_name}"].set_data(s, T)
 

@@ -36,7 +36,18 @@ class ProcessPlot(Node):
 #        print(nodes[self.Node_in]._h, nodes[self.Node_in]._p)
 #        print(np.linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, 50))
 #        print(self.iso_type)
-        
+    def test_iso_line(self, num=50):
+        if self.iso_type == None:
+            raise ValueError("This isoline cannot be calculated!")
+        elif self.iso_type == "isop":
+            self._Ih = np.linspace(self.Node_in._h, self.Node_out._h, num)
+            self._Ipa = np.linspace(self.Node_in._p, self.Node_out._p, num)
+            self._Ipi = self.Node_in._p
+        elif self.iso_type == "isos":
+            self._Ih = np.linspace(self.Node_in._h, self.Node_out._h, num)
+            self._Isa = np.linspace(self.Node_in._s, self.Node_out._s, num)
+            self._Isi = np.linspace(self.Node_in._s, self.Node_in._s, num)
+            # print(self._Ih, self._Isa)
         # 待改良slice點得位置
     def iso_line(self, nodes, num=50):
         if self.iso_type == None:
@@ -49,6 +60,7 @@ class ProcessPlot(Node):
             self._Ih = np.linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
             self._Isa = np.linspace(nodes[self.Node_in]._s, nodes[self.Node_out]._s, num)
             self._Isi = np.linspace(nodes[self.Node_in]._s, nodes[self.Node_in]._s, num)
+            print(self._Ih, self._Isa)
             
     def calc_iso(self):
         if self.iso_type == "isop":      

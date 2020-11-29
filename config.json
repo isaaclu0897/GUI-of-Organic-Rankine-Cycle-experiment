@@ -185,8 +185,8 @@
         "pumping":{
             "type" : "s",
             "point" :[
-                "pump_in",
-                "pump_out"
+                "pump-in",
+                "evaporator-in"
             ]
         },
         "heating":{
