@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 
-
 [packages]
 spyder-kernels = "1.10.0"
 pyvisa = "1.11.3"
@@ -13,7 +12,7 @@ matplotlib = "3.3.3"
 coolprop = "6.4.1"
 tabulate = "0.8.7"
 openpyxl = "3.0.5"
-
+pyinstaller = "4.1"
 
 [requires]
 python_version = "3.6"
