@@ -192,22 +192,22 @@
         "heating":{
             "type" : "p",
             "point" :[
-                "evaporator_in",
-                "Evaporator_out"
+                "evaporator-in",
+                "evaporator-out"
             ] 
         },
         "working":{
             "type" : "s",
             "point" :[
-                "expander_in",
-                "expander_out"
+                "evaporator-out",
+                "condenser-in"
             ] 
         },
         "cooling":{
             "type" : "p",
             "point" :[
-                "consder_in",
-                "consder_out"
+                "condenser-in",
+                "pump-in"
             ] 
         },
         "heat":{

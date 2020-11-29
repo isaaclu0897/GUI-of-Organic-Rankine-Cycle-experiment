@@ -243,9 +243,9 @@ class ORC_Figure(tk.Frame):
                 self.lines[f"{name}"] = self.add_line(
                     lw=2.5, linestyle='None', color="k", marker="o")
             elif attr["type"] == "s":
-                self.lines[f"{name}"] = self.add_line(lw=1.3, color="g")
+                self.lines[f"{name}"] = self.add_line(lw=1.3, color="b")
             elif attr["type"] == "p":
-                self.lines[f"{name}"] = self.add_line(lw=1.3, color="g")
+                self.lines[f"{name}"] = self.add_line(lw=1.3, color="b")
             elif attr["type"] == "l":
                 if name == "heat":
                     self.lines[f"{name}"] = self.add_line(lw=2.0, color="r")
@@ -262,18 +262,22 @@ class ORC_Figure(tk.Frame):
                 s.append(data[f"{point_name}"].s)
                 T.append(data[f"{point_name}"].t)
         elif line_type == "s":
-            if line_name == "pumping":
-                process = ProcessPlot(data[f"{points[0]}"], data[f"{points[1]}"], 'isos')
-                process.test_iso_line()
-                process.calc_iso()
-                s = process.Isa
-                T = process.Ita
-                # print(process.Isa, process.Ita)
-                # print(a)
-                pass
+            process = ProcessPlot(
+                data[f"{points[0]}"], data[f"{points[1]}"], 'isos')
+            process.test_iso_line()
+            process.calc_iso()
+            s = process.Isa
+            T = process.Ita
+        elif line_type == "p":
+            process = ProcessPlot(
+                data[f"{points[0]}"], data[f"{points[1]}"], 'isop')
+            process.test_iso_line()
+            process.calc_iso()
+            s = process.Isa
+            T = process.Ita
+
         self.lines[f"{line_name}"].set_data(s, T)
 
-        return 0
 
     def update(self):
         print("update T-s Diagram")
