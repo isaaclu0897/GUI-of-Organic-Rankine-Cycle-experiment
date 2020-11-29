@@ -227,9 +227,10 @@
         "point":{
             "type" : "o",
             "point" :[
-                "pump_in",
+                "pump-in",
                 "evaporator-in",
-                "evaporator-out"
+                "evaporator-out",
+                "condenser-in"
             ] 
         }
     },

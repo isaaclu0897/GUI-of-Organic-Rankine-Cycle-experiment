@@ -170,11 +170,11 @@ class ORC_Figure(tk.Frame):
     def set_line(self):
         for name, attr in cfg.LINE.items():
             if attr["type"] == "o":
-                self.lines[f"{name}"] = self.add_line(color="g", marker="o")
+                self.lines[f"{name}"] = self.add_line(
+                    lw=2.5, linestyle='None', color="g", marker="o")
             # elif attr["type"] in ["s", "p"]:
             #     self.lines[f"{name}"] = self.add_line(color="g", lw=2.5)
 
-        
         # pass
 
     def setThermoLine(self):
@@ -247,21 +247,25 @@ class ORC_Figure(tk.Frame):
         self.updata_thermoLine(thermoLine)
         self.updata_heatExchangerLine(heatExchangerLine_data)
 
-    def update_line(self, name, line_type, point):
+    def update_line(self, line_name, line_type, points):
+
         if line_type == "o":
-            print(self.lines)
-            print("a")
-            self.lines[f"{name}"].set_data([1.1], [21])
-            # self.lines[f"{name}"].set_ydata()
-            # for name in data:
-                
+            s = []
+            T = []
+            print(line_name, line_type, points)
+            for point_name in points:
+                s.append(data[f"{point_name}"].s)
+                T.append(data[f"{point_name}"].t)
+            # print(line_name, line_type, points)
+            self.lines[f"{line_name}"].set_data(s, T)
+
         return 0
 
     def update(self):
         print("update T-s Diagram")
         for name, attr in cfg.LINE.items():
             self.update_line(name, attr["type"], attr["point"])
-            
+
         self.canvas.draw()
 
 
@@ -287,7 +291,7 @@ class Scan_button(tk.Frame):
                 self.is_click = True
                 varScan.set('start2scan')
                 func()
-        
+
         varScan = tk.StringVar()
         varScan.set('stop2scan')
 
@@ -315,21 +319,8 @@ class Scan_button(tk.Frame):
         return 0
 
     def update_diagram(self, count=0):
+        print("----" * 5)
         print(f"update_diagram {count}")
-
-        # def innerfunc():
-        #     print("enter innerfunc")
-        #     self.dev.scan()
-        #     self.calc_nodes()
-        #     ''' update functions
-        #     calc nodes
-        #     update P&ID
-        #     update T-s diagram
-        #     '''
-        #     self.call_update_funcs()
-        #     # self.update_funcs[0]()
-        #     print("exit innerfunc ok")
-        # print("enter innerfunc")
         self.dev.scan()
         self.calc_nodes()
         ''' update functions
@@ -338,23 +329,9 @@ class Scan_button(tk.Frame):
         update T-s diagram
         '''
         self.call_update_funcs()
-        # def timer(func, second=2, *arg):
-        #     print("1")
-        #     func(*arg)
-        #     print("2")
-        #     t = Timer(second, timer, args=(func, 3, *arg))
-        #     print("3")
-        #     t.setDaemon(True)
-        #     print("4")
-        #     print(t.daemon and self.is_click, t.daemon, self.is_click)
-        #     if t.daemon and self.is_click:
-        #         print(t)
-        #         t.start()
-        #     else:
-        #         return 0
-        if self.is_click:
-            self.after(2000, self.update_diagram, count+1)
 
+        if self.is_click:
+            self.after(3000, self.update_diagram, count+1)
 
     def calc_nodes(self):
         print("calc nodes and works")
