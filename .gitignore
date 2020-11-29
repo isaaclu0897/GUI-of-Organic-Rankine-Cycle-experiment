@@ -1,6 +1,7 @@
 __pycache__
 *.csv
 *.xlsx
-*.csv#
-test
+*.csv
+dist/*
+build/*
 
