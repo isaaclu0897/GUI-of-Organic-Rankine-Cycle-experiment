@@ -99,6 +99,19 @@ class P_I_Diagram(tk.Frame):
                 self.canvasID[f"{k}"] = self.create_text(
                     v["posx"], v["posy"], f"{'None':^6}")
 
+    def update_value(self, name, value, n=1):
+        itemID = self.canvasID[name]
+        self.canvas.itemconfigure(itemID, text=str(round(value, n)))
+
+    def update(self):
+        print("P_and_I_Diagram update")
+        for name, value in data.items():
+            if isinstance(value, Node):
+                self.update_value(f"{name}_T", data[name].t)
+                self.update_value(f"{name}_P", data[name].p)
+            else:
+                self.update_value(name, value)
+
 
 class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
