@@ -86,7 +86,7 @@
                 },
                 "in_out": [
                     "pump-in",
-                    "pump-out"
+                    "evaporator-in"
                 ]
             },
             "Wout": {
@@ -95,8 +95,8 @@
                     "posy": 560
                 },
                 "in_out": [
-                    "expander-in",
-                    "expander-out"
+                    "evaporator-in",
+                    "condenser-in"
                 ]
             },
             "Qin": {
@@ -116,7 +116,7 @@
                 },
                 "in_out": [
                     "condenser-in",
-                    "condenser-out"
+                    "pump-in"
                 ]
             },
             "Eff": {

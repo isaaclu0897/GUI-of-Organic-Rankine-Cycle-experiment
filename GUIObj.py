@@ -99,9 +99,9 @@ class P_I_Diagram(tk.Frame):
                 self.canvasID[f"{k}"] = self.create_text(
                     v["posx"], v["posy"], f"{'None':^6}")
 
-    def update_value(self, name, vlaue, n=3):
+    def update_value(self, name, value, n=1):
         itemID = self.canvasID[name]
-        self.canvas.itemconfigure(itemID, text=str(round(vlaue, n)))
+        self.canvas.itemconfigure(itemID, text=str(round(value, n)))
         # return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 #     def update_state(self, num, data):
 #         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
@@ -322,10 +322,8 @@ class Scan_button(tk.Frame):
     def call_update_funcs(self):
         for func in self.update_funcs:
             func()
-        return 0        
-    
+        return 0
 
-    
     def update_diagram(self):
         print("update_diagram")
 
@@ -353,11 +351,20 @@ class Scan_button(tk.Frame):
 
     def calc_nodes(self):
         print("P_and_I_Diagram update")
+        ''' calc nodes '''
         for name, value in data.items():
             if isinstance(value, Node):
                 data[name].pt()
-        
-        
+        ''' calc WORK '''
+        for name, node in cfg.FM.items():
+            print(name, node)
+            item0 = data[f"{node[0]}"]
+            item1 = data[f"{node[1]}"]
+            mDot = data["mDot"]
+            data[f"{name}"] = (item1.h - item0.h) * mDot
+
+        ''' calc efficiency '''
+        data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
         print(data)
         return 0
 
