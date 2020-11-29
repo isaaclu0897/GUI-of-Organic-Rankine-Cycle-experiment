@@ -132,7 +132,7 @@ if __name__ == '__main__':
     frm_right_top = tk.Frame(frm_right)
     frm_right_top.pack(side='top')
     # tk.Label(frm_right_top, text='frame right top').pack()
-    # Ts = ORC_Figure(frm_right_top)
+    Ts = ORC_Figure(frm_right_top)
     
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')

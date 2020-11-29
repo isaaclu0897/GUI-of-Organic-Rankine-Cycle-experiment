@@ -99,72 +99,6 @@ class P_I_Diagram(tk.Frame):
                 self.canvasID[f"{k}"] = self.create_text(
                     v["posx"], v["posy"], f"{'None':^6}")
 
-    def update_value(self, name, value, n=1):
-        itemID = self.canvasID[name]
-        self.canvas.itemconfigure(itemID, text=str(round(value, n)))
-        # return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
-#     def update_state(self, num, data):
-#         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
-#         self.canvas.itemconfigure(self.state['node{}'.format(num)]['t'], text=str(round(data.t, 1)))
-
-#     def update_stateHX(self, data):
-#         self.canvas.itemconfigure(self.stateHX['heater']['ti'], text=str(round(data[0].t, 1)))
-#         self.canvas.itemconfigure(self.stateHX['heater']['to'], text=str(round(data[1].t, 1)))
-#         self.canvas.itemconfigure(self.stateHX['cooler']['ti'], text=str(round(data[3].t, 1)))
-#         self.canvas.itemconfigure(self.stateHX['cooler']['to'], text=str(round(data[2].t, 1)))
-
-#     def update_eff(self, eff_num):
-#         self.canvas.itemconfigure(self.eff, text=str(round(eff_num, 2)))
-#     def update_mdot(self, mdot_num):
-#         self.canvas.itemconfigure(self.mdot, text=str(round(mdot_num, 4)))
-#     def update_Win(self, Win_num):
-#         self.canvas.itemconfigure(self.Win, text=str(round(Win_num, 3)))
-#     def update_Qin(self, Qin_num):
-#         self.canvas.itemconfigure(self.Qin, text=str(round(Qin_num, 2)))
-#     def update_Wout(self, Wout_num):
-#         self.canvas.itemconfigure(self.Wout, text=str(round(Wout_num, 3)))
-#     def update_Qout(self, Qout_num):
-#         self.canvas.itemconfigure(self.Qout, text=str(round(Qout_num, 2)))
-#     def update_Eff(self, Eff_num):
-#         self.canvas.itemconfigure(self.Eff, text=str(round(Eff_num, 2)))
-#     def update_Effi(self, Effi_num):
-#         self.canvas.itemconfigure(self.Effi, text=str(round(Effi_num, 2)))
-#     def update_mdotWater(self, mdotWater_num):
-#         self.mdotWater = mdotWater_num
-    def update(self):
-        print("P_and_I_Diagram update")
-        for name, value in data.items():
-            if isinstance(value, Node):
-                self.update_value(f"{name}_T", data[name].t)
-                self.update_value(f"{name}_P", data[name].p)
-            else:
-                self.update_value(name, value)
-
-    def update_data(self, nodesSys, nodesHX):
-        for i in range(len(nodesSys)):
-            self.update_state(i+1, nodesSys[i])
-
-        self.update_stateHX(nodesHX)
-
-        eff = ((nodesSys[2].h-nodesSys[3].h)/(nodesSys[2].h-nodesSys[1].h))*100
-
-        mdot = self.mdotWater*4.2 * \
-            (nodesHX[0].t-nodesHX[1].t)/(nodesSys[2].h-nodesSys[1].h)
-
-        Win = mdot * (nodesSys[1].h - nodesSys[0].h)
-        Qin = mdot * (nodesSys[2].h - nodesSys[1].h)
-        Wout = mdot * (nodesSys[2].h - nodesSys[3].h)
-        Qout = mdot * (nodesSys[3].h - nodesSys[0].h)
-
-        self.update_eff(eff)
-        self.update_mdot(mdot)
-        self.update_Win(Win)
-        self.update_Qin(Qin)
-        self.update_Wout(Wout)
-        self.update_Qout(Qout)
-        self.update_Eff(eff)
-#        self.update_Effi(Effi)
-
 
 class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
@@ -175,12 +109,8 @@ class ORC_Figure(tk.Frame):
 
 #        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1)
         self.dia = self._fig.add_subplot(111)
-        xAxis = "s"
-        yAxis = "T"
-        title = {"T": "T, °C", "s": "s, (kJ/kg)*K"}
-        self.dia.set_title("%s-%s Diagram" % (yAxis, xAxis))
-        self.dia.set_xlabel(title[xAxis])
-        self.dia.set_ylabel(title[yAxis])
+
+        self.set_title_label()
         self.set_window_boundary()
         self.openGrid()
 
@@ -190,6 +120,14 @@ class ORC_Figure(tk.Frame):
 
         self.setThermoLine()
         self.addThermoLine()
+    
+    def set_title_label(self):
+        xAxis = "s"
+        yAxis = "T"
+        title = {"T": "T, °C", "s": "s, (kJ/kg)*K"}
+        self.dia.set_title("%s-%s Diagram" % (yAxis, xAxis))
+        self.dia.set_xlabel(title[xAxis])
+        self.dia.set_ylabel(title[yAxis])
 
     def set_window_boundary(self):
         self.dia.set_ylim(10, 150)
@@ -350,14 +288,14 @@ class Scan_button(tk.Frame):
         timer(innerfunc, 3, "**kw")
 
     def calc_nodes(self):
-        print("P_and_I_Diagram update")
+        print("calc nodes and works")
         ''' calc nodes '''
         for name, value in data.items():
             if isinstance(value, Node):
                 data[name].pt()
         ''' calc WORK '''
         for name, node in cfg.FM.items():
-            print(name, node)
+            # print(name, node)
             item0 = data[f"{node[0]}"]
             item1 = data[f"{node[1]}"]
             mDot = data["mDot"]
@@ -365,7 +303,7 @@ class Scan_button(tk.Frame):
 
         ''' calc efficiency '''
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
-        print(data)
+        # print(data)
         return 0
 
     def update_T_s_Diagram(self):
