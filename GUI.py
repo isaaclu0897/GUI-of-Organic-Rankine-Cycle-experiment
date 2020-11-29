@@ -111,7 +111,7 @@ def timer(func, second=2, *arg):
 if __name__ == '__main__':
     '''layout'''
     import tkinter as tk
-    from GUIObj import ORC_Figure, P_and_I_Diagram, Scan_button
+    from GUIObj import ORC_Figure, P_I_Diagram, Scan_button
     window = tk.Tk()
     window.title("Lab429, ORC for 500W, author:wei")
     tk.Label(window, text='this is ORC_GUI').pack()
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     frm_left = tk.Frame(frame)
     frm_left.pack(side='left')
     # tk.Label(frm_left, text='frame left').pack()
-    PID = P_and_I_Diagram(frm_left)
+    PID = P_I_Diagram(frm_left)
 
     ''' top and bottom of right frame '''
     frm_right_top = tk.Frame(frm_right)

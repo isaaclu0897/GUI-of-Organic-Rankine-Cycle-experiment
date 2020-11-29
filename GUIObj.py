@@ -24,9 +24,10 @@ import datetime
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
+from node import Node
 
 
-class P_and_I_Diagram(tk.Frame):
+class P_I_Diagram(tk.Frame):
     offset_x = 50
     offset_y = 30
 
@@ -69,36 +70,38 @@ class P_and_I_Diagram(tk.Frame):
 
     def set_Labels(self):
         for k, v in cfg.LABEL.items():
+            # print(k)
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
-            label_name = k.split("_")[-1]
+            sensor_type = k.split("_")[-1]
             # default unit
-            if "T" in label_name:
+            if "T" in sensor_type:
                 unit = "C"
-            elif "P" in label_name:
+            elif "P" in sensor_type:
                 unit = "B"
-            elif label_name in ["Win", "Wout", "Qin", "Qout"]:
+            elif sensor_type in ["Win", "Wout", "Qin", "Qout"]:
                 unit = "kW"
-            elif label_name in ["Eff", "Ein", "Eout"]:
+            elif sensor_type in ["Eff", "Ein", "Eout"]:
                 unit = "%"
-            elif label_name in ["mDot"]:
+            elif sensor_type in ["mDot"]:
                 unit = "kg/s"
             else:
                 unit = "?"
 
             if unit in ["C", "B"]:
                 self.create_text(v["posx"], v["posy"],
-                                 f"{label_name:<7}{'':^5}{unit:>5}")
+                                 f"{sensor_type:<7}{'':^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(
                     v["posx"], v["posy"], f"{'None':^6}")
             else:
                 self.create_text(v["posx"], v["posy"],
-                                 f"{label_name:<5}{' '*16:^5}{unit:>5}")
+                                 f"{sensor_type:<5}{' '*16:^5}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(
                     v["posx"], v["posy"], f"{'None':^6}")
 
-    def update_canvas_value(self, itemID, vlaue):
-        self.canvas.itemconfigure(itemID, text=str(vlaue))
+    def update_value(self, name, vlaue, n=3):
+        itemID = self.canvasID[name]
+        self.canvas.itemconfigure(itemID, text=str(round(vlaue, n)))
         # return self.canvas.create_text(posx, posy, text=text, fill='blue', font=self.fontprop)
 #     def update_state(self, num, data):
 #         self.canvas.itemconfigure(self.state['node{}'.format(num)]['p'], text=str(round(data.p, 2)))
@@ -130,8 +133,14 @@ class P_and_I_Diagram(tk.Frame):
 #         self.mdotWater = mdotWater_num
     def update(self):
         print("P_and_I_Diagram update")
-        self.update_canvas_value(3, 55)
-        pass
+        # self.update_value(3, 55)
+        print(self.canvasID)
+        for name, value in data.items():
+            if isinstance(value, Node):
+                self.update_value(f"{name}_T", data[name].t)
+                self.update_value(f"{name}_P", data[name].p)
+            else:
+                self.update_value(name, value)
 
     def update_data(self, nodesSys, nodesHX):
         for i in range(len(nodesSys)):

@@ -167,7 +167,7 @@ class test_V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
-                data[f"{name}_T"] = float(t)
+                data[f"{name}_{sensor_type}"] = float(t)
             elif "P" == sensor_type:
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
                 self.device.write(query)
