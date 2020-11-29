@@ -187,7 +187,7 @@
             "point" :[
                 "pump_in",
                 "pump_out"
-            ] 
+            ]
         },
         "heating":{
             "type" : "p",
@@ -228,8 +228,8 @@
             "type" : "o",
             "point" :[
                 "pump_in",
-                "pump_out",
-                "expander_in"
+                "evaporator-in",
+                "evaporator-out"
             ] 
         }
     },

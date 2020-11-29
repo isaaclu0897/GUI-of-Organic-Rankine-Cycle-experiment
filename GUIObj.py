@@ -104,7 +104,7 @@ class P_I_Diagram(tk.Frame):
         self.canvas.itemconfigure(itemID, text=str(round(value, n)))
 
     def update(self):
-        print("P_and_I_Diagram update")
+        print("update P&ID")
         for name, value in data.items():
             if isinstance(value, Node):
                 self.update_value(f"{name}_T", data[name].t)
@@ -117,26 +117,28 @@ class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
 
-        self.lineID = {}
+        self.lines = {}
 
-        self._fig = Figure(figsize=(cfg.FIG["width"], cfg.FIG["height"]), dpi=100)
+        self._fig = Figure(
+            figsize=(cfg.FIG["width"], cfg.FIG["height"]), dpi=100)
         self.canvas = FigureCanvasTkAgg(self._fig, master)
         self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        
+
 #        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1)
         self.ax = self._fig.add_subplot(111)
 
         self.set_title_label()
         self.set_window_boundary()
         self.openGrid()
-        
+
         self.toolbar = NavigationToolbar2Tk(self.canvas, master)
-        # self.toolbar.update()
+        self.toolbar.update()
         self.plot_Saturation_Curve()
 
-        self.setThermoLine()
-        self.addThermoLine()
-    
+        self.set_line()
+        # self.setThermoLine()
+        # self.addThermoLine()
+
     def set_title_label(self):
         xAxis = "s"
         yAxis = "T"
@@ -152,17 +154,29 @@ class ORC_Figure(tk.Frame):
     def openGrid(self):
         self.ax.grid()
 
-    def add_line(self, line):
-        a = (self.ax.add_line(line))
-        print(a)
-        return a
+    def add_line(self, line=None, **kw):
+        if line is None:
+            line = Line2D([], [], **kw)
+
+        return self.ax.add_line(line)
 
     def plot_Saturation_Curve(self):
         saturation_curve = calc_SaturationofCurve()
-        self.lineID["saturation_curve_left"] = self.add_line(saturation_curve[0])
-        self.lineID["saturation_curve_right"] = self.add_line(saturation_curve[1])
-        print(self.lineID)
+        self.lines["saturation_curve_left"] = self.add_line(
+            saturation_curve[0])
+        self.lines["saturation_curve_right"] = self.add_line(
+            saturation_curve[1])
+
+    def set_line(self):
+        for name, attr in cfg.LINE.items():
+            if attr["type"] == "o":
+                self.lines[f"{name}"] = self.add_line(color="g", marker="o")
+            # elif attr["type"] in ["s", "p"]:
+            #     self.lines[f"{name}"] = self.add_line(color="g", lw=2.5)
+
         
+        # pass
+
     def setThermoLine(self):
         self.lineStatePoint = Line2D(
             [], [], color='g', linestyle='None', marker='o')
@@ -233,8 +247,21 @@ class ORC_Figure(tk.Frame):
         self.updata_thermoLine(thermoLine)
         self.updata_heatExchangerLine(heatExchangerLine_data)
 
-        
+    def update_line(self, name, line_type, point):
+        if line_type == "o":
+            print(self.lines)
+            print("a")
+            self.lines[f"{name}"].set_data([1.1], [21])
+            # self.lines[f"{name}"].set_ydata()
+            # for name in data:
+                
+        return 0
+
     def update(self):
+        print("update T-s Diagram")
+        for name, attr in cfg.LINE.items():
+            self.update_line(name, attr["type"], attr["point"])
+            
         self.canvas.draw()
 
 
@@ -260,7 +287,7 @@ class Scan_button(tk.Frame):
                 self.is_click = True
                 varScan.set('start2scan')
                 func()
-
+        
         varScan = tk.StringVar()
         varScan.set('stop2scan')
 
@@ -287,30 +314,47 @@ class Scan_button(tk.Frame):
             func()
         return 0
 
-    def update_diagram(self):
-        print("update_diagram")
+    def update_diagram(self, count=0):
+        print(f"update_diagram {count}")
 
-        def innerfunc(text):
-            self.dev.scan()
-            self.calc_nodes()
-            ''' update functions
-            calc nodes
-            update P&ID
-            update T-s diagram
-            '''
-            self.call_update_funcs()
+        # def innerfunc():
+        #     print("enter innerfunc")
+        #     self.dev.scan()
+        #     self.calc_nodes()
+        #     ''' update functions
+        #     calc nodes
+        #     update P&ID
+        #     update T-s diagram
+        #     '''
+        #     self.call_update_funcs()
+        #     # self.update_funcs[0]()
+        #     print("exit innerfunc ok")
+        # print("enter innerfunc")
+        self.dev.scan()
+        self.calc_nodes()
+        ''' update functions
+        calc nodes
+        update P&ID
+        update T-s diagram
+        '''
+        self.call_update_funcs()
+        # def timer(func, second=2, *arg):
+        #     print("1")
+        #     func(*arg)
+        #     print("2")
+        #     t = Timer(second, timer, args=(func, 3, *arg))
+        #     print("3")
+        #     t.setDaemon(True)
+        #     print("4")
+        #     print(t.daemon and self.is_click, t.daemon, self.is_click)
+        #     if t.daemon and self.is_click:
+        #         print(t)
+        #         t.start()
+        #     else:
+        #         return 0
+        if self.is_click:
+            self.after(2000, self.update_diagram, count+1)
 
-        def timer(func, second=2, *arg):
-            func(*arg)
-            t = Timer(second, timer, args=(func, 3, *arg))
-            t.setDaemon(True)
-
-            if t.daemon and self.is_click:
-                t.start()
-            else:
-                return 0
-
-        timer(innerfunc, 3, "**kw")
 
     def calc_nodes(self):
         print("calc nodes and works")

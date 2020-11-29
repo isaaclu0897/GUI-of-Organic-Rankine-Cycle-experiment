@@ -6,7 +6,7 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-import visa
+import pyvisa as visa
 from openpyxl import Workbook
 import datetime
 from threading import Timer
@@ -146,7 +146,9 @@ if __name__ == '__main__':
     frm_right_bottom_left = tk.Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
-    Scan_button(frm_right_bottom_left, PID.update)
+    # Scan_button(frm_right_bottom_left, PID.update, Ts.update)
+    Scan_button(frm_right_bottom_left, PID.update, Ts.update)
+    
     
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')

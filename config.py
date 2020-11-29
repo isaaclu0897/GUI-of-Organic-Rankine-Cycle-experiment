@@ -97,6 +97,11 @@ def _resize_FIG_size():
 FIG = {"width":8, "height": 6}
 _resize_FIG_size()
 
+def _make_LINE_config():
+    return config["line"]
+
+LINE = _make_LINE_config()
+
 #%%
 
 def _import_v34970A():
