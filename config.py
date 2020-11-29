@@ -122,9 +122,24 @@ def _make_SENSOR_config():
     return SENSOR_config 
 
 SENSOR = _make_SENSOR_config()
-
+# print(SENSOR)
 #%%
 
+def _make_System_attr_formula():
+    attr_config = config["System"]["attribute"]
+    
+    attr_formula = {}
+    for name in attr_config:
+        for attr, value in attr_config[name].items():
+            
+            if "in_out" in attr:
+        #         # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+                attr_formula[f"{name}"] = value
+
+    
+    return attr_formula
+FM = _make_System_attr_formula()
+# print(sFM)
 # def _make_NODE_config():
 #     return config["System"]["node"]
 

@@ -133,8 +133,6 @@ class P_I_Diagram(tk.Frame):
 #         self.mdotWater = mdotWater_num
     def update(self):
         print("P_and_I_Diagram update")
-        # self.update_value(3, 55)
-        print(self.canvasID)
         for name, value in data.items():
             if isinstance(value, Node):
                 self.update_value(f"{name}_T", data[name].t)
@@ -324,23 +322,22 @@ class Scan_button(tk.Frame):
     def call_update_funcs(self):
         for func in self.update_funcs:
             func()
+        return 0        
+    
 
+    
     def update_diagram(self):
         print("update_diagram")
 
         def innerfunc(text):
-            # print(text)
             self.dev.scan()
             self.calc_nodes()
+            ''' update functions
+            calc nodes
+            update P&ID
+            update T-s diagram
+            '''
             self.call_update_funcs()
-        # readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
-        # readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-
-        # value = data.send(readings_TEMP, readings_PRESS)
-        # print(value)
-        # data.update(SM_dia, TH_dia)
-
-        # innerfunc()
 
         def timer(func, second=2, *arg):
             func(*arg)
@@ -355,12 +352,14 @@ class Scan_button(tk.Frame):
         timer(innerfunc, 3, "**kw")
 
     def calc_nodes(self):
-        print("calc_nodes")
-        # print(data)
-
-    def update_P_and_I_Diagram(self):
-        print("update P&ID")
-        print(self.PID.update())
+        print("P_and_I_Diagram update")
+        for name, value in data.items():
+            if isinstance(value, Node):
+                data[name].pt()
+        
+        
+        print(data)
+        return 0
 
     def update_T_s_Diagram(self):
         print("update T-s Diagram")

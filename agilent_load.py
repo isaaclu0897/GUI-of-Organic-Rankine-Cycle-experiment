@@ -137,7 +137,8 @@ class test_device:
             value = "6.11000"
         elif query == "(@204)":
             value = "2.05000"
-
+        elif query == "(@301)":
+            value = "2.5"
         return value
 
     def write(self, query):
@@ -178,7 +179,8 @@ class test_V34972A:
                 p = self.device.query(f':READ?,({ch})')
                 data[f"{name}"].p = float(p)
             else:
-                pass
+                v = self.device.query(f':READ?,({ch})')
+                data[f"{name}"] = float(v)
         return data
 
 
@@ -186,6 +188,11 @@ if __name__ == "__main__":
     # scan()
     # pass
     dev = test_V34972A()
-    a = dev.scan()
-    print(a)
+    rst = dev.scan()
+    for k, v in rst.items():
+        if isinstance(v, node.Node):
+            print(f"{k} T {v.t}")
+            print(f"{k} P {v.p}")
+        else:
+            print(f"{k} {v}")
     # print(nodes)

@@ -71,7 +71,7 @@
         },
         "attribute": {
             "mDot": {
-                "sensor": 1,
+                "sensor": "@301",
                 "GUI": {
                     "posx": 110,
                     "posy": 500,
@@ -85,8 +85,8 @@
                     "unit": "system default(kW)"
                 },
                 "in_out": [
-                    "pump_in",
-                    "pump_out"
+                    "pump-in",
+                    "pump-out"
                 ]
             },
             "Wout": {
@@ -95,8 +95,8 @@
                     "posy": 560
                 },
                 "in_out": [
-                    "expander_in",
-                    "expander_out"
+                    "expander-in",
+                    "expander-out"
                 ]
             },
             "Qin": {
@@ -105,8 +105,8 @@
                     "posy": 590
                 },
                 "in_out": [
-                    "evaporator_in",
-                    "evaporator_out"
+                    "evaporator-in",
+                    "evaporator-out"
                 ]
             },
             "Qout": {
@@ -115,8 +115,8 @@
                     "posy": 620
                 },
                 "in_out": [
-                    "condenser_in",
-                    "condenser_out"
+                    "condenser-in",
+                    "condenser-out"
                 ]
             },
             "Eff": {
