@@ -181,38 +181,58 @@
             }
         }
     },
-    "line": [
-        [
-            "p",
-            "pump_in",
-            "pump_out"
-        ],
-        [
-            "s",
-            "evaporator_in",
-            "Evaporator_out"
-        ],
-        [
-            "p",
-            "expander_in",
-            "expander_out"
-        ],
-        [
-            "s",
-            "consder_in",
-            "consder_out"
-        ],
-        [
-            "l",
-            "heater_in",
-            "heater_out"
-        ],
-        [
-            "l",
-            "cooler_in",
-            "cooler_out"
-        ]
-    ],
+    "line": {
+        "pumping":{
+            "type" : "s",
+            "point" :[
+                "pump_in",
+                "pump_out"
+            ] 
+        },
+        "heating":{
+            "type" : "p",
+            "point" :[
+                "evaporator_in",
+                "Evaporator_out"
+            ] 
+        },
+        "working":{
+            "type" : "s",
+            "point" :[
+                "expander_in",
+                "expander_out"
+            ] 
+        },
+        "cooling":{
+            "type" : "p",
+            "point" :[
+                "consder_in",
+                "consder_out"
+            ] 
+        },
+        "heat":{
+            "type" : "l",
+            "point" :[
+                "heater_in",
+                "heater_out"
+            ] 
+        },
+        "cool":{
+            "type" : "l",
+            "point" :[
+                "cooler_in",
+                "cooler_out"
+            ] 
+        },
+        "point":{
+            "type" : "o",
+            "point" :[
+                "pump_in",
+                "pump_out",
+                "expander_in"
+            ] 
+        }
+    },
     "GUI": {
         "path": "./fig/500w_P&ID.png",
         "scaling_factor": 0.8,

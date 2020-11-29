@@ -164,8 +164,6 @@ class ORC_Figure(tk.Frame):
         print(self.lineID)
         
     def setThermoLine(self):
-        
-
         self.lineStatePoint = Line2D(
             [], [], color='g', linestyle='None', marker='o')
 
@@ -235,6 +233,8 @@ class ORC_Figure(tk.Frame):
         self.updata_thermoLine(thermoLine)
         self.updata_heatExchangerLine(heatExchangerLine_data)
 
+        
+    def update(self):
         self.canvas.draw()
 
 
