@@ -117,19 +117,22 @@ class ORC_Figure(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master=None)
 
-        self._fig = Figure(figsize=(8, 6), dpi=100)
-        self.canvas = FigureCanvasTkAgg(self._fig, master)
+        self.lineID = {}
 
+        self._fig = Figure(figsize=(cfg.FIG["width"], cfg.FIG["height"]), dpi=100)
+        self.canvas = FigureCanvasTkAgg(self._fig, master)
+        self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        
 #        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=1)
-        self.dia = self._fig.add_subplot(111)
+        self.ax = self._fig.add_subplot(111)
 
         self.set_title_label()
         self.set_window_boundary()
         self.openGrid()
-
+        
         self.toolbar = NavigationToolbar2Tk(self.canvas, master)
-        self.toolbar.update()
-        self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        # self.toolbar.update()
+        self.plot_Saturation_Curve()
 
         self.setThermoLine()
         self.addThermoLine()
@@ -138,19 +141,30 @@ class ORC_Figure(tk.Frame):
         xAxis = "s"
         yAxis = "T"
         title = {"T": "T, °C", "s": "s, (kJ/kg)*K"}
-        self.dia.set_title("%s-%s Diagram" % (yAxis, xAxis))
-        self.dia.set_xlabel(title[xAxis])
-        self.dia.set_ylabel(title[yAxis])
+        self.ax.set_title("%s-%s Diagram" % (yAxis, xAxis))
+        self.ax.set_xlabel(title[xAxis])
+        self.ax.set_ylabel(title[yAxis])
 
     def set_window_boundary(self):
-        self.dia.set_ylim(10, 150)
-        self.dia.set_xlim(0.9, 1.9)
+        self.ax.set_ylim(10, 150)
+        self.ax.set_xlim(0.9, 1.9)
 
     def openGrid(self):
-        self.dia.grid()
+        self.ax.grid()
 
+    def add_line(self, line):
+        a = (self.ax.add_line(line))
+        print(a)
+        return a
+
+    def plot_Saturation_Curve(self):
+        saturation_curve = calc_SaturationofCurve()
+        self.lineID["saturation_curve_left"] = self.add_line(saturation_curve[0])
+        self.lineID["saturation_curve_right"] = self.add_line(saturation_curve[1])
+        print(self.lineID)
+        
     def setThermoLine(self):
-        self.lineOfSaturationCurve = calc_SaturationofCurve()
+        
 
         self.lineStatePoint = Line2D(
             [], [], color='g', linestyle='None', marker='o')
@@ -175,19 +189,17 @@ class ORC_Figure(tk.Frame):
         self.heatExchangerLine = [self.lineHeater, self.lineCooler]
 
     def addThermoLine(self):
-        for i in self.lineOfSaturationCurve:
-            self.dia.add_line(i)
 
-        self.dia.add_line(self.lineStatePoint)
+        self.ax.add_line(self.lineStatePoint)
 
         for i in self.thermoLine:
-            self.dia.add_line(i)
+            self.ax.add_line(i)
 
         for i in self.thermoLineISO:
-            self.dia.add_line(i)
+            self.ax.add_line(i)
 
         for i in self.heatExchangerLine:
-            self.dia.add_line(i)
+            self.ax.add_line(i)
 
     def updata_StatePoint(self, data):
         self.lineStatePoint.set_xdata(data[0])

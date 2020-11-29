@@ -131,15 +131,19 @@ def set_windows_GUI():
 
 def calc_SaturationofCurve(fluid="R245FA", num=50):
     tcrit = PropsSI("Tcrit", fluid) - 0.00007
-    tmin = PropsSI("Tmin", fluid) 
+    tmin = PropsSI("Tmin", fluid)
     T_array = np.linspace(tmin, tcrit, num) 
     X_array = np.array([0, 1.0])
     
-    line = []
+    ''' calc the right and left of Saturation Curve '''
+    lines = []
     for x in X_array: 
         S = np.array([PropsSI("S", "Q", x, "T", t, "R245FA") for t in T_array]) 
-        line.append(lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8))
-    return line
+        # print(pps.J2KJ(S), T.K2C(T_array))
+        line = lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8)
+        lines.append(line)
+    # print(lines)
+    return lines
 
 
 def clear_plot(dia):

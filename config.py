@@ -90,6 +90,15 @@ def import_photo():
 
 #%%
 
+def _resize_FIG_size():
+    FIG["width"] = _resize(FIG["width"])
+    FIG["height"] = _resize(FIG["height"])
+
+FIG = {"width":8, "height": 6}
+_resize_FIG_size()
+
+#%%
+
 def _import_v34970A():
     return config["v34970A"]
 
