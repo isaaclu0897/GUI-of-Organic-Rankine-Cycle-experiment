@@ -126,9 +126,9 @@ class test_device:
         elif query == "(@106)":
             value = "90.5000"
         elif query == "(@107)":
-            value = "25.5000"
+            value = "19.5000"
         elif query == "(@108)":
-            value = "35.5000"
+            value = "30.5000"
         elif query == "(@201)":
             value = "2.01000"
         elif query == "(@202)":

@@ -213,15 +213,15 @@
         "heat":{
             "type" : "l",
             "point" :[
-                "heater_in",
-                "heater_out"
+                "heater-in",
+                "heater-out"
             ] 
         },
         "cool":{
             "type" : "l",
             "point" :[
-                "cooler_in",
-                "cooler_out"
+                "cooler-in",
+                "cooler-out"
             ] 
         },
         "point":{

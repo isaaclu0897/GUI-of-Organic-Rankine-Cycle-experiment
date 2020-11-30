@@ -241,11 +241,11 @@ class ORC_Figure(tk.Frame):
         for name, attr in cfg.LINE.items():
             if attr["type"] == "o":
                 self.lines[f"{name}"] = self.add_line(
-                    lw=2.5, linestyle='None', color="k", marker="o")
+                    linestyle='None', color="k", marker=".")
             elif attr["type"] == "s":
-                self.lines[f"{name}"] = self.add_line(lw=1.3, color="b")
+                self.lines[f"{name}"] = self.add_line(lw=1.3, color="g")
             elif attr["type"] == "p":
-                self.lines[f"{name}"] = self.add_line(lw=1.3, color="b")
+                self.lines[f"{name}"] = self.add_line(lw=1.3, color="g")
             elif attr["type"] == "l":
                 if name == "heat":
                     self.lines[f"{name}"] = self.add_line(lw=2.0, color="r")
@@ -275,6 +275,16 @@ class ORC_Figure(tk.Frame):
             process.calc_iso()
             s = process.Isa
             T = process.Ita
+        elif line_type == "l":
+            s_list = []
+            for node in data.values():
+                if isinstance(node, Node):
+                    s_list.append(node.s)
+            if line_name == "heat":
+                s.append([max(s_list), min(s_list)])
+            else:
+                s.append([min(s_list), max(s_list)])
+            T.append([data[f"{points[0]}_Ti"], data[f"{points[1]}_To"]])
 
         self.lines[f"{line_name}"].set_data(s, T)
 
@@ -347,7 +357,7 @@ class Scan_button(tk.Frame):
             update T-s diagram
             '''
             self.call_update_funcs()
-            self.after(3000, self.update_diagram, count+1)
+            self.after(2000, self.update_diagram, count+1)
 
     def calc_nodes(self):
         print("calc nodes and works")
