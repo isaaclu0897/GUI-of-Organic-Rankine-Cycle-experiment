@@ -167,76 +167,6 @@ class ORC_Figure(tk.Frame):
         self.lines["saturation_curve_right"] = self.add_line(
             saturation_curve[1])
 
-    # def setThermoLine(self):
-    #     self.lineStatePoint = Line2D(
-    #         [], [], color='g', linestyle='None', marker='o')
-
-    #     self.linePumpimg = Line2D([], [], color="g", lw=2.5)
-    #     self.lineHeating = Line2D([], [], color="g", lw=2.5)
-    #     self.lineWorking = Line2D([], [], color="g", lw=2.5)
-    #     self.lineCooling = Line2D([], [], color="g", lw=2.5)
-
-    #     self.linePumpimgISO = Line2D([], [], color="grey", lw=1.3)
-    #     self.lineHeatingISO = Line2D([], [], color="grey", lw=1.3)
-    #     self.lineWorkingISO = Line2D([], [], color="grey", lw=1.3)
-    #     self.lineCoolingISO = Line2D([], [], color="grey", lw=1.3)
-
-    #     self.lineHeater = Line2D([], [], color="r", lw=2.0)
-    #     self.lineCooler = Line2D([], [], color="b", lw=2.0)
-
-    #     self.thermoLine = [self.linePumpimg, self.lineHeating,
-    #                        self.lineWorking, self.lineCooling]
-    #     self.thermoLineISO = [
-    #         self.linePumpimgISO, self.lineHeatingISO, self.lineWorkingISO, self.lineCoolingISO]
-    #     self.heatExchangerLine = [self.lineHeater, self.lineCooler]
-
-    # def addThermoLine(self):
-
-    #     self.ax.add_line(self.lineStatePoint)
-
-    #     for i in self.thermoLine:
-    #         self.ax.add_line(i)
-
-    #     for i in self.thermoLineISO:
-    #         self.ax.add_line(i)
-
-    #     for i in self.heatExchangerLine:
-    #         self.ax.add_line(i)
-
-    # def updata_StatePoint(self, data):
-    #     self.lineStatePoint.set_xdata(data[0])
-    #     self.lineStatePoint.set_ydata(data[1])
-
-    # def updata_thermoLine(self, data):
-    #     for i in range(len(data)):
-    #         self.thermoLine[i].set_xdata(data[i][1][0])
-    #         self.thermoLine[i].set_ydata(data[i][1][1])
-
-    #         self.thermoLineISO[i].set_xdata(data[i][0][0])
-    #         self.thermoLineISO[i].set_ydata(data[i][0][1])
-
-    # def updata_heatExchangerLine(self, data):
-    #     for i in range(len(data)):
-    #         self.heatExchangerLine[i].set_xdata(data[i][0])
-    #         self.heatExchangerLine[i].set_ydata(data[i][1])
-
-    # def update_data(self, nodesSys, nodesHX):
-    #     #            ORC_status([nodes[i] for i in range(len(nodes))])
-    #     state_data = calc_StatusofORC(nodesSys, [0, 1, 2, 3])
-
-    #     process = [ProcessPlot(0, 1, 'isos'),
-    #                ProcessPlot(1, 2, 'isop'),
-    #                ProcessPlot(2, 3, 'isos'),
-    #                ProcessPlot(3, 0, 'isop')]
-    #     thermoLine = [plot.plot_process_data(nodesSys) for plot in process]
-
-    #     heatExchangerLine_data = [[[nodesHX[0].s, nodesHX[1].s], [nodesHX[0].t, nodesHX[1].t]],
-    #                               [[nodesHX[2].s, nodesHX[3].s], [nodesHX[2].t, nodesHX[3].t]]]
-
-    #     self.updata_StatePoint(state_data)
-    #     self.updata_thermoLine(thermoLine)
-    #     self.updata_heatExchangerLine(heatExchangerLine_data)
-
     def set_line(self):
         for name, attr in cfg.LINE.items():
             if attr["type"] == "o":
@@ -287,7 +217,6 @@ class ORC_Figure(tk.Frame):
             T.append([data[f"{points[0]}_Ti"], data[f"{points[1]}_To"]])
 
         self.lines[f"{line_name}"].set_data(s, T)
-
 
     def update(self):
         print("update T-s Diagram")
