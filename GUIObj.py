@@ -73,7 +73,6 @@ class P_I_Diagram(tk.Frame):
 
     def set_Labels(self):
         for k, v in cfg.LABEL.items():
-            # print(k)
             if v["posx"] == 0 or v["posy"] == 0:
                 continue
             sensor_type = k.split("_")[-1]
@@ -212,8 +211,10 @@ class ORC_Figure(tk.Frame):
                     s_list.append(node.s)
             if line_name == "heat":
                 s.append([max(s_list), min(s_list)])
-            else:
+            elif line_name == "cool":
                 s.append([min(s_list), max(s_list)])
+            else:
+                print("f{line_name} config warning")
             T.append([data[f"{points[0]}_Ti"], data[f"{points[1]}_To"]])
 
         self.lines[f"{line_name}"].set_data(s, T)
@@ -269,6 +270,7 @@ class Scan_button(tk.Frame):
 
         ''' init v34970A '''
         self.dev = agilent.test_V34972A()
+        # self.dev = agilent.V34972A()
 
     def call_update_funcs(self):
         for func in self.update_funcs:
