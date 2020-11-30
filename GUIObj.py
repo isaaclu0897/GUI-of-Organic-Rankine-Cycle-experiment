@@ -6,25 +6,30 @@ Created on Mon Nov 19 15:01:08 2018
 @author: wei
 """
 
-from threading import Timer
+# import tkinter
 import tkinter as tk
 import tkinter.font as tkfont
 
-
+# import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+
 #import node
+from node import Node
+from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from ORC_plot import ProcessPlot
 from ORC_sample import initNode, setAndCalcNode
+
+# import os
 import os
 from openpyxl import Workbook, load_workbook
 import datetime
+# import config
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
-from node import Node
+
 
 
 class P_I_Diagram(tk.Frame):
