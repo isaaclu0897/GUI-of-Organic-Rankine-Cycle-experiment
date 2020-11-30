@@ -82,16 +82,15 @@ class V34972A:
         self.device = rm.open_resource(cfg.v34972A["USB_address"])
 
     def scan(self):
-        for k, ch in cfg.SENSOR.items():
-            name, sensor_type = k.split("_")
-            if name not in nodes:
-                nodes[f"{name}"] = node.Node()
+        for ch, items in cfg.SENSOR.items():
+            name = items["name"]
+            sensor_type = items["type"]
 
             if "T" in sensor_type:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
-                nodes[f"{name}"].t = float(t)
+                data[f"{name}"].t = float(t)
             elif "P" in sensor_type:
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
                 self.device.write(query)
@@ -100,7 +99,7 @@ class V34972A:
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
                 self.device.write(query)
                 p = self.device.query(':READ?')
-                nodes[f"{name}"].p = float(p)
+                data[f"{name}"].p = float(p)
             else:
                 pass
 
@@ -157,6 +156,7 @@ class test_V34972A:
         print("scan_data")
         for ch, items in cfg.SENSOR.items():
             name = items["name"]
+            print(name)
             sensor_type = items["type"]
             # print(name, sensor_type)
             if "T" == sensor_type:

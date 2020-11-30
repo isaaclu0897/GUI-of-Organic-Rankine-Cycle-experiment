@@ -20,7 +20,6 @@ from node import Node
 from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from ORC_plot import ProcessPlot
 from ORC_sample import initNode, setAndCalcNode
-
 # import os
 import os
 from openpyxl import Workbook, load_workbook
@@ -29,7 +28,6 @@ import datetime
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
-
 
 
 class P_I_Diagram(tk.Frame):
