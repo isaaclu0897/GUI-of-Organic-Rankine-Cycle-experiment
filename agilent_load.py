@@ -110,6 +110,8 @@ class V34972A:
             else:
                 print(f"sensor {name} config error")
 
+    ''' maybe need close? __del__'''
+
 
 class test_device:
     def __init__(self):
@@ -201,6 +203,8 @@ if __name__ == "__main__":
     usb_device.write(':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, "@201:206"))
     usb_device.write(':CALCulate:SCALe:STATe %d,(%s)' % (1, "@201:206"))
     pressS = usb_device.query(':READ?')
+    rm.close()
+
     print(temps)
     print(pressS)
 
