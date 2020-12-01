@@ -6,14 +6,14 @@ Created on Sun Nov 29 01:11:35 2020
 @author: wei
 """
 
-import node
+from node import Node
 import config as cfg
 
 data = {}
 
 def _make_system_nodes_shell():
     for i, name in enumerate(cfg.config["System"]["node"], 1):
-        data[f"{name}"] = node.Node(name, i)
+        data[f"{name}"] = Node(name, i)
 
 _make_system_nodes_shell()
 

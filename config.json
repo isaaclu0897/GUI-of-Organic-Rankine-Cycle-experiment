@@ -56,15 +56,15 @@
                 "T": {
                     "sensor": "@104",
                     "GUI": {
-                        "posx": 500,
-                        "posy": 500
+                        "posx": 800,
+                        "posy": 400
                     }
                 },
                 "P": {
                     "sensor": "@204",
                     "GUI": {
-                        "posx": 500,
-                        "posy": 500
+                        "posx": 800,
+                        "posy": 400
                     }
                 }
             },
@@ -88,15 +88,15 @@
                 "T": {
                     "sensor": "@106",
                     "GUI": {
-                        "posx": 500,
-                        "posy": 500
+                        "posx": 800,
+                        "posy": 400
                     }
                 },
                 "P": {
                     "sensor": "@206",
                     "GUI": {
-                        "posx": 500,
-                        "posy": 500
+                        "posx": 800,
+                        "posy": 400
                     }
                 }
             }
@@ -177,7 +177,7 @@
         "node": {
             "heater-in": {
                 "Ti": {
-                    "sensor": "@105",
+                    "sensor": "@107",
                     "GUI": {
                         "posx": 530,
                         "posy": 50
@@ -186,7 +186,7 @@
             },
             "heater-out": {
                 "To": {
-                    "sensor": "@106",
+                    "sensor": "@108",
                     "GUI": {
                         "posx": 530,
                         "posy": 80
@@ -195,7 +195,7 @@
             },
             "cooler-in": {
                 "Ti": {
-                    "sensor": "@107",
+                    "sensor": "@109",
                     "GUI": {
                         "posx": 570,
                         "posy": 655
@@ -204,7 +204,7 @@
             },
             "cooler-out": {
                 "To": {
-                    "sensor": "@108",
+                    "sensor": "@110",
                     "GUI": {
                         "posx": 570,
                         "posy": 685
@@ -262,7 +262,9 @@
                 "pump-in",
                 "evaporator-in",
                 "evaporator-out",
-                "condenser-in"
+                "expander-out",
+                "condenser-in",
+                "condenser-out"
             ] 
         }
     },

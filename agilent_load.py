@@ -63,29 +63,37 @@ class test_device:
         query = query.split(",")[-1]
         # print(query)
         if query == "(@101)":
-            value = "21.8600"
+            value = "23.1800"
         elif query == "(@102)":
-            value = "22.5500"
+            value = "24.8940"
         elif query == "(@103)":
-            value = "88.3100"
+            value = "80.3100"
         elif query == "(@104)":
-            value = "64.0300"
+            value = "70.0300"
         elif query == "(@105)":
-            value = "100.5000"
+            value = "62.5000"
         elif query == "(@106)":
-            value = "90.5000"
+            value = "22.5000"
         elif query == "(@107)":
-            value = "19.5000"
+            value = "100.5000"
         elif query == "(@108)":
-            value = "30.5000"
+            value = "90.5000"
+        elif query == "(@109)":
+            value = "22.5000"
+        elif query == "(@110)":
+            value = "24.5000"
         elif query == "(@201)":
-            value = "2.01000"
+            value = "2.07000"
         elif query == "(@202)":
-            value = "6.44000"
+            value = "5.03000"
         elif query == "(@203)":
-            value = "6.11000"
+            value = "4.96000"
         elif query == "(@204)":
-            value = "2.05000"
+            value = "2.03000"
+        elif query == "(@205)":
+            value = "2.03000"
+        elif query == "(@206)":
+            value = "1.97000"
         elif query == "(@301)":
             value = "2.5"
         return value
@@ -114,6 +122,7 @@ class test_V34972A:
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
+                # print(data[f"{name}"], data[f"{name}"].t)
             elif sensor_type in ["Ti", "To"]:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
@@ -135,20 +144,24 @@ class test_V34972A:
 
 
 if __name__ == "__main__":
-    rm = visa.ResourceManager()
-    usb_device = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR')
-    temps = usb_device.query(
-        ':MEASure:TEMPerature? %s,%s,(%s)' % ('TCouple', 'T', "@101:110"))
-    usb_device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' %
-                     (10, 5.5, "@201:206"))
-    usb_device.write(':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, "@201:206"))
-    usb_device.write(':CALCulate:SCALe:STATe %d,(%s)' % (1, "@201:206"))
-    pressS = usb_device.query(':READ?')
-    rm.close()
+    # rm = visa.ResourceManager()
+    # usb_device = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR')
+    # temps = usb_device.query(
+    #     ':MEASure:TEMPerature? %s,%s,(%s)' % ('TCouple', 'T', "@101:110"))
+    # usb_device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' %
+    #                  (10, 5.5, "@201:206"))
+    # usb_device.write(':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, "@201:206"))
+    # usb_device.write(':CALCulate:SCALe:STATe %d,(%s)' % (1, "@201:206"))
+    # pressS = usb_device.query(':READ?')
+    # rm.close()
 
-    print(temps)
-    print(pressS)
+    # print(temps)
+    # print(pressS)
 
-    device = V34972A()
+    # device = V34972A()
+    # device.scan()
+    # print(data)
+    
+    device = test_V34972A()
     device.scan()
-    print(data)
+    # print(data)

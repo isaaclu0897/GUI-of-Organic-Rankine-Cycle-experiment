@@ -28,7 +28,7 @@ import datetime
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
-import gc
+# import gc
 
 
 class P_I_Diagram(tk.Frame):
@@ -231,7 +231,7 @@ class ORC_Figure(tk.Frame):
 class Scan_button(tk.Frame):
     def __init__(self, master=None, *callbacks):
         tk.Frame.__init__(self, master=None)
-        gc.disable()
+        # gc.disable()
         self.update_funcs = []
         for func in callbacks:
             if callable(func):
@@ -280,7 +280,7 @@ class Scan_button(tk.Frame):
 
     def update_diagram(self, count=0):
         if self.is_click:
-            print("----" * 5)
+            # print("----" * 5)
             # print(f"update_diagram {count}")
             self.dev.scan()
             self.calc_nodes()
@@ -289,8 +289,8 @@ class Scan_button(tk.Frame):
             update T-s diagram
             '''
             self.call_update_funcs()
-            save_data()
-            print(gc.get_count())
+            # save_data()
+            # print(gc.get_count())
             self.after(300, self.update_diagram, count+1)
 
     def calc_nodes(self):
@@ -298,6 +298,7 @@ class Scan_button(tk.Frame):
         ''' calc nodes '''
         for name, value in data.items():
             if isinstance(value, Node):
+                # print(name, data[name].p, data[name].t)
                 data[name].pt()
         ''' calc WORK '''
         for name, node in cfg.FM.items():
@@ -445,5 +446,6 @@ def mk_exclusivefile(path, filename):
 #    if not os.path.isdir(dirname):
 #        os.mkdir('{}'.format(dirname))
 if __name__ == "__main__":
-    for k in range(1000000):
-        save_data()
+    pass
+    # for k in range(1000000):
+    #     save_data()
