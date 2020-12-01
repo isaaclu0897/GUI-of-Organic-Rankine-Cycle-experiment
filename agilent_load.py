@@ -153,10 +153,10 @@ class test_V34972A:
         self.device = test_device()
 
     def scan(self):
-        print("scan_data")
+        # print("scan_data")
         for ch, items in cfg.SENSOR.items():
             name = items["name"]
-            print(name)
+            # print(name)
             sensor_type = items["type"]
             # print(name, sensor_type)
             if "T" == sensor_type:

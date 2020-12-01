@@ -52,19 +52,51 @@
                     }
                 }
             },
-            "condenser-in": {
+            "expander-out": {
                 "T": {
                     "sensor": "@104",
+                    "GUI": {
+                        "posx": 500,
+                        "posy": 500
+                    }
+                },
+                "P": {
+                    "sensor": "@204",
+                    "GUI": {
+                        "posx": 500,
+                        "posy": 500
+                    }
+                }
+            },
+            "condenser-in": {
+                "T": {
+                    "sensor": "@105",
                     "GUI": {
                         "posx": 430,
                         "posy": 480
                     }
                 },
                 "P": {
-                    "sensor": "@204",
+                    "sensor": "@205",
                     "GUI": {
                         "posx": 430,
                         "posy": 510
+                    }
+                }
+            },
+            "condenser-out": {
+                "T": {
+                    "sensor": "@106",
+                    "GUI": {
+                        "posx": 500,
+                        "posy": 500
+                    }
+                },
+                "P": {
+                    "sensor": "@206",
+                    "GUI": {
+                        "posx": 500,
+                        "posy": 500
                     }
                 }
             }

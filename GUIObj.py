@@ -28,6 +28,7 @@ import datetime
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
+import gc
 
 
 class P_I_Diagram(tk.Frame):
@@ -106,7 +107,7 @@ class P_I_Diagram(tk.Frame):
         self.canvas.itemconfigure(itemID, text=str(round(value, n)))
 
     def update(self):
-        print("update P&ID")
+        # print("update P&ID")
         for name, value in data.items():
             if isinstance(value, Node):
                 self.update_value(f"{name}_T", data[name].t)
@@ -220,7 +221,7 @@ class ORC_Figure(tk.Frame):
         self.lines[f"{line_name}"].set_data(s, T)
 
     def update(self):
-        print("update T-s Diagram")
+        # print("update T-s Diagram")
         for name, attr in cfg.LINE.items():
             self.update_line(name, attr["type"], attr["point"])
 
@@ -230,7 +231,7 @@ class ORC_Figure(tk.Frame):
 class Scan_button(tk.Frame):
     def __init__(self, master=None, *callbacks):
         tk.Frame.__init__(self, master=None)
-
+        gc.disable()
         self.update_funcs = []
         for func in callbacks:
             if callable(func):
@@ -280,7 +281,7 @@ class Scan_button(tk.Frame):
     def update_diagram(self, count=0):
         if self.is_click:
             print("----" * 5)
-            print(f"update_diagram {count}")
+            # print(f"update_diagram {count}")
             self.dev.scan()
             self.calc_nodes()
             ''' update functions
@@ -288,10 +289,12 @@ class Scan_button(tk.Frame):
             update T-s diagram
             '''
             self.call_update_funcs()
-            self.after(2000, self.update_diagram, count+1)
+            save_data()
+            print(gc.get_count())
+            self.after(300, self.update_diagram, count+1)
 
     def calc_nodes(self):
-        print("calc nodes and works")
+        # print("calc nodes and works")
         ''' calc nodes '''
         for name, value in data.items():
             if isinstance(value, Node):
@@ -370,6 +373,33 @@ class Scan_button(tk.Frame):
 
 #     def update_mdotWater(self, mdotWater):
 #         self.mdotWater = mdotWater
+i = 0
+def save_data():
+    # pwd = os.getcwd()
+    pwd = "/home/wei/app/GUI-of-Organic-Rankine-Cycle-experiment"
+    path = f"{pwd}/weiGUIData"
+    # print(path)
+    filename = f'{datetime.date.today()}.xlsx'
+    # mk_exclusivefile(path, filename)
+    workBook, workSheet = mk_exclusivefile(path, filename)
+    
+    lastCell = workSheet.cell(workSheet.max_row, 1).value
+    global i
+    # if lastCell != 'scan':
+    #     i = lastCell
+    # else:
+    #     i = 0
+
+    i = i + 1
+    workSheet.append(["0"] * 20)
+    workSheet.append(["0"] * 20)
+    workSheet.append(["0"] * 20)
+    workSheet.append(["0"] * 20)
+    workSheet.append(["0"] * 20)
+
+    workBook.save("{}".format(filename))
+    
+    print(i, id(workBook), workBook)
 
 
 def mk_exclusivefile(path, filename):
@@ -384,6 +414,7 @@ def mk_exclusivefile(path, filename):
         mk_exclusivedir(path, dirname)
         os.path.isdir(path + '/' + dirname) # True
     '''
+
     if not os.path.isdir(path):
         os.mkdir(path)
     os.chdir(path)
@@ -402,7 +433,7 @@ def mk_exclusivefile(path, filename):
                           'inlet(T)', 'outlet(T)', '高溫壓迫',
                           'inlet(T)', 'outlet(T)', '低溫壓迫',
                           'ORC效率(%)', 'mdot(kg/s)', 'time(s)', '聚集', 'operate'])
-        workBook.save(".\{}".format(filename))
+        workBook.save("{}".format(filename))
 
     else:
         workBook = load_workbook('{}'.format(filename))
@@ -413,3 +444,6 @@ def mk_exclusivefile(path, filename):
 
 #    if not os.path.isdir(dirname):
 #        os.mkdir('{}'.format(dirname))
+if __name__ == "__main__":
+    for k in range(1000000):
+        save_data()
