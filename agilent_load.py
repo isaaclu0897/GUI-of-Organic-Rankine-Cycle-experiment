@@ -2,13 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Jul  8 19:31:54 2018
- 
+
 @author: wei
 """
 
 import pyvisa as visa  # you need agilent io lib
-import node
-from tabulate_text import ORC_status
 import config as cfg
 from realtime_data import data
 
@@ -86,12 +84,13 @@ class V34972A:
             name = items["name"]
             sensor_type = items["type"]
 
-            if "T" in sensor_type:
+            if "T" == sensor_type:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     'TCouple', 'T', ch)
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
-            elif "P" in sensor_type:
+                # print(f"{name}", data[f"{name}"].t)
+            elif "P" == sensor_type:
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
                 self.device.write(query)
                 query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
@@ -100,8 +99,16 @@ class V34972A:
                 self.device.write(query)
                 p = self.device.query(':READ?')
                 data[f"{name}"].p = float(p)
+                # print(f"{name}", data[f"{name}"].p)
+            elif sensor_type in ["Ti", "To"]:
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    'TCouple', 'T', ch)
+                t = self.device.query(query)
+                data[f"{name}"] = float(t)
+                # print(f"{name}", data[f"{name}"])
+            # print(sensor_type)
             else:
-                pass
+                print(f"sensor {name} config error")
 
 
 class test_device:
@@ -185,14 +192,18 @@ class test_V34972A:
 
 
 if __name__ == "__main__":
-    # scan()
-    # pass
-    dev = test_V34972A()
-    rst = dev.scan()
-    for k, v in rst.items():
-        if isinstance(v, node.Node):
-            print(f"{k} T {v.t}")
-            print(f"{k} P {v.p}")
-        else:
-            print(f"{k} {v}")
-    # print(nodes)
+    rm = visa.ResourceManager()
+    usb_device = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR')
+    temps = usb_device.query(
+        ':MEASure:TEMPerature? %s,%s,(%s)' % ('TCouple', 'T', "@101:110"))
+    usb_device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' %
+                     (10, 5.5, "@201:206"))
+    usb_device.write(':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, "@201:206"))
+    usb_device.write(':CALCulate:SCALe:STATe %d,(%s)' % (1, "@201:206"))
+    pressS = usb_device.query(':READ?')
+    print(temps)
+    print(pressS)
+
+    device = V34972A()
+    device.scan()
+    print(data)
