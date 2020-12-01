@@ -104,10 +104,10 @@ LINE = _make_LINE_config()
 
 #%%
 
-def _import_v34970A():
-    return config["v34970A"]
+def _import_v34972A():
+    return config["v34972A"]
 
-v34970A = _import_v34970A()
+v34972A = _import_v34972A()
 
 #%%
 
