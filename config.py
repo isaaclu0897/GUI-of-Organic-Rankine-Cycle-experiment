@@ -88,28 +88,35 @@ def import_photo():
     '''
     return ImageTk.PhotoImage(GUI["image"])
 
-#%%
+# %%
+
 
 def _resize_FIG_size():
     FIG["width"] = _resize(FIG["width"])
     FIG["height"] = _resize(FIG["height"])
 
-FIG = {"width":8, "height": 6}
+
+FIG = {"width": 8, "height": 6}
 _resize_FIG_size()
+
 
 def _make_LINE_config():
     return config["line"]
 
+
 LINE = _make_LINE_config()
 
-#%%
+# %%
+
 
 def _import_v34972A():
     return config["v34972A"]
 
+
 v34972A = _import_v34972A()
 
-#%%
+# %%
+
 
 def _make_SENSOR_config():
     ''' import sensor config '''
@@ -122,36 +129,41 @@ def _make_SENSOR_config():
         for attr, value in node_config[name].items():
             if "sensor" in value:
                 # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
-                SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : attr	}
+                SENSOR_config[f"{value['sensor']}"] = {
+                    "name": name, "type": attr	}
     for name in node_config_o:
         for attr, value in node_config_o[name].items():
             if "sensor" in value:
                 # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
-                SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : attr	}
+                SENSOR_config[f"{value['sensor']}"] = {
+                    "name": name, "type": attr	}
     for name, value in attr_config.items():
         if "sensor" in value:
             # SENSOR_config[f"{name}"] = value["sensor"]
-            SENSOR_config[f"{value['sensor']}"] = {"name" : name,"type" : name	}
+            SENSOR_config[f"{value['sensor']}"] = {"name": name, "type": name	}
 
-    return SENSOR_config 
+    return {k: SENSOR_config[k] for k in sorted(SENSOR_config)}
+
 
 SENSOR = _make_SENSOR_config()
 # print(SENSOR)
-#%%
+# %%
+
 
 def _make_System_attr_formula():
     attr_config = config["System"]["attribute"]
-    
+
     attr_formula = {}
     for name in attr_config:
         for attr, value in attr_config[name].items():
-            
+
             if "in_out" in attr:
-        #         # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
+                #         # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
                 attr_formula[f"{name}"] = value
 
-    
     return attr_formula
+
+
 FM = _make_System_attr_formula()
 # print(sFM)
 # def _make_NODE_config():
