@@ -311,70 +311,7 @@ class Scan_button(tk.Frame):
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
 
 
-# class SendData:
-#     def __init__(self):
-#         pumpi = {'name': 'pump_inlet',         'nid': 1}
-#         pumpo = {'name': 'pump_ioutlet',       'nid': 2}
-#         EXPi = {'name': 'expander_inlet',     'nid': 3}
-#         EXPo = {'name': 'expander_outlet',    'nid': 4}
 
-#         HI = {'name': 'heat_inlet',       'nid': 5}
-#         HO = {'name': 'heat_outlet',      'nid': 6}
-#         CI = {'name': 'condenser_inlet',  'nid': 7}
-#         CO = {'name': 'condenser_outlet', 'nid': 8}
-
-# # =========================================================
-# # define the  of all point & init all node
-# # =========================================================
-
-#         self.dev_list = [pumpi, pumpo, EXPi, EXPo]
-#         self.heatexchange_list = [HI, HO, CI, CO]
-#         self.mdotWater = None
-
-#     def send(self, readings_TEMP, readings_PRESS):
-#         for i in range(4):
-#             self.dev_list[i]['P'] = readings_PRESS[i]
-#             self.dev_list[i]['T'] = readings_TEMP[i]
-#             self.heatexchange_list[i]['T'] = readings_TEMP[i+6]
-
-#     #        global nodesSys
-#     #        global nodesHX
-
-#         self.nodesSys = initNode(self.dev_list)
-#         self.nodesHX = initNode(self.heatexchange_list)
-
-#         setAndCalcNode(self.nodesSys, self.dev_list)
-#         setAndCalcNode(self.nodesHX, self.heatexchange_list)
-#         self.nodesHX[0].s = self.nodesSys[2].s + 0.03
-#         self.nodesHX[1].s = self.nodesSys[0].s - 0.03
-#         self.nodesHX[2].s = self.nodesSys[0].s - 0.03
-#         self.nodesHX[3].s = self.nodesSys[2].s + 0.03
-#         value = [self.nodesSys[1].p-self.nodesSys[0].p, self.nodesSys[0].p, self.nodesSys[0].t, self.nodesSys[0].d, self.nodesSys[0].over, self.nodesSys[0].h,
-#                  self.nodesSys[1].p, self.nodesSys[1].t, self.nodesSys[1].tSat, self.nodesSys[1].h,
-#                  self.nodesSys[2].p-self.nodesSys[3].p, self.nodesSys[2].p, self.nodesSys[2].t, self.nodesSys[2].tSat, self.nodesSys[2].over, self.nodesSys[2].h,
-#                  self.nodesSys[3].p, self.nodesSys[3].t, self.nodesSys[3].tSat, self.nodesSys[3].h,
-#                  self.nodesHX[0].t, self.nodesHX[1].t, self.nodesHX[1].t -
-#                  self.nodesSys[2].tSat,
-#                  self.nodesHX[2].t, self.nodesHX[3].t, self.nodesHX[3].t -
-#                  self.nodesSys[3].tSat,
-#                  ((self.nodesSys[2].h-self.nodesSys[3].h) /
-#                   (self.nodesSys[2].h-self.nodesSys[1].h))*100,
-#                  self.mdotWater*4.2*(self.nodesHX[0].t-self.nodesHX[1].t)/(self.nodesSys[2].h-self.nodesSys[1].h)]
-
-#         return value
-
-#     def update(self, SM_dia, TH_dia):
-
-#         #
-#         #        global SM_dia
-#         #        global TH_dia
-
-#         SM_dia.update_data(self.nodesSys, self.nodesHX)
-#         TH_dia.update_data(self.nodesSys, self.nodesHX)
-
-#     def update_mdotWater(self, mdotWater):
-#         self.mdotWater = mdotWater
-i = 0
 def save_data():
     # pwd = os.getcwd()
     pwd = "/home/wei/app/GUI-of-Organic-Rankine-Cycle-experiment"
