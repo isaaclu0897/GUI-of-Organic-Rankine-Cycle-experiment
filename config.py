@@ -165,8 +165,10 @@ def _make_System_attr_formula():
 
 
 FM = _make_System_attr_formula()
-# print(sFM)
-# def _make_NODE_config():
-#     return config["System"]["node"]
 
-# NODE = _make_NODE_config()
+#%%
+
+def _make_experiment_file_config():
+    return config["experiment-file"]
+
+FILE = _make_experiment_file_config()

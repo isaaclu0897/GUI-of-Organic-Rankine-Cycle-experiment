@@ -312,7 +312,7 @@ class Scan_button(tk.Frame):
 
 
 
-def save_data():
+def must_be_remove_save_data():
     # pwd = os.getcwd()
     pwd = "/home/wei/app/GUI-of-Organic-Rankine-Cycle-experiment"
     path = f"{pwd}/weiGUIData"
@@ -339,6 +339,26 @@ def save_data():
     
     print(i, id(workBook), workBook)
 
+
+def save_data():
+    pass
+
+def transfer_file():
+    ''' transfer lock file to experiment file
+    When experiment is done,
+    system will copy lock file into experiment file.
+    '''
+    pass
+
+def create_csv_file_header():
+    pass
+
+def _mk_lock_file():
+    ''' avoid users crash file
+    Lock file just ORC GUI can used.
+    Prevent users from crashing the system due to file modification.
+    '''
+    pass
 
 def mk_exclusivefile(path, filename):
     ''' 創見專屬資料夾
