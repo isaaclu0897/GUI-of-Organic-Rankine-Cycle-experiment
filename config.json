@@ -214,58 +214,58 @@
         }
     },
     "line": {
-        "pumping":{
-            "type" : "s",
-            "point" :[
+        "pumping": {
+            "type": "s",
+            "point": [
                 "pump-in",
                 "evaporator-in"
             ]
         },
-        "heating":{
-            "type" : "p",
-            "point" :[
+        "heating": {
+            "type": "p",
+            "point": [
                 "evaporator-in",
                 "evaporator-out"
-            ] 
+            ]
         },
-        "working":{
-            "type" : "s",
-            "point" :[
+        "working": {
+            "type": "s",
+            "point": [
                 "evaporator-out",
                 "condenser-in"
-            ] 
+            ]
         },
-        "cooling":{
-            "type" : "p",
-            "point" :[
+        "cooling": {
+            "type": "p",
+            "point": [
                 "condenser-in",
                 "pump-in"
-            ] 
+            ]
         },
-        "heat":{
-            "type" : "l",
-            "point" :[
+        "heat": {
+            "type": "l",
+            "point": [
                 "heater-in",
                 "heater-out"
-            ] 
+            ]
         },
-        "cool":{
-            "type" : "l",
-            "point" :[
+        "cool": {
+            "type": "l",
+            "point": [
                 "cooler-in",
                 "cooler-out"
-            ] 
+            ]
         },
-        "point":{
-            "type" : "o",
-            "point" :[
+        "point": {
+            "type": "o",
+            "point": [
                 "pump-in",
                 "evaporator-in",
                 "evaporator-out",
                 "expander-out",
                 "condenser-in",
                 "condenser-out"
-            ] 
+            ]
         }
     },
     "GUI": {
@@ -277,7 +277,38 @@
     "v34972A": {
         "USB_address": "USB0::0x0957::0x2007::MY49017447::0::INSTR"
     },
-    "experiment-file":{
-        "folder-path": ""    
+    "experiment-file": {
+        "folder-path": "",
+        "column": {
+            "count": "count",
+            "time": "time",
+            "壓差": "time",
+            "pump-in(P)": "pump-in.p",
+            "pump-in(T)": "pump-in.t",
+            "密度": "pump-in.d",
+            "subcool": "pump-in.over",
+            "h1": "pump-in.h",
+            "evaporator-in(P)": "evaporator-in.p",
+            "evaporator-in(T)": "evaporator-in.t",
+            "飽和溫度1": "evaporator-in.Sat",
+            "h2": "evaporator-in.h",
+            "evaporator-out(P)": "evaporator-out.p",
+            "evaporator-out(T)": "evaporator-out.t",
+            "飽和溫度2": "evaporator-out.sat",
+            "superheat": "evaporator-out.over",
+            "h3": "evaporator-out.h",
+            "condenser-in(P)": "condenser-in.p",
+            "condenser-in(T)": "condenser-in.t",
+            "飽和溫度3": "time",
+            "h4": "condenser-in.h",
+            "condenser-out(P)": "condenser-out.p",
+            "condenser-out(T)": "condenser-out.t",
+            "高溫壓迫": "",
+            "低溫壓迫": "",
+            "ORC效率(%)": "Eff",
+            "mdot(kg/s)": "mDot",
+            "time(s)": "times",
+            "operate": ""
+        }
     }
 }
