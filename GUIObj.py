@@ -271,6 +271,7 @@ class Scan_button(tk.Frame):
 
         ''' init v34970A '''
         self.dev = agilent.test_V34972A()
+        self.file = csv_file()
         # self.dev = agilent.V34972A()
 
     def call_update_funcs(self):
@@ -280,10 +281,11 @@ class Scan_button(tk.Frame):
 
     def update_diagram(self, count=0):
         if self.is_click:
-            # print("----" * 5)
+            print("----" * 5)
             # print(f"update_diagram {count}")
             self.dev.scan()
             self.calc_nodes()
+            self.file.print_data()
             ''' update functions
             update P&ID
             update T-s diagram
@@ -309,7 +311,16 @@ class Scan_button(tk.Frame):
 
         ''' calc efficiency '''
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
-
+        
+        
+class csv_file:
+    def __init__(self):
+        self.rowdata = [ data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t ]
+        pass
+    def print_data(self):
+        print(self.rowdata)
+        print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
+    
 
 
 def must_be_remove_save_data():
