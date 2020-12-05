@@ -53,7 +53,7 @@ class V34972A:
 
     ''' maybe need close? __del__'''
 
-
+from random import randint
 class test_device:
     def __init__(self):
         pass
@@ -68,10 +68,12 @@ class test_device:
             value = "24.8940"
         elif query == "(@103)":
             value = "80.3100"
+            value = randint(80, 90)
         elif query == "(@104)":
             value = "70.0300"
         elif query == "(@105)":
             value = "62.5000"
+            value = randint(58, 65)
         elif query == "(@106)":
             value = "22.5000"
         elif query == "(@107)":
@@ -164,4 +166,4 @@ if __name__ == "__main__":
     
     device = test_V34972A()
     device.scan()
-    # print(data)
+    print(data)
