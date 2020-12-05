@@ -290,25 +290,25 @@
             "h1": "pump-in.h",
             "evaporator-in(P)": "evaporator-in.p",
             "evaporator-in(T)": "evaporator-in.t",
-            "飽和溫度1": "evaporator-in.Sat",
+            "飽和溫度1": "evaporator-in.tSat",
             "h2": "evaporator-in.h",
             "evaporator-out(P)": "evaporator-out.p",
             "evaporator-out(T)": "evaporator-out.t",
-            "飽和溫度2": "evaporator-out.sat",
+            "飽和溫度2": "evaporator-out.tSat",
             "superheat": "evaporator-out.over",
             "h3": "evaporator-out.h",
             "condenser-in(P)": "condenser-in.p",
             "condenser-in(T)": "condenser-in.t",
-            "飽和溫度3": "time",
+            "飽和溫度3": "condenser-in.tSat",
             "h4": "condenser-in.h",
             "condenser-out(P)": "condenser-out.p",
             "condenser-out(T)": "condenser-out.t",
-            "高溫壓迫": "",
-            "低溫壓迫": "",
+            "高溫壓迫": "time",
+            "低溫壓迫": "time",
             "ORC效率(%)": "Eff",
             "mdot(kg/s)": "mDot",
-            "time(s)": "times",
-            "operate": ""
+            "time(s)": "time",
+            "operate": "operate"
         }
     }
 }
