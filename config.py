@@ -169,6 +169,12 @@ FM = _make_System_attr_formula()
 #%%
 
 def _make_experiment_file_config():
-    return config["experiment-file"]
+    
+    FILE_config = config["experiment-file"]
+    FILE_config["header"] = FILE_config["column"].keys()
+    FILE_config["data"] = FILE_config["column"].values()
+    return FILE_config
 
 FILE = _make_experiment_file_config()
+
+
