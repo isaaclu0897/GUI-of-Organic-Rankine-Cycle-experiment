@@ -320,6 +320,8 @@ class csv_file:
     def print_data(self):
         print(self.rowdata)
         print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
+        print(id(data["pump-in"].t))
+        print(id(data))
     
 
 

@@ -73,41 +73,6 @@ Created on Mon Jul  9 00:24:49 2018
 #     timer(innerfunc, 3, SM_dia, TH_dia)
 
 
-# def test_scan_data(data, SM_dia, TH_dia):
-
-#     #    data = SendData()
-
-#     # workBook = Workbook()
-#     # workSheet = workBook.active
-#     # workSheet['a1'] = '實驗名稱'
-#     # workSheet['a2'] = '實驗日期'
-#     # workSheet['b2'] = datetime.date.today()
-#     # workSheet['a3'] = '實驗說明(描述)'
-#     # workBook.save("./DillWithData/sample.xlsx")
-
-#     def innerfunc(data, SM_dia, TH_dia):
-#         readings_PRESS = [1.8, 9, 8.3, 2.3, 1.9, 2]
-#         readings_TEMP = [22, 25, 97, 64, 24, 68, 99, 89, 22, 24]
-
-#         value = data.send(readings_TEMP, readings_PRESS)
-#         print(value)
-#         data.update(SM_dia, TH_dia)
-
-#     innerfunc(data, SM_dia, TH_dia)
-
-
-# def timer(func, second=2, *arg):
-#     func(*arg)
-#     t = Timer(second, timer, args=(func, 3, *arg))
-#     t.setDaemon(True)
-
-#     if t.daemon and on_click_loop:
-#         t.start()
-#     else:
-#         #        del readings_TEMP, readings_PRESS
-#         return 0
-
-
 if __name__ == '__main__':
     '''layout'''
     import tkinter as tk
@@ -133,13 +98,11 @@ if __name__ == '__main__':
     frm_right_top.pack(side='top')
     # tk.Label(frm_right_top, text='frame right top').pack()
     Ts = ORC_Figure(frm_right_top)
-    
+
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
     # tk.Label(frm_right_bottom, text='frame right bottom').pack()
 
-    
-    
     # data = SendData()
     # data = SendData()
     ''' right and left of right_bottom frame '''
@@ -148,12 +111,10 @@ if __name__ == '__main__':
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
     # Scan_button(frm_right_bottom_left, PID.update, Ts.update)
     Scan_button(frm_right_bottom_left, PID.update, Ts.update)
-    
-    
+
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')
     # tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
-
 
     window.bind("<Escape>", lambda x: window.destroy())
 
