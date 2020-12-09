@@ -32,10 +32,7 @@ class ProcessPlot(Node):
         self._node_out = nodes[Node_out]
         '''
         self.iso_type = iso_type
-#        print(self._p, self._h, self.name, self.nid)
-#        print(nodes[self.Node_in]._h, nodes[self.Node_in]._p)
-#        print(np.linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, 50))
-#        print(self.iso_type)
+
     def test_iso_line(self, num=50):
         if self.iso_type == None:
             raise ValueError("This isoline cannot be calculated!")
