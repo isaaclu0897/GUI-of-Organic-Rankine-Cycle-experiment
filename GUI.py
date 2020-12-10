@@ -10,7 +10,6 @@ Created on Mon Jul  9 00:24:49 2018
 # from openpyxl import Workbook
 # import datetime
 # from threading import Timer
-# from GUIObj import mk_exclusivefile
 
 
 # def scan_data(data, SM_dia, TH_dia):
