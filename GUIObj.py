@@ -17,7 +17,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 #import node
 from node import Node
-# from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from ORC_plot import ProcessPlot
 # from ORC_sample import initNode, setAndCalcNode
 # import os
@@ -311,50 +311,25 @@ class Scan_button(tk.Frame):
 
         ''' calc efficiency '''
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
-        
-        
+
+
 class csv_file:
     def __init__(self):
-        self.rowdata = [ data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t ]
+        self.rowdata = [data["pump-in"].t,
+                        data["pump-in"].p, data["evaporator-in"].t]
         pass
+
     def print_data(self):
         print(self.rowdata)
         print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
         print(id(data["pump-in"].t))
         print(id(data))
-    
-
-
-def must_be_remove_save_data():
-    # pwd = os.getcwd()
-    pwd = "/home/wei/app/GUI-of-Organic-Rankine-Cycle-experiment"
-    path = f"{pwd}/weiGUIData"
-    # print(path)
-    filename = f'{datetime.date.today()}.xlsx'
-    # mk_exclusivefile(path, filename)
-    workBook, workSheet = mk_exclusivefile(path, filename)
-    
-    lastCell = workSheet.cell(workSheet.max_row, 1).value
-    global i
-    # if lastCell != 'scan':
-    #     i = lastCell
-    # else:
-    #     i = 0
-
-    i = i + 1
-    workSheet.append(["0"] * 20)
-    workSheet.append(["0"] * 20)
-    workSheet.append(["0"] * 20)
-    workSheet.append(["0"] * 20)
-    workSheet.append(["0"] * 20)
-
-    workBook.save("{}".format(filename))
-    
-    print(i, id(workBook), workBook)
+        print(id(self.rowdata))
 
 
 def save_data():
     pass
+
 
 def transfer_file():
     ''' transfer lock file to experiment file
@@ -363,8 +338,10 @@ def transfer_file():
     '''
     pass
 
+
 def create_csv_file_header():
     pass
+
 
 def _mk_lock_file():
     ''' avoid users crash file
@@ -372,6 +349,7 @@ def _mk_lock_file():
     Prevent users from crashing the system due to file modification.
     '''
     pass
+
 
 def mk_exclusivefile(path, filename):
     ''' 創見專屬資料夾
@@ -416,6 +394,6 @@ def mk_exclusivefile(path, filename):
 #    if not os.path.isdir(dirname):
 #        os.mkdir('{}'.format(dirname))
 if __name__ == "__main__":
-    pass
-    # for k in range(1000000):
-    #     save_data()
+    from GUI import main
+
+    main()

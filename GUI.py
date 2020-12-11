@@ -107,8 +107,7 @@ Created on Mon Jul  9 00:24:49 2018
 #         #        del readings_TEMP, readings_PRESS
 #         return 0
 
-
-if __name__ == '__main__':
+def main():
     '''layout'''
     import tkinter as tk
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button
@@ -133,13 +132,11 @@ if __name__ == '__main__':
     frm_right_top.pack(side='top')
     # tk.Label(frm_right_top, text='frame right top').pack()
     Ts = ORC_Figure(frm_right_top)
-    
+
     frm_right_bottom = tk.Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
     # tk.Label(frm_right_bottom, text='frame right bottom').pack()
 
-    
-    
     # data = SendData()
     # data = SendData()
     ''' right and left of right_bottom frame '''
@@ -148,12 +145,10 @@ if __name__ == '__main__':
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
     # Scan_button(frm_right_bottom_left, PID.update, Ts.update)
     Scan_button(frm_right_bottom_left, PID.update, Ts.update)
-    
-    
+
     frm_right_bottom_right = tk.Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')
     # tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
-
 
     window.bind("<Escape>", lambda x: window.destroy())
 
@@ -180,3 +175,7 @@ if __name__ == '__main__':
 #     ggg.pack()
 
     window.mainloop()
+
+
+if __name__ == '__main__':
+    main()
