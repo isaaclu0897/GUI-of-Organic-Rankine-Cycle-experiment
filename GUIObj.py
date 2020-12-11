@@ -17,9 +17,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 #import node
 from node import Node
-from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+# from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
 from ORC_plot import ProcessPlot
-from ORC_sample import initNode, setAndCalcNode
+# from ORC_sample import initNode, setAndCalcNode
 # import os
 import os
 from openpyxl import Workbook, load_workbook
