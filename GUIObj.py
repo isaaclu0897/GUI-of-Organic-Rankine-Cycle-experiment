@@ -315,16 +315,19 @@ class Scan_button(tk.Frame):
 
 class csv_file:
     def __init__(self):
-        self.rowdata = [data["pump-in"].t,
-                        data["pump-in"].p, data["evaporator-in"].t]
+        self.header = cfg.FILE["header"]
+        # self.rowdata = (data["pump-in"].t, data["evaporator-in"])
+        
+        
         pass
 
     def print_data(self):
-        print(self.rowdata)
+        # print(self.header)
+        # print(self.rowdata)
         print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
         print(id(data["pump-in"].t))
         print(id(data))
-        print(id(self.rowdata))
+        # print(id(self.rowdata))
 
 
 def save_data():

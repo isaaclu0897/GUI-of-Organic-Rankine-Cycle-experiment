@@ -120,6 +120,9 @@ class Node:
         else:
             self._q = value
         return self._q
+    
+    # def __dict__(self):
+    #     return "a"
     # use pt() to clac Props of the node
 
     def pt(self):
