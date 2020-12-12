@@ -286,6 +286,7 @@ class Scan_button(tk.Frame):
             self.dev.scan()
             self.calc_nodes()
             self.file.save_data()
+
             ''' update functions
             update P&ID
             update T-s diagram
@@ -316,9 +317,9 @@ class Scan_button(tk.Frame):
 class csv_file:
     def __init__(self):
         self.header = cfg.FILE["header"]
-        self.path = 0
-        self.transfer_file_buffer_count = 0
-        self.write_data_buffer_count = 0
+        self.path = cfg.FILE["folder-path"]    
+        self.file_buffer_count = 0
+        self.data_buffer_count = 0
         self.file_name = "test.csv"
 
         self.file = open(self.file_name, 'a')
@@ -335,17 +336,17 @@ class csv_file:
         pass
 
     def save_data(self):
-        self.write_data()
-        self.transfer_file()
+        self.write_data(cfg.FILE["data_buffer"])
+        self.transfer_file(cfg.FILE["file_buffer"])
 
-    def write_data(self):
+    def write_data(self, buffer=5):
         self.writer.writerow(self.row_data())
         
-        if self.write_data_buffer_count > 5:
+        if self.data_buffer_count > buffer:
             self.file.flush()
-            self.write_data_buffer_count = 0
+            self.data_buffer_count = 0
 
-        self.write_data_buffer_count += 1
+        self.data_buffer_count += 1
 
     def row_data(self):
         row = []
@@ -369,6 +370,8 @@ class csv_file:
 
         pass
 
+        
+
     def __enter__(self):
         print('enter')
         return self
@@ -381,7 +384,7 @@ class csv_file:
 
 
 
-    def transfer_file(self):
+    def transfer_file(self, buffer=10):
         ''' transfer lock file to experiment file
         When experiment is done,
         system will copy lock file into experiment file.
