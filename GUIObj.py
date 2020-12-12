@@ -373,7 +373,7 @@ class csv_file:
     
     def __del__(self):
         print("delete")
-        copyfile("test.csv", "good")
+        copyfile("test.csv", "good.csv")
         
 
     def __enter__(self):
