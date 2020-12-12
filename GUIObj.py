@@ -285,7 +285,7 @@ class Scan_button(tk.Frame):
             # print(f"update_diagram {count}")
             self.dev.scan()
             self.calc_nodes()
-            self.file.print_data()
+            self.file.row_data()
             ''' update functions
             update P&ID
             update T-s diagram
@@ -316,18 +316,23 @@ class Scan_button(tk.Frame):
 class csv_file:
     def __init__(self):
         self.header = cfg.FILE["header"]
-        # self.rowdata = (data["pump-in"].t, data["evaporator-in"])
-        
-        
-        pass
 
-    def print_data(self):
-        # print(self.header)
-        # print(self.rowdata)
-        print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
-        print(id(data["pump-in"].t))
-        print(id(data))
-        # print(id(self.rowdata))
+
+    def row_data(self):
+        row = []
+        for value in cfg.FILE["data"]:
+            if "." in value:
+                name, attr = value.split(".")
+                row.append(data[f"{name}"][f"{attr}"])
+            else:
+                try:
+                    row.append(data[f"{value}"])
+                except:
+                    row.append(f"{value} not in data")
+        print(row)
+        # print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
+        # print(id(data["pump-in"].t))
+        # print(id(data))
 
 
 def save_data():
