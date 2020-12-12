@@ -39,6 +39,13 @@ class Node:
         self._q = 0
         self._over = 0
 
+    ''' use setter and getter?
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
+    def __getattr__(self, name):
+        return self.name
+    '''
+
     @property
     def p(self):
         return P.Pa2Bar(self._p)
@@ -120,7 +127,7 @@ class Node:
         else:
             self._q = value
         return self._q
-    
+
     # def __dict__(self):
     #     return "a"
     # use pt() to clac Props of the node
