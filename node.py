@@ -109,6 +109,15 @@ class Node:
 #        self._d = value * 1000
 #        return self._d
     @property
+    def over(self):
+        return self._over
+
+#    @d.setter
+#    def d(self, value):
+#        self._d = value * 1000
+#        return self._d
+
+    @property
     def q(self):
         if self._q > 1:
             value = "superheat"
@@ -128,6 +137,33 @@ class Node:
             self._q = value
         return self._q
 
+    def __getitem__(self, name):
+
+        if name == "p":
+            value = self.p
+        elif name == "pSat":
+            value = self.pSat
+        elif name == "t":
+            value = self.t
+        elif name == "tSat":
+            value = self.tSat
+        elif name == "h":
+            value = self.h
+        elif name == "s":
+            value = self.s
+        elif name == "d":
+            value = self.d
+        elif name == "q":
+            value = self.q
+        elif name == "over":
+            value = self.over
+        else:
+            value = "error"
+
+        return value
+
+    def __get__(self, name):
+        print(name)
     # def __dict__(self):
     #     return "a"
     # use pt() to clac Props of the node
