@@ -30,6 +30,7 @@ import agilent_load as agilent
 from realtime_data import data
 # import gc
 import csv
+from shutil import copyfile
 
 
 class P_I_Diagram(tk.Frame):
@@ -369,7 +370,10 @@ class csv_file:
         '''
 
         pass
-
+    
+    def __del__(self):
+        print("delete")
+        copyfile("test.csv", "good")
         
 
     def __enter__(self):
