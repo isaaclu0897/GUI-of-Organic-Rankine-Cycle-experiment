@@ -29,6 +29,7 @@ import config as cfg
 import agilent_load as agilent
 from realtime_data import data
 # import gc
+import csv
 
 
 class P_I_Diagram(tk.Frame):
@@ -277,7 +278,6 @@ class Scan_button(tk.Frame):
     def call_update_funcs(self):
         for func in self.update_funcs:
             func()
-        return 0
 
     def update_diagram(self, count=0):
         if self.is_click:
@@ -285,7 +285,7 @@ class Scan_button(tk.Frame):
             # print(f"update_diagram {count}")
             self.dev.scan()
             self.calc_nodes()
-            self.file.row_data()
+            self.file.save_data()
             ''' update functions
             update P&ID
             update T-s diagram
@@ -316,7 +316,36 @@ class Scan_button(tk.Frame):
 class csv_file:
     def __init__(self):
         self.header = cfg.FILE["header"]
+        self.path = 0
+        self.transfer_file_buffer_count = 0
+        self.write_data_buffer_count = 0
+        self.file_name = "test.csv"
 
+        self.file = open(self.file_name, 'a')
+        self.writer = csv.writer(self.file)
+
+        self.check_file()
+        # self.save_data()
+
+    def check_file(self):
+        ''' check file exist?
+        if file is not exist,
+        system will create file with header
+        '''
+        pass
+
+    def save_data(self):
+        self.write_data()
+        self.transfer_file()
+
+    def write_data(self):
+        self.writer.writerow(self.row_data())
+        
+        if self.write_data_buffer_count > 5:
+            self.file.flush()
+            self.write_data_buffer_count = 0
+
+        self.write_data_buffer_count += 1
 
     def row_data(self):
         row = []
@@ -324,39 +353,40 @@ class csv_file:
             if "." in value:
                 name, attr = value.split(".")
                 row.append(data[f"{name}"][f"{attr}"])
-            else:
-                try:
-                    row.append(data[f"{value}"])
-                except:
-                    row.append(f"{value} not in data")
-        print(row)
-        # print(data["pump-in"].t, data["pump-in"].p, data["evaporator-in"].t)
-        # print(id(data["pump-in"].t))
-        # print(id(data))
+            # else:
+            #     try:
+            #         row.append(data[f"{value}"])
+            #     except:
+            #         row.append(f"{value} not in data")
+        row.append("?")
+        return row
+
+    def _mk_lock_file(self):
+        ''' avoid users crash file
+        Lock file just ORC GUI can used.
+        Prevent users from crashing the system due to file modification.
+        '''
+
+        pass
+
+    def __enter__(self):
+        print('enter')
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type:
+            print('Error')
+        else:
+            print('End')
 
 
-def save_data():
-    pass
 
-
-def transfer_file():
-    ''' transfer lock file to experiment file
-    When experiment is done,
-    system will copy lock file into experiment file.
-    '''
-    pass
-
-
-def create_csv_file_header():
-    pass
-
-
-def _mk_lock_file():
-    ''' avoid users crash file
-    Lock file just ORC GUI can used.
-    Prevent users from crashing the system due to file modification.
-    '''
-    pass
+    def transfer_file(self):
+        ''' transfer lock file to experiment file
+        When experiment is done,
+        system will copy lock file into experiment file.
+        '''
+        pass
 
 
 def mk_exclusivefile(path, filename):
