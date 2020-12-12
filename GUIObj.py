@@ -17,12 +17,12 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 
 #import node
 from node import Node
-from ORC_plot import calc_SaturationofCurve, calc_StatusofORC
+from ORC_plot import calc_SaturationofCurve
 from ORC_plot import ProcessPlot
 # from ORC_sample import initNode, setAndCalcNode
 # import os
 import os
-from openpyxl import Workbook, load_workbook
+# from openpyxl import Workbook, load_workbook
 import datetime
 # import config
 import config as cfg
@@ -396,44 +396,44 @@ class csv_file:
         pass
 
 
-def mk_exclusivefile(path, filename):
-    ''' 創見專屬資料夾
+# def mk_exclusivefile(path, filename):
+#     ''' 創見專屬資料夾
 
-    說明: 在路徑 path 中, 創見名為 dirname 的資料夾
-    -----
-    ex:
-        path = '/home/wei/data/python/photo'
-        dirname = 'good'
-        os.path.isdir(path + '/' + dirname) # False
-        mk_exclusivedir(path, dirname)
-        os.path.isdir(path + '/' + dirname) # True
-    '''
+#     說明: 在路徑 path 中, 創見名為 dirname 的資料夾
+#     -----
+#     ex:
+#         path = '/home/wei/data/python/photo'
+#         dirname = 'good'
+#         os.path.isdir(path + '/' + dirname) # False
+#         mk_exclusivedir(path, dirname)
+#         os.path.isdir(path + '/' + dirname) # True
+#     '''
 
-    if not os.path.isdir(path):
-        os.mkdir(path)
-    os.chdir(path)
-    if not os.path.isfile(filename):
-        workBook = Workbook()
-        workSheet = workBook.active
-        workSheet['a1'] = '實驗名稱'
-        workSheet['a2'] = '實驗日期'
-        workSheet['b2'] = datetime.date.today()
-        workSheet['a3'] = '實驗說明(描述)'
-        workSheet.append(['scan', 'time(real)',
-                          '壓差', 'inlet(P)', 'inlet(T)', '密度', '次冷', 'h1',
-                          'outlet(P)', 'outlet(T)', '飽和溫度', 'h2',
-                          '壓差', 'inlet(P)', 'inlet(T)', '飽和溫度', '過熱', 'h3',
-                          'outlet(P)', 'outlet(T)', '飽和溫度', 'h4',
-                          'inlet(T)', 'outlet(T)', '高溫壓迫',
-                          'inlet(T)', 'outlet(T)', '低溫壓迫',
-                          'ORC效率(%)', 'mdot(kg/s)', 'time(s)', '聚集', 'operate'])
-        workBook.save("{}".format(filename))
+#     if not os.path.isdir(path):
+#         os.mkdir(path)
+#     os.chdir(path)
+#     if not os.path.isfile(filename):
+#         workBook = Workbook()
+#         workSheet = workBook.active
+#         workSheet['a1'] = '實驗名稱'
+#         workSheet['a2'] = '實驗日期'
+#         workSheet['b2'] = datetime.date.today()
+#         workSheet['a3'] = '實驗說明(描述)'
+#         workSheet.append(['scan', 'time(real)',
+#                           '壓差', 'inlet(P)', 'inlet(T)', '密度', '次冷', 'h1',
+#                           'outlet(P)', 'outlet(T)', '飽和溫度', 'h2',
+#                           '壓差', 'inlet(P)', 'inlet(T)', '飽和溫度', '過熱', 'h3',
+#                           'outlet(P)', 'outlet(T)', '飽和溫度', 'h4',
+#                           'inlet(T)', 'outlet(T)', '高溫壓迫',
+#                           'inlet(T)', 'outlet(T)', '低溫壓迫',
+#                           'ORC效率(%)', 'mdot(kg/s)', 'time(s)', '聚集', 'operate'])
+#         workBook.save("{}".format(filename))
 
-    else:
-        workBook = load_workbook('{}'.format(filename))
-        workSheet = workBook.active
+#     else:
+#         workBook = load_workbook('{}'.format(filename))
+#         workSheet = workBook.active
 
-    return workBook, workSheet
+#     return workBook, workSheet
 
 
 #    if not os.path.isdir(dirname):
