@@ -28,6 +28,12 @@ def _import_config():
 
 
 config = _import_config()
+
+# %%
+
+def reload_config():
+    pass
+
 # %%
 
 
@@ -176,5 +182,7 @@ def _make_experiment_file_config():
     return FILE_config
 
 FILE = _make_experiment_file_config()
+
+
 
 
