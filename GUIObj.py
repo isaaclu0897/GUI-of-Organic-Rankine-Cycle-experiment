@@ -325,7 +325,7 @@ class csv_file:
         today = date.today()
         self.lock_file = f".{today}.lock"
         self.csv_file = f"{today}.csv"
-        
+
         self.lock_path = f"{self.path}/{self.lock_file}"
         self.csv_path = f"{self.path}/{self.csv_file}"
 
@@ -339,22 +339,23 @@ class csv_file:
         # check file path
         Path(self.path).mkdir(parents=True, exist_ok=True)
         if Path(self.lock_path).is_file():
-            print ("File exist")
+            print("File exist")
             self.file = open(self.lock_path, 'a')
             self.writer = csv.writer(self.file)
         else:
-            print ("File not exist")
+            ''' avoid users crash file
+            Lock file just ORC GUI can used.
+            Prevent users from crashing the system due to file modification.
+            '''
             self.file = open(self.lock_path, 'a')
             self.writer = csv.writer(self.file)
             self.writer.writerow(self.header)
-        # self.file = open(self.lock_path, 'a')
-        # # self.writer = csv.writer(self.file)
-        # print("a")
+            self.file.flush()
 
     def save_data(self):
         self.write_data(cfg.FILE["data_buffer"])
         self.transfer_file(cfg.FILE["file_buffer"])
-
+s
     def write_data(self, buffer=5):
         self.writer.writerow(self.row_data())
 
@@ -370,25 +371,13 @@ class csv_file:
             if "." in value:
                 name, attr = value.split(".")
                 row.append(data[f"{name}"][f"{attr}"])
-            # else:
-            #     try:
-            #         row.append(data[f"{value}"])
-            #     except:
-            #         row.append(f"{value} not in data")
+            else:
+                try:
+                    row.append(data[f"{value}"])
+                except:
+                    row.append(f"{value} not in data")
         row.append("?")
         return row
-
-    def _mk_lock_file(self):
-        ''' avoid users crash file
-        Lock file just ORC GUI can used.
-        Prevent users from crashing the system due to file modification.
-        '''
-
-        pass
-
-    def __del__(self):
-        print("delete")
-        self.transfer_file(close=True)
 
     # def __enter__(self):
     #     print('enter')
@@ -409,6 +398,10 @@ class csv_file:
             copyfile(self.lock_path, self.csv_path)
             self.file_buffer_count = 0
         self.file_buffer_count += 1
+
+    def __del__(self):
+        print("delete")
+        self.transfer_file(close=True)
 
 
 # def mk_exclusivefile(path, filename):
