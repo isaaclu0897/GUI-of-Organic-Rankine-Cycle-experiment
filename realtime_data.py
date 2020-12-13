@@ -30,5 +30,11 @@ def _make_other_system_nodes_shell():
 
 _make_other_system_nodes_shell()
 
+def _make_other_field():
+    data["count"] = 0
+    data["time"] = 0
+
+_make_other_field()
+
 if __name__ == "__main__":
     print(data)

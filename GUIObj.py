@@ -106,6 +106,7 @@ class P_I_Diagram(tk.Frame):
                     v["posx"], v["posy"], f"{'None':^6}")
 
     def update_value(self, name, value, n=1):
+        print(name)
         itemID = self.canvasID[name]
         self.canvas.itemconfigure(itemID, text=str(round(value, n)))
 
@@ -116,7 +117,11 @@ class P_I_Diagram(tk.Frame):
                 self.update_value(f"{name}_T", data[name].t)
                 self.update_value(f"{name}_P", data[name].p)
             else:
-                self.update_value(name, value)
+                try:
+                    self.update_value(name, value)
+                except:
+                    pass
+                    
 
 
 class ORC_Figure(tk.Frame):
@@ -355,7 +360,7 @@ class csv_file:
     def save_data(self):
         self.write_data(cfg.FILE["data_buffer"])
         self.transfer_file(cfg.FILE["file_buffer"])
-s
+
     def write_data(self, buffer=5):
         self.writer.writerow(self.row_data())
 
@@ -375,7 +380,7 @@ s
                 try:
                     row.append(data[f"{value}"])
                 except:
-                    row.append(f"{value} not in data")
+                    row.append(f"{value}")
         row.append("?")
         return row
 
