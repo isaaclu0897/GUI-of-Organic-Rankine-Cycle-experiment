@@ -106,7 +106,6 @@ class P_I_Diagram(tk.Frame):
                     v["posx"], v["posy"], f"{'None':^6}")
 
     def update_value(self, name, value, n=1):
-        print(name)
         itemID = self.canvasID[name]
         self.canvas.itemconfigure(itemID, text=str(round(value, n)))
 
@@ -371,11 +370,16 @@ class csv_file:
         self.data_buffer_count += 1
 
     def row_data(self):
+        def myround(num):
+            digit = int(num % 10)
+            n = 4 - digit
+            return round(num, n)
         row = []
         for value in cfg.FILE["data"]:
             if "." in value:
                 name, attr = value.split(".")
-                row.append(data[f"{name}"][f"{attr}"])
+                v = data[f"{name}"][f"{attr}"]
+                row.append(myround(v))
             else:
                 try:
                     row.append(data[f"{value}"])
@@ -383,6 +387,8 @@ class csv_file:
                     row.append(f"{value}")
         row.append("?")
         return row
+    
+
 
     # def __enter__(self):
     #     print('enter')
