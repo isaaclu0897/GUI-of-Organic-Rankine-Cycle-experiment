@@ -33,6 +33,7 @@ _make_other_system_nodes_shell()
 def _make_other_field():
     data["count"] = 0
     data["time"] = 0
+    data["timestamp"] = 0
 
 _make_other_field()
 

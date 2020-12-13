@@ -309,7 +309,7 @@
             "低溫壓迫": "none",
             "ORC效率(%)": "Eff",
             "mdot(kg/s)": "mDot",
-            "time(s)": "time",
+            "timestamp": "timestamp",
             "operate": "operate"
         }
     },

@@ -24,7 +24,7 @@ from ORC_plot import ProcessPlot
 # import os
 from pathlib import Path
 # from openpyxl import Workbook, load_workbook
-from datetime import date
+from datetime import datetime as dt
 # import config
 import config as cfg
 import agilent_load as agilent
@@ -318,7 +318,11 @@ class Scan_button(tk.Frame):
 
         ''' calc efficiency '''
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
-
+        
+        ''' other '''
+        data["count"] = data["count"] + 1
+        data["time"] = dt.now().time()
+        data["timestamp"] = dt.now().timestamp()
 
 class csv_file:
     def __init__(self):
@@ -326,7 +330,7 @@ class csv_file:
         self.path = cfg.FILE["folder-path"]
         self.file_buffer_count = 0
         self.data_buffer_count = 0
-        today = date.today()
+        today = dt.now().date()
         self.lock_file = f".{today}.lock"
         self.csv_file = f"{today}.csv"
 
@@ -371,21 +375,30 @@ class csv_file:
 
     def row_data(self):
         def myround(num):
-            digit = int(num % 10)
-            n = 4 - digit
-            return round(num, n)
+            length = len(str(num))
+            if length - 1 > 4: 
+                n = 4 - len(str(num).split(".")[0])
+                if n < 1:
+                    return int(num)
+                return round(num, n)
+            else:
+                return num
         row = []
         for value in cfg.FILE["data"]:
             if "." in value:
                 name, attr = value.split(".")
-                v = data[f"{name}"][f"{attr}"]
-                row.append(myround(v))
+                v = myround(data[f"{name}"][f"{attr}"])
+                row.append(v)
             else:
                 try:
-                    row.append(data[f"{value}"])
+                    # print(data[f"{value}"])
+                    if isinstance(data[f"{value}"], float):
+                        v = myround(data[f"{value}"])
+                    else:
+                        v = data[f"{value}"]
+                    row.append(v)
                 except:
                     row.append(f"{value}")
-        row.append("?")
         return row
     
 
