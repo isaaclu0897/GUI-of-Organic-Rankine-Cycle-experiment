@@ -21,9 +21,10 @@ from ORC_plot import calc_SaturationofCurve
 from ORC_plot import ProcessPlot
 # from ORC_sample import initNode, setAndCalcNode
 # import os
-import os
+# import os
+from pathlib import Path
 # from openpyxl import Workbook, load_workbook
-import datetime
+from datetime import date
 # import config
 import config as cfg
 import agilent_load as agilent
@@ -318,23 +319,37 @@ class Scan_button(tk.Frame):
 class csv_file:
     def __init__(self):
         self.header = cfg.FILE["header"]
-        self.path = cfg.FILE["folder-path"]    
+        self.path = cfg.FILE["folder-path"]
         self.file_buffer_count = 0
         self.data_buffer_count = 0
-        self.file_name = "test.csv"
+        today = date.today()
+        self.lock_file = f".{today}.lock"
+        self.csv_file = f"{today}.csv"
+        
+        self.lock_path = f"{self.path}/{self.lock_file}"
+        self.csv_path = f"{self.path}/{self.csv_file}"
 
-        self.file = open(self.file_name, 'a')
-        self.writer = csv.writer(self.file)
+        self.open_file()
 
-        self.check_file()
-        # self.save_data()
-
-    def check_file(self):
+    def open_file(self):
         ''' check file exist?
         if file is not exist,
         system will create file with header
         '''
-        pass
+        # check file path
+        Path(self.path).mkdir(parents=True, exist_ok=True)
+        if Path(self.lock_path).is_file():
+            print ("File exist")
+            self.file = open(self.lock_path, 'a')
+            self.writer = csv.writer(self.file)
+        else:
+            print ("File not exist")
+            self.file = open(self.lock_path, 'a')
+            self.writer = csv.writer(self.file)
+            self.writer.writerow(self.header)
+        # self.file = open(self.lock_path, 'a')
+        # # self.writer = csv.writer(self.file)
+        # print("a")
 
     def save_data(self):
         self.write_data(cfg.FILE["data_buffer"])
@@ -342,7 +357,7 @@ class csv_file:
 
     def write_data(self, buffer=5):
         self.writer.writerow(self.row_data())
-        
+
         if self.data_buffer_count > buffer:
             self.file.flush()
             self.data_buffer_count = 0
@@ -370,30 +385,30 @@ class csv_file:
         '''
 
         pass
-    
+
     def __del__(self):
         print("delete")
-        copyfile("test.csv", "good.csv")
-        
+        self.transfer_file(close=True)
 
-    def __enter__(self):
-        print('enter')
-        return self
+    # def __enter__(self):
+    #     print('enter')
+    #     return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type:
-            print('Error')
-        else:
-            print('End')
+    # def __exit__(self, exc_type, exc_value, traceback):
+    #     if exc_type:
+    #         print('Error')
+    #     else:
+    #         print('End')
 
-
-
-    def transfer_file(self, buffer=10):
+    def transfer_file(self, buffer=5, close=False):
         ''' transfer lock file to experiment file
         When experiment is done,
         system will copy lock file into experiment file.
         '''
-        pass
+        if self.file_buffer_count > buffer or close:
+            copyfile(self.lock_path, self.csv_path)
+            self.file_buffer_count = 0
+        self.file_buffer_count += 1
 
 
 # def mk_exclusivefile(path, filename):

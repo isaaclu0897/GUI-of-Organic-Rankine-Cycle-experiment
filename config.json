@@ -278,8 +278,8 @@
         "USB_address": "USB0::0x0957::0x2007::MY49017447::0::INSTR"
     },
     "experiment-file": {
-        "folder-path": ".",
-        "file_buffer" : 10,
+        "folder-path": "./test",
+        "file_buffer" : 5,
         "data_buffer" : 5,
         "column": {
             "count": "count",
