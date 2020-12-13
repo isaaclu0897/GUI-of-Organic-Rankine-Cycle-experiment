@@ -280,11 +280,11 @@
     "experiment-file": {
         "folder-path": "./test",
         "file_buffer" : 5,
-        "data_buffer" : 5,
+        "data_buffer" : 0,
         "column": {
             "count": "count",
             "time": "time",
-            "壓差": "none",
+            "pump-Delta(P)": "`{evaporator-in.p}-{pump-in.p}`",
             "pump-in(P)": "pump-in.p",
             "pump-in(T)": "pump-in.t",
             "密度": "pump-in.d",
@@ -294,6 +294,7 @@
             "evaporator-in(T)": "evaporator-in.t",
             "飽和溫度1": "evaporator-in.tSat",
             "h2": "evaporator-in.h",
+            "expander-Delta(P)": "none",
             "evaporator-out(P)": "evaporator-out.p",
             "evaporator-out(T)": "evaporator-out.t",
             "飽和溫度2": "evaporator-out.tSat",

@@ -120,7 +120,6 @@ class P_I_Diagram(tk.Frame):
                     self.update_value(name, value)
                 except:
                     pass
-                    
 
 
 class ORC_Figure(tk.Frame):
@@ -318,11 +317,12 @@ class Scan_button(tk.Frame):
 
         ''' calc efficiency '''
         data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
-        
+
         ''' other '''
         data["count"] = data["count"] + 1
         data["time"] = dt.now().time()
         data["timestamp"] = dt.now().timestamp()
+
 
 class csv_file:
     def __init__(self):
@@ -364,7 +364,7 @@ class csv_file:
         self.write_data(cfg.FILE["data_buffer"])
         self.transfer_file(cfg.FILE["file_buffer"])
 
-    def write_data(self, buffer=5):
+    def write_data(self, buffer=0):
         self.writer.writerow(self.row_data())
 
         if self.data_buffer_count > buffer:
@@ -376,7 +376,7 @@ class csv_file:
     def row_data(self):
         def myround(num):
             length = len(str(num))
-            if length - 1 > 4: 
+            if length - 1 > 4:
                 n = 4 - len(str(num).split(".")[0])
                 if n < 1:
                     return int(num)
@@ -385,7 +385,43 @@ class csv_file:
                 return num
         row = []
         for value in cfg.FILE["data"]:
-            if "." in value:
+            if "`" in value:
+                def oprater(one, two, op):
+
+                    if op == "+":
+                        value = one + two
+                    elif op == "-":
+                        value = one - two
+                    elif op == "*":
+                        value = one * two
+                    elif op == "/":
+                        value = one / two
+                    else:
+                        value = 9999
+                    return value
+
+                print(value)
+                index = 0
+                l = value.find("{", index)
+                r = value.find("}", index)
+                one = value[l+1:r]
+                name, attr = one.split(".")
+                one = myround(data[f"{name}"][f"{attr}"])
+
+                index = r+1
+                op = value[index]
+
+                l = value.find("{", index)
+                r = value.find("}", index)
+                two = value[l+1:r]
+                name, attr = two.split(".")
+                two = myround(data[f"{name}"][f"{attr}"])
+
+                v = myround(oprater(one, two, op))
+
+                row.append(v)
+
+            elif "." in value:
                 name, attr = value.split(".")
                 v = myround(data[f"{name}"][f"{attr}"])
                 row.append(v)
@@ -400,8 +436,6 @@ class csv_file:
                 except:
                     row.append(f"{value}")
         return row
-    
-
 
     # def __enter__(self):
     #     print('enter')
