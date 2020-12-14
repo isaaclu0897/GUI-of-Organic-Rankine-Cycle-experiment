@@ -289,7 +289,7 @@ class Scan_button(Frame):
 
     def update_diagram(self, count=0):
         if self.is_click:
-            print("----" * 5)
+            # print("----" * 5)
             self.dev.scan()
             self.calc_nodes()
             self.file.save_data()

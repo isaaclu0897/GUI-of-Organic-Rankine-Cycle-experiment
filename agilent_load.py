@@ -60,7 +60,7 @@ class V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}"] = float(t)
+                data[f"{name}_{sensor_type}"] = float(t)
             else:
                 print(f"sensor {name} config error")
 
@@ -145,13 +145,14 @@ class test_V34972A:
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
             elif sensor_type in ["Ti", "To"]:
+                
                 if "setting" in items:
                     t_probe = items["setting"][0]
                     t_type = items["setting"][1]
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}"] = float(t)
+                data[f"{name}_{sensor_type}"] = float(t)
             elif "P" == sensor_type:
                 if "setting" in items:
                     p_range = items["setting"][0]
@@ -165,7 +166,8 @@ class test_V34972A:
                 self.device.write(query)
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
                 self.device.write(query)
-                p = self.device.query(':READ?')
+                p = self.device.query(query)
+                # p = self.device.query(':READ?')
                 data[f"{name}"].p = float(p)
             else:
                 v = self.device.query(f':READ?,({ch})')
