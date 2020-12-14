@@ -30,7 +30,7 @@ import config as cfg
 import agilent_load as agilent
 from realtime_data import data
 # import gc
-import csv
+from csv import writer
 from shutil import copyfile
 
 
@@ -349,14 +349,14 @@ class csv_file:
         if Path(self.lock_path).is_file():
             print("File exist")
             self.file = open(self.lock_path, 'a')
-            self.writer = csv.writer(self.file)
+            self.writer = writer(self.file)
         else:
             ''' avoid users crash file
             Lock file just ORC GUI can used.
             Prevent users from crashing the system due to file modification.
             '''
             self.file = open(self.lock_path, 'a')
-            self.writer = csv.writer(self.file)
+            self.writer = writer(self.file)
             self.writer.writerow(self.header)
             self.file.flush()
 
@@ -400,7 +400,6 @@ class csv_file:
                         value = 9999
                     return value
 
-                print(value)
                 index = 0
                 l = value.find("{", index)
                 r = value.find("}", index)
@@ -419,22 +418,18 @@ class csv_file:
 
                 v = myround(oprater(one, two, op))
 
-                row.append(v)
-
             elif "." in value:
                 name, attr = value.split(".")
                 v = myround(data[f"{name}"][f"{attr}"])
-                row.append(v)
             else:
                 try:
-                    # print(data[f"{value}"])
                     if isinstance(data[f"{value}"], float):
                         v = myround(data[f"{value}"])
                     else:
                         v = data[f"{value}"]
-                    row.append(v)
                 except:
-                    row.append(f"{value}")
+                    v = f"{value}"
+            row.append(v)
         return row
 
     # def __enter__(self):
@@ -462,48 +457,6 @@ class csv_file:
         self.transfer_file(close=True)
 
 
-# def mk_exclusivefile(path, filename):
-#     ''' 創見專屬資料夾
-
-#     說明: 在路徑 path 中, 創見名為 dirname 的資料夾
-#     -----
-#     ex:
-#         path = '/home/wei/data/python/photo'
-#         dirname = 'good'
-#         os.path.isdir(path + '/' + dirname) # False
-#         mk_exclusivedir(path, dirname)
-#         os.path.isdir(path + '/' + dirname) # True
-#     '''
-
-#     if not os.path.isdir(path):
-#         os.mkdir(path)
-#     os.chdir(path)
-#     if not os.path.isfile(filename):
-#         workBook = Workbook()
-#         workSheet = workBook.active
-#         workSheet['a1'] = '實驗名稱'
-#         workSheet['a2'] = '實驗日期'
-#         workSheet['b2'] = datetime.date.today()
-#         workSheet['a3'] = '實驗說明(描述)'
-#         workSheet.append(['scan', 'time(real)',
-#                           '壓差', 'inlet(P)', 'inlet(T)', '密度', '次冷', 'h1',
-#                           'outlet(P)', 'outlet(T)', '飽和溫度', 'h2',
-#                           '壓差', 'inlet(P)', 'inlet(T)', '飽和溫度', '過熱', 'h3',
-#                           'outlet(P)', 'outlet(T)', '飽和溫度', 'h4',
-#                           'inlet(T)', 'outlet(T)', '高溫壓迫',
-#                           'inlet(T)', 'outlet(T)', '低溫壓迫',
-#                           'ORC效率(%)', 'mdot(kg/s)', 'time(s)', '聚集', 'operate'])
-#         workBook.save("{}".format(filename))
-
-#     else:
-#         workBook = load_workbook('{}'.format(filename))
-#         workSheet = workBook.active
-
-#     return workBook, workSheet
-
-
-#    if not os.path.isdir(dirname):
-#        os.mkdir('{}'.format(dirname))
 if __name__ == "__main__":
     from GUI import main
 
