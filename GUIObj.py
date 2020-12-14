@@ -7,7 +7,8 @@ Created on Mon Nov 19 15:01:08 2018
 """
 
 # import tkinter
-import tkinter as tk
+# import tkinter as tk
+from tkinter import Frame, Canvas, StringVar, Label, Button
 import tkinter.font as tkfont
 
 # import matplotlib
@@ -34,26 +35,27 @@ from csv import writer
 from shutil import copyfile
 
 
-class P_I_Diagram(tk.Frame):
+class P_I_Diagram(Frame):
     offset_x = 50
     offset_y = 30
 
     def __init__(self, master=None):
-        tk.Frame.__init__(self, master=None)
+        Frame.__init__(self, master=None)
 
         self.canvasID = {}
-
+        
         ''' load img and create canvas '''
         self.photo = cfg.import_photo()
-        self.canvas = tk.Canvas(master,
+        self.canvas = Canvas(master,
                                 width=self.photo.width(),
                                 height=self.photo.height(),
                                 bg='white')
-        self.canvas.pack(expand=1, fill=tk.BOTH)
+        self.canvas.pack(expand=1, fill="both")
         ''' put gif image on canvas
         pic's upper left corner (NW) on the canvas is at x=50 y=10
         '''
-        self.canvas.create_image(0, 0, image=self.photo, anchor=tk.NW)
+        
+        self.canvas.create_image(0, 0, image=self.photo, anchor="nw")
 
         ''''font'''
         self.fontprop = tkfont.Font(
@@ -122,16 +124,16 @@ class P_I_Diagram(tk.Frame):
                     pass
 
 
-class ORC_Figure(tk.Frame):
+class ORC_Figure(Frame):
     def __init__(self, master=None):
-        tk.Frame.__init__(self, master=None)
+        Frame.__init__(self, master=None)
 
         self.lines = {}
 
         self._fig = Figure(
             figsize=(cfg.FIG["width"], cfg.FIG["height"]), dpi=100)
         self.canvas = FigureCanvasTkAgg(self._fig, master)
-        self.canvas._tkcanvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.canvas._tkcanvas.pack(side="top", fill="both", expand=1)
 
         self.ax = self._fig.add_subplot(111)
 
@@ -234,9 +236,9 @@ class ORC_Figure(tk.Frame):
         self.canvas.draw()
 
 
-class Scan_button(tk.Frame):
+class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
-        tk.Frame.__init__(self, master=None)
+        Frame.__init__(self, master=None)
         # gc.disable()
         self.update_funcs = []
         for func in callbacks:
@@ -256,11 +258,11 @@ class Scan_button(tk.Frame):
                 self.is_click = True
                 varScan.set('start2scan')
                 func()
-
-        varScan = tk.StringVar()
+                
+        varScan = StringVar()
         varScan.set('stop2scan')
 
-        labelScan = tk.Label(
+        labelScan = Label(
             master,
             textvariable=varScan,
             bg='white',
@@ -268,7 +270,7 @@ class Scan_button(tk.Frame):
             width=15, height=2)
         labelScan.pack()
 
-        button = tk.Button(
+        button = Button(
             master,
             text='click me',
             width=15, height=2,
@@ -343,7 +345,6 @@ class csv_file:
         # check file path
         Path(self.path).mkdir(parents=True, exist_ok=True)
         if Path(self.lock_path).is_file():
-            print("File exist")
             self.file = open(self.lock_path, 'a')
             self.writer = writer(self.file)
         else:
@@ -439,7 +440,6 @@ class csv_file:
         self.file_buffer_count += 1
 
     def __del__(self):
-        print("delete")
         self.transfer_file(close=True)
 
 

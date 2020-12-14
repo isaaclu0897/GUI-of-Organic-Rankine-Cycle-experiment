@@ -109,44 +109,44 @@ Created on Mon Jul  9 00:24:49 2018
 
 def main():
     '''layout'''
-    import tkinter as tk
+    from tkinter import Tk, Frame, Label
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button
-    window = tk.Tk()
+    window = Tk()
     window.title("Lab429, ORC for 500W, author:wei")
-    tk.Label(window, text='this is ORC_GUI').pack()
+    Label(window, text='this is ORC_GUI').pack()
 
-    frame = tk.Frame(window).pack()
+    frame = Frame(window).pack()
 
     ''' left and right frame '''
-    frm_right = tk.Frame(frame)
+    frm_right = Frame(frame)
     frm_right.pack(side='right')
     # tk.Label(frm_right, text='frame right').pack()
 
-    frm_left = tk.Frame(frame)
+    frm_left = Frame(frame)
     frm_left.pack(side='left')
     # tk.Label(frm_left, text='frame left').pack()
     PID = P_I_Diagram(frm_left)
 
     ''' top and bottom of right frame '''
-    frm_right_top = tk.Frame(frm_right)
+    frm_right_top = Frame(frm_right)
     frm_right_top.pack(side='top')
     # tk.Label(frm_right_top, text='frame right top').pack()
     Ts = ORC_Figure(frm_right_top)
 
-    frm_right_bottom = tk.Frame(frm_right)
+    frm_right_bottom = Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
     # tk.Label(frm_right_bottom, text='frame right bottom').pack()
 
     # data = SendData()
     # data = SendData()
     ''' right and left of right_bottom frame '''
-    frm_right_bottom_left = tk.Frame(frm_right_bottom)
+    frm_right_bottom_left = Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
     # Scan_button(frm_right_bottom_left, PID.update, Ts.update)
     Scan_button(frm_right_bottom_left, PID.update, Ts.update)
 
-    frm_right_bottom_right = tk.Frame(frm_right_bottom)
+    frm_right_bottom_right = Frame(frm_right_bottom)
     frm_right_bottom_right.pack(side='right')
     # tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
 
