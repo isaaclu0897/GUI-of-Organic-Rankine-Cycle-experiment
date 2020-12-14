@@ -432,16 +432,6 @@ class csv_file:
             row.append(v)
         return row
 
-    # def __enter__(self):
-    #     print('enter')
-    #     return self
-
-    # def __exit__(self, exc_type, exc_value, traceback):
-    #     if exc_type:
-    #         print('Error')
-    #     else:
-    #         print('End')
-
     def transfer_file(self, buffer=5, close=False):
         ''' transfer lock file to experiment file
         When experiment is done,
