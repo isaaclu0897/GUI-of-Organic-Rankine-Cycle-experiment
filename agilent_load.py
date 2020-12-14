@@ -12,6 +12,7 @@ import pyvisa as visa  # you need agilent io lib
 from config import SENSOR, SENSOR_SETTING, v34972A
 from realtime_data import data
 
+
 class V34972A:
     def __init__(self):
         rm = visa.ResourceManager()
@@ -21,19 +22,20 @@ class V34972A:
         for ch, items in SENSOR.items():
             name = items["name"]
             sensor_type = items["type"]
-            
+
             t_probe = SENSOR_SETTING["probe_type"]
             t_type = SENSOR_SETTING["type"]
             p_range = SENSOR_SETTING["range"]
             p_resolution = SENSOR_SETTING["resolution"]
             p_gain = SENSOR_SETTING["gain"]
             p_offset = SENSOR_SETTING["offset"]
-            
+
             if "T" == sensor_type:
                 if "setting" in items:
                     t_probe = items["setting"][0]
                     t_type = items["setting"][1]
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (t_probe, t_type, ch)
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    t_probe, t_type, ch)
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
             elif "P" == sensor_type:
@@ -42,7 +44,8 @@ class V34972A:
                     p_resolution = items["setting"][1]
                     p_gain = items["setting"][2]
                     p_offset = items["setting"][3]
-                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (p_range, p_resolution, ch)
+                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (
+                    p_range, p_resolution, ch)
                 self.device.write(query)
                 query = ':CALCulate:SCALe:GAIN %G,(%s)' % (p_gain, ch)
                 self.device.write(query)
@@ -54,7 +57,8 @@ class V34972A:
                 if "setting" in items:
                     t_probe = items["setting"][0]
                     t_type = items["setting"][1]
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (t_probe, t_type, ch)
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
+                    t_probe, t_type, ch)
                 t = self.device.query(query)
                 data[f"{name}"] = float(t)
             else:
@@ -70,6 +74,7 @@ class test_device:
     def query(self, query):
         value = "0"
         query = query.split(",")[-1]
+
         # print(query)
         if query == "(@101)":
             value = "23.1800"
@@ -122,28 +127,45 @@ class test_V34972A:
         # print("scan_data")
         for ch, items in SENSOR.items():
             name = items["name"]
-            # print(name)
             sensor_type = items["type"]
-            # print(name, sensor_type)
+
+            t_probe = SENSOR_SETTING["probe_type"]
+            t_type = SENSOR_SETTING["type"]
+            p_range = SENSOR_SETTING["range"]
+            p_resolution = SENSOR_SETTING["resolution"]
+            p_gain = SENSOR_SETTING["gain"]
+            p_offset = SENSOR_SETTING["offset"]
+
             if "T" == sensor_type:
+                if "setting" in items:
+                    t_probe = items["setting"][0]
+                    t_type = items["setting"][1]
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    'TCouple', 'T', ch)
+                    t_probe, t_type, ch)
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
-                # print(data[f"{name}"], data[f"{name}"].t)
             elif sensor_type in ["Ti", "To"]:
+                if "setting" in items:
+                    t_probe = items["setting"][0]
+                    t_type = items["setting"][1]
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    'TCouple', 'T', ch)
+                    t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}_{sensor_type}"] = float(t)
+                data[f"{name}"] = float(t)
             elif "P" == sensor_type:
-                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
+                if "setting" in items:
+                    p_range = items["setting"][0]
+                    p_resolution = items["setting"][1]
+                    p_gain = items["setting"][2]
+                    p_offset = items["setting"][3]
+                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (
+                    p_range, p_resolution, ch)
                 self.device.write(query)
-                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
+                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (p_gain, ch)
                 self.device.write(query)
-                query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
+                query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
                 self.device.write(query)
-                p = self.device.query(f':READ?,({ch})')
+                p = self.device.query(':READ?')
                 data[f"{name}"].p = float(p)
             else:
                 v = self.device.query(f':READ?,({ch})')

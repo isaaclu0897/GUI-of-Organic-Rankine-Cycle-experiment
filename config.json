@@ -54,14 +54,14 @@
             },
             "expander-out": {
                 "T": {
-                    "sensor": ["@104", "TCouple", "T"],
+                    "sensor": ["@104", "JCouple", "J"],
                     "GUI": {
                         "posx": 800,
                         "posy": 400
                     }
                 },
                 "P": {
-                    "sensor": ["@204", 10, 5.5, 2.1, 1],
+                    "sensor": ["@204", 5, 1.5, 2, 0.5],
                     "GUI": {
                         "posx": 800,
                         "posy": 400
