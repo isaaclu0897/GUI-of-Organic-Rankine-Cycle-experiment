@@ -8,8 +8,8 @@ Created on Mon Nov 19 15:01:08 2018
 
 # import tkinter
 # import tkinter as tk
-from tkinter import Frame, Canvas, StringVar, Label, Button
-import tkinter.font as tkfont
+from tkinter import Frame, Canvas, StringVar, Label, Button, font
+# import tkinter.font as tkfont
 
 # import matplotlib
 from matplotlib.figure import Figure
@@ -20,17 +20,12 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from node import Node
 from ORC_plot import calc_SaturationofCurve
 from ORC_plot import ProcessPlot
-# from ORC_sample import initNode, setAndCalcNode
-# import os
-# import os
+
 from pathlib import Path
-# from openpyxl import Workbook, load_workbook
 from datetime import datetime as dt
-# import config
 import config as cfg
 import agilent_load as agilent
 from realtime_data import data
-# import gc
 from csv import writer
 from shutil import copyfile
 
@@ -58,7 +53,7 @@ class P_I_Diagram(Frame):
         self.canvas.create_image(0, 0, image=self.photo, anchor="nw")
 
         ''''font'''
-        self.fontprop = tkfont.Font(
+        self.fontprop = font.Font(
             size=cfg.GUI["fontsize"])  # bitstream charter or courier 10 pitch
 
         ''''set label'''

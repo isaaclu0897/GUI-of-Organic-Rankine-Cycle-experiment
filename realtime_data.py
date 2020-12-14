@@ -7,25 +7,25 @@ Created on Sun Nov 29 01:11:35 2020
 """
 
 from node import Node
-import config as cfg
+from config import config
 
 data = {}
 
 def _make_system_nodes_shell():
-    for i, name in enumerate(cfg.config["System"]["node"], 1):
+    for i, name in enumerate(config["System"]["node"], 1):
         data[f"{name}"] = Node(name, i)
 
 _make_system_nodes_shell()
 
 def _make_system_attr_shell():
-    for name in cfg.config["System"]["attribute"]:
+    for name in config["System"]["attribute"]:
         data[f"{name}"] = 0
 
 _make_system_attr_shell()
 
 def _make_other_system_nodes_shell():
-    for name in cfg.config["OtherSystem"]["node"]:
-        for attr in cfg.config["OtherSystem"]["node"][f"{name}"]:
+    for name in config["OtherSystem"]["node"]:
+        for attr in config["OtherSystem"]["node"][f"{name}"]:
             data[f"{name}_{attr}"] = 0
 
 _make_other_system_nodes_shell()
