@@ -137,17 +137,14 @@ def main():
     frm_right_bottom.pack(side='bottom')
     # tk.Label(frm_right_bottom, text='frame right bottom').pack()
 
-    # data = SendData()
-    # data = SendData()
     ''' right and left of right_bottom frame '''
     frm_right_bottom_left = Frame(frm_right_bottom)
     frm_right_bottom_left.pack(side='left')
     # tk.Label(frm_right_bottom_left, text='frame right bottom left').pack()
-    # Scan_button(frm_right_bottom_left, PID.update, Ts.update)
     Scan_button(frm_right_bottom_left, PID.update, Ts.update)
 
-    frm_right_bottom_right = Frame(frm_right_bottom)
-    frm_right_bottom_right.pack(side='right')
+    # frm_right_bottom_right = Frame(frm_right_bottom)
+    # frm_right_bottom_right.pack(side='right')
     # tk.Label(frm_right_bottom_right, text='frame right bottom right').pack()
 
     window.bind("<Escape>", lambda x: window.destroy())
