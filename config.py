@@ -135,18 +135,15 @@ def _make_SENSOR_config():
     for name in node_config:
         for attr, value in node_config[name].items():
             if "sensor" in value:
-                # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
                 SENSOR_config[f"{value['sensor']}"] = {
                     "name": name, "type": attr	}
     for name in node_config_o:
         for attr, value in node_config_o[name].items():
             if "sensor" in value:
-                # SENSOR_config[f"{name}_{attr}"] = value["sensor"]
                 SENSOR_config[f"{value['sensor']}"] = {
                     "name": name, "type": attr	}
     for name, value in attr_config.items():
         if "sensor" in value:
-            # SENSOR_config[f"{name}"] = value["sensor"]
             SENSOR_config[f"{value['sensor']}"] = {"name": name, "type": name	}
 
     return {k: SENSOR_config[k] for k in sorted(SENSOR_config)}
