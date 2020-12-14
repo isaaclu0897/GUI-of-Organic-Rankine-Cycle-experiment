@@ -6,6 +6,7 @@ Created on Sun Jul  8 19:31:54 2018
 @author: wei
 """
 
+from random import randint
 import pyvisa as visa  # you need agilent io lib
 import config as cfg
 from realtime_data import data
@@ -53,7 +54,7 @@ class V34972A:
 
     ''' maybe need close? __del__'''
 
-from random import randint
+
 class test_device:
     def __init__(self):
         pass
@@ -163,7 +164,7 @@ if __name__ == "__main__":
     # device = V34972A()
     # device.scan()
     # print(data)
-    
+
     device = test_V34972A()
     device.scan()
     print(data)

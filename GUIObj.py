@@ -43,18 +43,18 @@ class P_I_Diagram(Frame):
         Frame.__init__(self, master=None)
 
         self.canvasID = {}
-        
+
         ''' load img and create canvas '''
         self.photo = cfg.import_photo()
         self.canvas = Canvas(master,
-                                width=self.photo.width(),
-                                height=self.photo.height(),
-                                bg='white')
+                             width=self.photo.width(),
+                             height=self.photo.height(),
+                             bg='white')
         self.canvas.pack(expand=1, fill="both")
         ''' put gif image on canvas
         pic's upper left corner (NW) on the canvas is at x=50 y=10
         '''
-        
+
         self.canvas.create_image(0, 0, image=self.photo, anchor="nw")
 
         ''''font'''
@@ -258,7 +258,7 @@ class Scan_button(Frame):
                 self.is_click = True
                 varScan.set('start2scan')
                 func()
-                
+
         varScan = StringVar()
         varScan.set('stop2scan')
 
