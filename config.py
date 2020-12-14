@@ -156,6 +156,20 @@ def _make_SENSOR_config():
 
 
 SENSOR = _make_SENSOR_config()
+
+
+def _make_SENSOR_setting():
+    return {
+        "probe_type": "TCouple",
+        "type": "T",
+        "range": 10,
+        "resolution": 5.5,
+        "gain": 2.1,
+        "offset": 1
+    }
+
+
+SENSOR_SETTING = _make_SENSOR_setting()
 # %%
 
 

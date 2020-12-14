@@ -8,47 +8,55 @@ Created on Sun Jul  8 19:31:54 2018
 
 from random import randint
 import pyvisa as visa  # you need agilent io lib
-import config as cfg
+# import config as cfg
+from config import SENSOR, SENSOR_SETTING, v34972A
 from realtime_data import data
 
-
 class V34972A:
-    # probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
-    # range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
-    # gain_PRESS, state_PRESS = 2.1, 1
-
     def __init__(self):
         rm = visa.ResourceManager()
-        self.device = rm.open_resource(cfg.v34972A["USB_address"])
+        self.device = rm.open_resource(v34972A["USB_address"])
 
     def scan(self):
-        for ch, items in cfg.SENSOR.items():
+        for ch, items in SENSOR.items():
             name = items["name"]
             sensor_type = items["type"]
-
+            
+            t_probe = SENSOR_SETTING["probe_type"]
+            t_type = SENSOR_SETTING["type"]
+            p_range = SENSOR_SETTING["range"]
+            p_resolution = SENSOR_SETTING["resolution"]
+            p_gain = SENSOR_SETTING["gain"]
+            p_offset = SENSOR_SETTING["offset"]
+            
             if "T" == sensor_type:
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    'TCouple', 'T', ch)
+                if "setting" in items:
+                    t_probe = items["setting"][0]
+                    t_type = items["setting"][1]
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (t_probe, t_type, ch)
                 t = self.device.query(query)
                 data[f"{name}"].t = float(t)
-                # print(f"{name}", data[f"{name}"].t)
             elif "P" == sensor_type:
-                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (10, 5.5, ch)
+                if "setting" in items:
+                    p_range = items["setting"][0]
+                    p_resolution = items["setting"][1]
+                    p_gain = items["setting"][2]
+                    p_offset = items["setting"][3]
+                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (p_range, p_resolution, ch)
                 self.device.write(query)
-                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, ch)
+                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (p_gain, ch)
                 self.device.write(query)
-                query = ':CALCulate:SCALe:STATe %d,(%s)' % (1, ch)
+                query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
                 self.device.write(query)
                 p = self.device.query(':READ?')
                 data[f"{name}"].p = float(p)
-                # print(f"{name}", data[f"{name}"].p)
             elif sensor_type in ["Ti", "To"]:
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    'TCouple', 'T', ch)
+                if "setting" in items:
+                    t_probe = items["setting"][0]
+                    t_type = items["setting"][1]
+                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (t_probe, t_type, ch)
                 t = self.device.query(query)
                 data[f"{name}"] = float(t)
-                # print(f"{name}", data[f"{name}"])
-            # print(sensor_type)
             else:
                 print(f"sensor {name} config error")
 
@@ -106,16 +114,13 @@ class test_device:
 
 
 class test_V34972A:
-    # probe_type_TEMP, type_TEMP, ch_TEMP = 'TCouple', 'T', '@201:210'
-    # range_PRESS, resolution_PRESS, ch_PRESS = 10, 5.5, '@301:306'
-    # gain_PRESS, state_PRESS = 2.1, 1
 
     def __init__(self):
         self.device = test_device()
 
     def scan(self):
         # print("scan_data")
-        for ch, items in cfg.SENSOR.items():
+        for ch, items in SENSOR.items():
             name = items["name"]
             # print(name)
             sensor_type = items["type"]
