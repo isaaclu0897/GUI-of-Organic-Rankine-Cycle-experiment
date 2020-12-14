@@ -299,11 +299,9 @@ class Scan_button(tk.Frame):
             self.after(300, self.update_diagram, count+1)
 
     def calc_nodes(self):
-        # print("calc nodes and works")
         ''' calc nodes '''
         for name, value in data.items():
             if isinstance(value, Node):
-                # print(name, data[name].p, data[name].t)
                 data[name].pt()
         ''' calc WORK '''
         for name, node in cfg.FM.items():
@@ -327,6 +325,7 @@ class csv_file:
         self.path = cfg.FILE["folder-path"]
         self.file_buffer_count = 0
         self.data_buffer_count = 0
+
         today = dt.now().date()
         self.lock_file = f".{today}.lock"
         self.csv_file = f"{today}.csv"

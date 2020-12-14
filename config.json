@@ -294,7 +294,7 @@
             "evaporator-in(T)": "evaporator-in.t",
             "飽和溫度1": "evaporator-in.tSat",
             "h2": "evaporator-in.h",
-            "expander-Delta(P)": "`{evaporator-out.p}-{evaporator-out.p}`",
+            "expander-Delta(P)": "`{evaporator-out.p}-{condenser-in.p}`",
             "evaporator-out(P)": "evaporator-out.p",
             "evaporator-out(T)": "evaporator-out.t",
             "飽和溫度2": "evaporator-out.tSat",
