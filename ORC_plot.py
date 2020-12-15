@@ -5,11 +5,14 @@ Created on Sat Jan 27 20:40:46 2018
 
 @author: wei
 """
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+from matplotlib.pyplot import show, figure
 from matplotlib.figure import Figure
-import matplotlib.lines as lin
+# import matplotlib.lines as lin
+from matplotlib.lines import Line2D
 from CoolProp.CoolProp import PropsSI 
-import numpy as np 
+from numpy import linspace, array
+# import numpy as np 
 from node import Node
 from unit import P, T, pps
 
@@ -37,26 +40,26 @@ class ProcessPlot(Node):
         if self.iso_type == None:
             raise ValueError("This isoline cannot be calculated!")
         elif self.iso_type == "isop":
-            self._Ih = np.linspace(self.Node_in._h, self.Node_out._h, num)
-            self._Ipa = np.linspace(self.Node_in._p, self.Node_out._p, num)
+            self._Ih = linspace(self.Node_in._h, self.Node_out._h, num)
+            self._Ipa = linspace(self.Node_in._p, self.Node_out._p, num)
             self._Ipi = self.Node_in._p
         elif self.iso_type == "isos":
-            self._Ih = np.linspace(self.Node_in._h, self.Node_out._h, num)
-            self._Isa = np.linspace(self.Node_in._s, self.Node_out._s, num)
-            self._Isi = np.linspace(self.Node_in._s, self.Node_in._s, num)
+            self._Ih = linspace(self.Node_in._h, self.Node_out._h, num)
+            self._Isa = linspace(self.Node_in._s, self.Node_out._s, num)
+            self._Isi = linspace(self.Node_in._s, self.Node_in._s, num)
             # print(self._Ih, self._Isa)
         # 待改良slice點得位置
     def iso_line(self, nodes, num=50):
         if self.iso_type == None:
             raise ValueError("This isoline cannot be calculated!")
         elif self.iso_type == "isop":
-            self._Ih = np.linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
-            self._Ipa = np.linspace(nodes[self.Node_in]._p, nodes[self.Node_out]._p, num)
+            self._Ih = linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
+            self._Ipa = linspace(nodes[self.Node_in]._p, nodes[self.Node_out]._p, num)
             self._Ipi = nodes[self.Node_in]._p
         elif self.iso_type == "isos":
-            self._Ih = np.linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
-            self._Isa = np.linspace(nodes[self.Node_in]._s, nodes[self.Node_out]._s, num)
-            self._Isi = np.linspace(nodes[self.Node_in]._s, nodes[self.Node_in]._s, num)
+            self._Ih = linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
+            self._Isa = linspace(nodes[self.Node_in]._s, nodes[self.Node_out]._s, num)
+            self._Isi = linspace(nodes[self.Node_in]._s, nodes[self.Node_in]._s, num)
             print(self._Ih, self._Isa)
             
     def calc_iso(self):
@@ -88,10 +91,10 @@ class ProcessPlot(Node):
 #        self.Iti = self._Iti - 273.15
 #        self.Ita = self._Ita - 273.15
 
-        self._iso = lin.Line2D(self.Isi, self.Iti, color="grey", lw=2.0)
+        self._iso = Line2D(self.Isi, self.Iti, color="grey", lw=2.0)
 #        plt.pause(0.00000001) 
 
-        self._act = lin.Line2D(self.Isa, self.Ita, color="b", lw=2.0)
+        self._act = Line2D(self.Isa, self.Ita, color="b", lw=2.0)
 #        plt.pause(0.00000000001)
         return self._iso, self._act
     
@@ -111,7 +114,7 @@ class ProcessPlot(Node):
         return self.calc_stateline_data()
         
 def set_windows():
-    fig = plt.figure()
+    fig = figure()
     dia =  fig.add_subplot(1,1,1)
     xAxis = "s" 
     yAxis = "T" 
@@ -141,15 +144,15 @@ def set_windows_GUI():
 def calc_SaturationofCurve(fluid="R245FA", num=50):
     tcrit = PropsSI("Tcrit", fluid) - 0.00007
     tmin = PropsSI("Tmin", fluid)
-    T_array = np.linspace(tmin, tcrit, num) 
-    X_array = np.array([0, 1.0])
+    T_array = linspace(tmin, tcrit, num) 
+    X_array = array([0, 1.0])
     
     ''' calc the right and left of Saturation Curve '''
     lines = []
     for x in X_array: 
-        S = np.array([PropsSI("S", "Q", x, "T", t, "R245FA") for t in T_array]) 
+        S = array([PropsSI("S", "Q", x, "T", t, "R245FA") for t in T_array]) 
         # print(pps.J2KJ(S), T.K2C(T_array))
-        line = lin.Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8)
+        line = Line2D(pps.J2KJ(S), T.K2C(T_array), color="r", lw=1.8)
         lines.append(line)
     # print(lines)
     return lines
@@ -186,7 +189,7 @@ if __name__=="__main__":
 #    plot_StatusofORC(nodes)
     state_point = calc_StatusofORC(nodes, [1, 2, 3, 4])
     x, y = state_point
-    state_point_line = lin.Line2D(x, y, color='b', linestyle='None', marker='o')
+    state_point_line = Line2D(x, y, color='b', linestyle='None', marker='o')
     dia.add_line(state_point_line)
     """ example
     ProcessPlot(0, 1, 'isos').plot_process
@@ -211,8 +214,8 @@ if __name__=="__main__":
     good = [plot.plot_process_data(nodes) for plot in process]
     
     for i in good:
-        iso = lin.Line2D(i[0][0], i[0][1], color="grey", lw=2.0)
+        iso = Line2D(i[0][0], i[0][1], color="grey", lw=2.0)
         dia.add_line(iso)
 #        dia.add_line(i[1])
 
-    plt.show()
+    show()

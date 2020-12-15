@@ -7,8 +7,7 @@ Created on Fri Nov 27 23:19:47 2020
 """
 
 from json import load
-from PIL import Image
-from PIL import ImageTk
+from PIL import Image, ImageTk
 
 
 def _resize(value):
