@@ -46,4 +46,4 @@ exe = EXE(pyz,
 print("end to build")
 
 print("remove build")
-rmtree("./build")
+#rmtree("./build")
