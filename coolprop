@@ -1,4 +1,0 @@
-1. in Python, Props1SI & Props are replaced by PropsSI, so just PropsSI. (how cool!)
-
-在程式內部調用self.p會返回gettar，跟外部看到的一樣
-在程式內部調用self._p會返回
