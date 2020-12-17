@@ -355,7 +355,7 @@ class csv_file:
         # check file path
         Path(self.path).mkdir(parents=True, exist_ok=True)
         if Path(self.lock_path).is_file():
-            self.file = open(self.lock_path, 'a')
+            self.file = open(self.lock_path, 'a', newline="")
             self.writer = writer(self.file)
         else:
             ''' avoid users crash file
