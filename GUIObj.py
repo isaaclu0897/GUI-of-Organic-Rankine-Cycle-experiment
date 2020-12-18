@@ -230,10 +230,15 @@ class ORC_Figure(Frame):
             self.update_line(name, attr["type"], attr["point"])
         self.canvas.draw_idle()
 
+def thread_func(func, *args):
+    print("thread")
+    t = Thread(target=func, args=args, name=f"{func.__name__}")
+    t.setDaemon(True)
+    t.start()
+
 class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
         Frame.__init__(self, master=None)
-        # gc.disable()
         self.update_funcs = []
         for func in callbacks:
             if callable(func):
@@ -268,8 +273,7 @@ class Scan_button(Frame):
             master,
             text='click me',
             width=15, height=2,
-            # command=lambda: btn_cmd_loop(self.a))
-            command=lambda: btn_cmd_loop(self.th_update_diagram))
+            command=lambda: btn_cmd_loop(self.th_update))
         button.pack()
 
         ''' init v34970A '''
@@ -282,20 +286,17 @@ class Scan_button(Frame):
         for func in self.update_funcs:
             func()
 
-    def th_update_diagram(self):
-        print("thread")
-        t = Thread(target=self.update_diagram, name="th_update_diagram", daemon=True)
-        t.start()
-            
+    def th_update(self):
+        thread_func(self.update_diagram)
 
-    def update_diagram(self):
+    def update_diagram(self, count=0):
         if self.is_click:
-            self.after(5000, self.th_update_diagram)
-                
-            z = threading.active_count()
-            c = threading.current_thread()
-            print(z, c)
-            print("----" * 5)
+            self.after(5000, self.th_update)
+            # z = threading.active_count()
+            # x = threading.enumerate()
+            # c = threading.current_thread()
+            # print(z, x[8:], c)
+            print(f"{count}----" * 5)
             self.dev.scan()
             self.calc_nodes()
             # self.file.save_data()
@@ -306,8 +307,10 @@ class Scan_button(Frame):
             self.call_update_funcs()
             import time
             print("sleep")
-            time.sleep(3)
+            time.sleep(1)
+            # print(self.t.isAlive())
             print("sleep done")
+            
             
 
     def calc_nodes(self):
