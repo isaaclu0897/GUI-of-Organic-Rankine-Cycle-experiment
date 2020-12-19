@@ -54,14 +54,14 @@
             },
             "expander-out": {
                 "T": {
-                    "sensor": ["@104", "JCouple", "J"],
+                    "sensor": ["@104", "TCouple", "T"],
                     "GUI": {
                         "posx": 800,
                         "posy": 400
                     }
                 },
                 "P": {
-                    "sensor": ["@204", 5, 1.5, 2, 0.5],
+                    "sensor": "@204",
                     "GUI": {
                         "posx": 800,
                         "posy": 400
@@ -93,7 +93,7 @@
                     }
                 },
                 "P": {
-                    "sensor": "@206",
+                    "sensor": ["@206", 10, 5.5, 2.5, 0],
                     "GUI": {
                         "posx": 800,
                         "posy": 400
@@ -287,28 +287,28 @@
             "pump-Delta(P)": "`{evaporator-in.p}-{pump-in.p}`",
             "pump-in(P)": "pump-in.p",
             "pump-in(T)": "pump-in.t",
-            "密度": "pump-in.d",
+            "density": "pump-in.d",
             "subcool": "pump-in.over",
             "h1": "pump-in.h",
             "evaporator-in(P)": "evaporator-in.p",
             "evaporator-in(T)": "evaporator-in.t",
-            "飽和溫度1": "evaporator-in.tSat",
+            "Sat1": "evaporator-in.tSat",
             "h2": "evaporator-in.h",
             "expander-Delta(P)": "`{evaporator-out.p}-{condenser-in.p}`",
             "evaporator-out(P)": "evaporator-out.p",
             "evaporator-out(T)": "evaporator-out.t",
-            "飽和溫度2": "evaporator-out.tSat",
+            "Sat2": "evaporator-out.tSat",
             "superheat": "evaporator-out.over",
             "h3": "evaporator-out.h",
             "condenser-in(P)": "condenser-in.p",
             "condenser-in(T)": "condenser-in.t",
-            "飽和溫度3": "condenser-in.tSat",
+            "Sat3": "condenser-in.tSat",
             "h4": "condenser-in.h",
             "condenser-out(P)": "condenser-out.p",
             "condenser-out(T)": "condenser-out.t",
-            "高溫壓迫": "none",
-            "低溫壓迫": "none",
-            "ORC效率(%)": "Eff",
+            "high_pinch": "none",
+            "low_pinch": "none",
+            "ORCeff(%)": "Eff",
             "mdot(kg/s)": "mDot",
             "timestamp": "timestamp",
             "operate": "operate"
