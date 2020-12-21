@@ -28,7 +28,8 @@ import agilent_load as agilent
 from realtime_data import data
 from csv import writer
 from shutil import copyfile
-
+from threading import Thread
+import threading
 
 class P_I_Diagram(Frame):
     offset_x = 50
@@ -220,16 +221,14 @@ class ORC_Figure(Frame):
             else:
                 print("f{line_name} config warning")
             T.append([data[f"{points[0]}_Ti"], data[f"{points[1]}_To"]])
-
         self.lines[f"{line_name}"].set_data(s, T)
+        # print(self.lines[f"{line_name}"])
 
     def update(self):
         # print("update T-s Diagram")
         for name, attr in cfg.LINE.items():
             self.update_line(name, attr["type"], attr["point"])
-
-        self.canvas.draw()
-
+        self.canvas.draw_idle()
 
 class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
@@ -269,7 +268,8 @@ class Scan_button(Frame):
             master,
             text='click me',
             width=15, height=2,
-            command=lambda: btn_cmd_loop(self.update_diagram))
+            # command=lambda: btn_cmd_loop(self.a))
+            command=lambda: btn_cmd_loop(self.th_update_diagram))
         button.pack()
 
         ''' init v34970A '''
@@ -282,18 +282,33 @@ class Scan_button(Frame):
         for func in self.update_funcs:
             func()
 
-    def update_diagram(self, count=0):
+    def th_update_diagram(self):
+        print("thread")
+        t = Thread(target=self.update_diagram, name="th_update_diagram", daemon=True)
+        t.start()
+            
+
+    def update_diagram(self):
         if self.is_click:
-            # print("----" * 5)
+            self.after(5000, self.th_update_diagram)
+                
+            z = threading.active_count()
+            c = threading.current_thread()
+            print(z, c)
+            print("----" * 5)
             self.dev.scan()
             self.calc_nodes()
-            self.file.save_data()
+            # self.file.save_data()
             ''' update functions
             update P&ID
             update T-s diagram
             '''
             self.call_update_funcs()
-            self.after(300, self.update_diagram, count+1)
+            import time
+            print("sleep")
+            time.sleep(3)
+            print("sleep done")
+            
 
     def calc_nodes(self):
         ''' calc nodes '''

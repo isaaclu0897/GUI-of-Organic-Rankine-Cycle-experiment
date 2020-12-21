@@ -63,16 +63,15 @@ class ProcessPlot(Node):
             print(self._Ih, self._Isa)
             
     def calc_iso(self):
-        if self.iso_type == "isop":      
+        if self.iso_type == "isop":
             self._Ita = PropsSI("T", "P", self._Ipa, "H", self._Ih, self.fluid)
             self._Isa = PropsSI("S", "P", self._Ipa, "H", self._Ih, self.fluid)
             self._Iti = PropsSI("T", "P", self._Ipi, "H", self._Ih, self.fluid)
             self._Isi = PropsSI("S", "P", self._Ipi, "H", self._Ih, self.fluid)
-
-        elif self.iso_type == "isos":            
+        elif self.iso_type == "isos": 
             self._Ita = PropsSI("T", "S", self._Isa, "H", self._Ih, self.fluid)
             self._Iti = PropsSI("T", "S", self._Isi, "H", self._Ih, self.fluid)
-    
+        
     @property
     def Isi(self):
         return self._Isi / 1000
