@@ -60,7 +60,7 @@ class ProcessPlot(Node):
             self._Ih = linspace(nodes[self.Node_in]._h, nodes[self.Node_out]._h, num)
             self._Isa = linspace(nodes[self.Node_in]._s, nodes[self.Node_out]._s, num)
             self._Isi = linspace(nodes[self.Node_in]._s, nodes[self.Node_in]._s, num)
-            print(self._Ih, self._Isa)
+            # print(self._Ih, self._Isa)
             
     def calc_iso(self):
         if self.iso_type == "isop":
