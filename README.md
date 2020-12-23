@@ -67,3 +67,13 @@ https://youtu.be/ZjbVMBE1Hzk
 ### Part B
 {%youtube WznF8XCsUu0 %}
 https://youtu.be/WznF8XCsUu0
+
+---
+
+# python版本
+
+## Windows:
+python 3.6.8
+
+## Linux(Ubuntu):
+python 3.6.9
