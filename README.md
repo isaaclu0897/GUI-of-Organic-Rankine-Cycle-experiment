@@ -70,10 +70,12 @@ https://youtu.be/WznF8XCsUu0
 
 ---
 
-# python版本
+# Environment
 
 ## Windows:
-python 3.6.8
+Windows : 7
+Python : 3.6.8
 
-## Linux(Ubuntu):
-python 3.6.9
+## Linux:
+Linux : Ubuntu 18.04
+python : 3.6.9
