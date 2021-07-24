@@ -73,9 +73,19 @@ https://youtu.be/WznF8XCsUu0
 # Environment
 
 ## Windows:
-Windows : 7
+Windows : Windows 10
 Python : 3.6.8
 
 ## Linux:
 Linux : Ubuntu 18.04
 python : 3.6.9
+
+# 自行編譯
+如果你想自行編譯，可以參考下方步驟
+1. 下載source code
+2. 解壓縮並進入目錄
+3. 於目錄中開啓console
+4. `pipenv install pipfile` (這裏我是用的是pipenv管理我的安裝環境)
+5. 進入env `pipenv shell`
+6. (env)安裝pyinstaller `pip install pyinstaller`
+7. 使用spec打包程式 `pyinstaller gui.spec`
