@@ -103,7 +103,7 @@
         },
         "attribute": {
             "mDot": {
-                "sensor": "@301",
+                
                 "GUI": {
                     "posx": 110,
                     "posy": 500,
@@ -270,7 +270,7 @@
     },
     "GUI": {
         "path": "./fig/500w_P&ID.png",
-        "scaling_factor": 0.8,
+        "scaling_factor": 0.7,
         "font": "",
         "fontsize": 18
     },
@@ -278,7 +278,7 @@
         "USB_address": "USB0::0x0957::0x2007::MY49017447::0::INSTR"
     },
     "experiment-file": {
-        "folder-path": "./test",
+        "folder-path": "./data",
         "file_buffer" : 5,
         "data_buffer" : 0,
         "column": {
@@ -313,6 +313,5 @@
             "timestamp": "timestamp",
             "operate": "operate"
         }
-    },
-    "test" : 1
+    }
 }
