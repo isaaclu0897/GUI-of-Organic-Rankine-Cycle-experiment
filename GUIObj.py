@@ -277,8 +277,8 @@ class Scan_button(Frame):
         button.pack()
 
         ''' init v34970A '''
-        self.dev = agilent.test_V34972A()
-        # self.dev = agilent.V34972A()
+        # self.dev = agilent.test_V34972A()
+        self.dev = agilent.V34972A()
         ''' csv file '''
         self.file = csv_file()
 
