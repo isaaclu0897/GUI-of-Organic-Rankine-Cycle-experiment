@@ -71,6 +71,7 @@ https://youtu.be/WznF8XCsUu0
 ---
 
 # Installing / Getting started
+[Requirements](#Requirements)
 
 ## Requirements
 **Using pipenv(I use it!)**
