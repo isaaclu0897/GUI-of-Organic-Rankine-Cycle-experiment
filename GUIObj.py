@@ -289,14 +289,13 @@ class Scan_button(Frame):
     def th_update(self):
         thread_func(self.update_diagram)
 
-    def update_diagram(self, count=0):
+    def update_diagram(self):
         if self.is_click:
             self.after(5000, self.th_update)
             # z = threading.active_count()
             # x = threading.enumerate()
             # c = threading.current_thread()
             # print(z, x[8:], c)
-            print(f"{count}----" * 5)
             self.dev.scan()
             self.calc_nodes()
             self.file.save_data()
@@ -332,6 +331,9 @@ class Scan_button(Frame):
         data["count"] = data["count"] + 1
         data["time"] = dt.now().time()
         data["timestamp"] = dt.now().timestamp()
+        print(f"{data['count']}----" * 5)
+        
+        
 
 
 class csv_file:
