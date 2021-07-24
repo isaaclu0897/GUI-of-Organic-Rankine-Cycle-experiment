@@ -277,8 +277,8 @@ class Scan_button(Frame):
         button.pack()
 
         ''' init v34970A '''
-        self.dev = agilent.test_V34972A()
-        # self.dev = agilent.V34972A()
+        # self.dev = agilent.test_V34972A()
+        self.dev = agilent.V34972A()
         ''' csv file '''
         self.file = csv_file()
 
@@ -291,7 +291,7 @@ class Scan_button(Frame):
 
     def update_diagram(self):
         if self.is_click:
-            self.after(300, self.th_update)
+            self.after(5000, self.th_update)
             # z = threading.active_count()
             # x = threading.enumerate()
             # c = threading.current_thread()
