@@ -231,7 +231,7 @@ class ORC_Figure(Frame):
         self.canvas.draw_idle()
 
 def thread_func(func, *args):
-    print("thread")
+    # print("thread")
     t = Thread(target=func, args=args, name=f"{func.__name__}")
     t.setDaemon(True)
     t.start()
@@ -299,17 +299,17 @@ class Scan_button(Frame):
             print(f"{count}----" * 5)
             self.dev.scan()
             self.calc_nodes()
-            # self.file.save_data()
+            self.file.save_data()
             ''' update functions
             update P&ID
             update T-s diagram
             '''
             self.call_update_funcs()
-            import time
-            print("sleep")
-            time.sleep(1)
+            # import time
+            # print("sleep")
+            # time.sleep(1)
             # print(self.t.isAlive())
-            print("sleep done")
+            # print("sleep done")
             
             
 
