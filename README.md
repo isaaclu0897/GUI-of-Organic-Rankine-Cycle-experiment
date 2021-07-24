@@ -71,11 +71,11 @@ https://youtu.be/WznF8XCsUu0
 ---
 
 # Installing / Getting started
-* [Requirements](#Requirements)
-  * [Install](#Install)
-  * [Run GUI](#Run-GUI)
-* [Other](#Other)
-  * [How to pack executable file by yourself](#How to pack executable file by yourself)
+* [Requirements](#requirements)
+* [Install](#install)
+* [Run GUI](#run-gui)
+* [Other](#other)
+  * [How to pack executable file by yourself](#how-to-pack-executable-file-by-yourself)
 
 ## Requirements
 **Using pipenv(I use it!)**
