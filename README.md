@@ -71,7 +71,11 @@ https://youtu.be/WznF8XCsUu0
 ---
 
 # Installing / Getting started
-[Requirements](#Requirements)
+* [Requirements](#Requirements)
+  * [Install](#Install)
+  * [Run GUI](#Run-GUI)
+* [Other](#Other)
+  * [How to pack executable file by yourself](#How to pack executable file by yourself)
 
 ## Requirements
 **Using pipenv(I use it!)**
@@ -131,7 +135,7 @@ wheel              0.36.2
 zipp               3.5.0
 ```
 
-## Run GUI.py via python in pipenv
+## Run GUI
 Run GUI.py via python in pipenv, you can getting started.
 
 ```
@@ -142,6 +146,7 @@ $ pipenv run python GUI.py
 
 ## Setup config.json(待補！)
 
+# Other
 ## How to pack executable file by yourself
 * Follow the steps of the installation guide
 * Install pyinstaller via pip
