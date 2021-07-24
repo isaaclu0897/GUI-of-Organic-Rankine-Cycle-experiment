@@ -70,22 +70,87 @@ https://youtu.be/WznF8XCsUu0
 
 ---
 
-# Environment
+# Installing / Getting started
 
-## Windows:
-Windows : Windows 10
-Python : 3.6.8
+## Requirements
+**Using pipenv(I use it!)**
+* Python 3.x
+* pipenv
 
-## Linux:
-Linux : Ubuntu 18.04
-python : 3.6.9
+Do not use pipenv(you can check the pipfile, what package you should install)
+* Python 3.x
+* pyvisa = 1.11.3
+* matplotlib = 3.3.3
+* coolprop = 6.4.1
+* tabulate = 0.8.7
 
-# 自行編譯
-如果你想自行編譯，可以參考下方步驟
-1. 下載source code
-2. 解壓縮並進入目錄
-3. 於目錄中開啓console
-4. `pipenv install pipfile` (這裏我是用的是pipenv管理我的安裝環境)
-5. 進入env `pipenv shell`
-6. (env)安裝pyinstaller `pip install pyinstaller`
-7. 使用spec打包程式 `pyinstaller gui.spec`
+BTW, the Operating System and Python I use, as shown in the table below.
+Of course you can also try other environments.
+OS           | Python |
+-------------|:------:|
+Windows 10   | 3.6.8  |
+Ubuntu 18.04 | 3.6.9  |
+
+## Install
+* clone the project
+* Enter the `GUI-of-Organic-Rankine-Cycle-experiment` folder
+* Use pipenv install package from pipfile
+
+```
+$ git clone https://github.com/t104306033/GUI-of-Organic-Rankine-Cycle-experiment.git
+$ cd GUI-of-Organic-Rankine-Cycle-experiment
+$ pipenv install Pipfile
+```
+
+Check whether the installation is successful, you can try to execute the following command.
+
+```
+$ pipenv run pip list
+Package            Version
+------------------ --------
+CoolProp           6.4.1
+cycler             0.10.0
+dataclasses        0.8
+importlib-metadata 4.6.1
+kiwisolver         1.3.1
+matplotlib         3.3.4
+numpy              1.19.5
+Pillow             8.3.1
+pip                21.1.3
+pipfile            0.0.2
+pyparsing          2.4.7
+python-dateutil    2.8.2
+PyVISA             1.11.3
+setuptools         57.0.0
+six                1.16.0
+tabulate           0.8.9
+toml               0.10.2
+typing-extensions  3.10.0.0
+wheel              0.36.2
+zipp               3.5.0
+```
+
+## Run GUI.py via python in pipenv
+Run GUI.py via python in pipenv, you can getting started.
+
+```
+$ pipenv run python GUI.py
+```
+
+**If you get a runtime error, you can try to modify config.json**
+
+## Setup config.json(待補！)
+
+## How to pack executable file by yourself
+* Follow the steps of the installation guide
+* Install pyinstaller via pip
+* Using pyinstaller to pack GUI.spec
+* Enter into pack folder
+* run executable file
+
+```
+$ pipenv run pip install pyinstaller
+$ pipenv run pyinstaller GUI.spec
+$ cd dist
+$ ./GUI.exe
+```
