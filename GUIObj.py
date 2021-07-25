@@ -394,38 +394,8 @@ class csv_file:
                 return num
         row = []
         for value in cfg.FILE["data"]:
-            if "`" in value:
-                def oprater(one, two, op):
-
-                    if op == "+":
-                        value = one + two
-                    elif op == "-":
-                        value = one - two
-                    elif op == "*":
-                        value = one * two
-                    elif op == "/":
-                        value = one / two
-                    else:
-                        value = 9999
-                    return value
-
-                index = 0
-                l = value.find("{", index)
-                r = value.find("}", index)
-                one = value[l+1:r]
-                name, attr = one.split(".")
-                one = myround(data[f"{name}"][f"{attr}"])
-
-                index = r+1
-                op = value[index]
-
-                l = value.find("{", index)
-                r = value.find("}", index)
-                two = value[l+1:r]
-                name, attr = two.split(".")
-                two = myround(data[f"{name}"][f"{attr}"])
-
-                v = myround(oprater(one, two, op))
+            if "data" in value:
+                v = myround(eval(value))
 
             elif "." in value:
                 name, attr = value.split(".")
@@ -433,11 +403,12 @@ class csv_file:
             else:
                 try:
                     if isinstance(data[f"{value}"], float):
-                        v = myround(data[f"{value}"])
+                        v = myround(data[f"{value}"])  # timestamp
                     else:
-                        v = data[f"{value}"]
+                        v = data[f"{value}"]  # f"{value}" in data count time
                 except:
                     v = f"{value}"
+                    # print(f"{value} can not convert")
             row.append(v)
         return row
 
