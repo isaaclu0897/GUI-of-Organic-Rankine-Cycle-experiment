@@ -231,7 +231,7 @@ class ORC_Figure(Frame):
         self.canvas.draw_idle()
 
 def thread_func(func, *args):
-    print("thread")
+    # print("thread")
     t = Thread(target=func, args=args, name=f"{func.__name__}")
     t.setDaemon(True)
     t.start()
@@ -289,27 +289,26 @@ class Scan_button(Frame):
     def th_update(self):
         thread_func(self.update_diagram)
 
-    def update_diagram(self, count=0):
+    def update_diagram(self):
         if self.is_click:
             self.after(5000, self.th_update)
             # z = threading.active_count()
             # x = threading.enumerate()
             # c = threading.current_thread()
             # print(z, x[8:], c)
-            print(f"{count}----" * 5)
             self.dev.scan()
             self.calc_nodes()
-            # self.file.save_data()
+            self.file.save_data()
             ''' update functions
             update P&ID
             update T-s diagram
             '''
             self.call_update_funcs()
-            import time
-            print("sleep")
-            time.sleep(1)
+            # import time
+            # print("sleep")
+            # time.sleep(1)
             # print(self.t.isAlive())
-            print("sleep done")
+            # print("sleep done")
             
             
 
@@ -332,6 +331,9 @@ class Scan_button(Frame):
         data["count"] = data["count"] + 1
         data["time"] = dt.now().time()
         data["timestamp"] = dt.now().timestamp()
+        print(f"{data['count']}----" * 5)
+        
+        
 
 
 class csv_file:
@@ -347,7 +349,7 @@ class csv_file:
 
         self.lock_path = f"{self.path}/{self.lock_file}"
         self.csv_path = f"{self.path}/{self.csv_file}"
-
+        
         self.open_file()
 
     def open_file(self):
@@ -365,8 +367,9 @@ class csv_file:
             Lock file just ORC GUI can used.
             Prevent users from crashing the system due to file modification.
             '''
-            self.file = open(self.lock_path, 'a')
+            self.file = open(self.lock_path, 'a', newline="")
             self.writer = writer(self.file)
+            print(self.header)
             self.writer.writerow(self.header)
             self.file.flush()
 
