@@ -6,7 +6,7 @@ Created on Mon Nov 19 15:01:08 2018
 @author: wei
 """
 
-from tkinter import Frame, Canvas, StringVar, Label, Button, font
+from tkinter import Frame, Canvas, StringVar, Label, Button, font, Entry
 
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
@@ -25,11 +25,13 @@ from csv import writer
 from shutil import copyfile
 from threading import Thread
 
+
 def thread_func(func, *args):
     # print("thread")
     t = Thread(target=func, args=args, name=f"{func.__name__}")
     t.setDaemon(True)
     t.start()
+
 
 class P_I_Diagram(Frame):
     offset_x = 50
@@ -63,7 +65,8 @@ class P_I_Diagram(Frame):
         # set label of efficiency
         fontTitle = font.Font(
             family='courier 10 pitch', size=30, weight='bold')
-        self.canvas.create_text(200, 200, text="LAB429", fill='green', font=fontTitle)
+        self.canvas.create_text(200, 200, text="LAB429",
+                                fill='green', font=fontTitle)
         # self.canvasID["{}_value".format(name)] = self.canvas.create_text(
         #     300, 350, text="None", fill='green', font=fontTitle)
 
@@ -227,6 +230,7 @@ class ORC_Figure(Frame):
             self.update_line(name, attr["type"], attr["point"])
         self.canvas.draw_idle()
 
+
 class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
         Frame.__init__(self, master=None)
@@ -312,8 +316,24 @@ class Scan_button(Frame):
         data["time"] = dt.now().time()
         data["timestamp"] = dt.now().timestamp()
         print(f"{data['count']}----" * 5)
-        
-        
+
+
+class mDot_simulation(Frame):
+    def __init__(self, master=None, *callbacks):
+        Frame.__init__(self, master=None)
+
+        def confirm():
+            mDot = float(mDot_entry.get())
+            data["mDot"] = mDot
+
+        button = Button(
+            master,
+            text='confirm',
+            command=confirm)
+        button.pack(side="right")
+
+        mDot_entry = Entry(master, width=10)
+        mDot_entry.pack(side="right")
 
 
 class csv_file:
