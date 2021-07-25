@@ -6,17 +6,12 @@ Created on Mon Nov 19 15:01:08 2018
 @author: wei
 """
 
-# import tkinter
-# import tkinter as tk
 from tkinter import Frame, Canvas, StringVar, Label, Button, font
-# import tkinter.font as tkfont
 
-# import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
-#import node
 from node import Node
 from ORC_plot import calc_SaturationofCurve
 from ORC_plot import ProcessPlot
@@ -29,7 +24,12 @@ from realtime_data import data
 from csv import writer
 from shutil import copyfile
 from threading import Thread
-import threading
+
+def thread_func(func, *args):
+    # print("thread")
+    t = Thread(target=func, args=args, name=f"{func.__name__}")
+    t.setDaemon(True)
+    t.start()
 
 class P_I_Diagram(Frame):
     offset_x = 50
@@ -230,12 +230,6 @@ class ORC_Figure(Frame):
             self.update_line(name, attr["type"], attr["point"])
         self.canvas.draw_idle()
 
-def thread_func(func, *args):
-    # print("thread")
-    t = Thread(target=func, args=args, name=f"{func.__name__}")
-    t.setDaemon(True)
-    t.start()
-
 class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
         Frame.__init__(self, master=None)
@@ -244,7 +238,7 @@ class Scan_button(Frame):
             if callable(func):
                 self.update_funcs.append(func)
             else:
-                def func(): return print("this is not a func")
+                def func(): print("this is not a func")
                 self.update_funcs.append(func)
 
         self.is_click = False
@@ -277,8 +271,8 @@ class Scan_button(Frame):
         button.pack()
 
         ''' init v34970A '''
-        # self.dev = agilent.test_V34972A()
-        self.dev = agilent.V34972A()
+        self.dev = agilent.test_V34972A()
+        # self.dev = agilents.V34972A()
         ''' csv file '''
         self.file = csv_file()
 
@@ -291,11 +285,7 @@ class Scan_button(Frame):
 
     def update_diagram(self):
         if self.is_click:
-            self.after(5000, self.th_update)
-            # z = threading.active_count()
-            # x = threading.enumerate()
-            # c = threading.current_thread()
-            # print(z, x[8:], c)
+            self.after(300, self.th_update)
             self.dev.scan()
             self.calc_nodes()
             self.file.save_data()
@@ -304,13 +294,6 @@ class Scan_button(Frame):
             update T-s diagram
             '''
             self.call_update_funcs()
-            # import time
-            # print("sleep")
-            # time.sleep(1)
-            # print(self.t.isAlive())
-            # print("sleep done")
-            
-            
 
     def calc_nodes(self):
         ''' calc nodes '''
@@ -344,12 +327,9 @@ class csv_file:
         self.data_buffer_count = 0
 
         today = dt.now().date()
-        self.lock_file = f".{today}.lock"
-        self.csv_file = f"{today}.csv"
+        self.lock_file = f"{self.path}/.{today}.lock"
+        self.csv_file = f"{self.path}/{today}.csv"
 
-        self.lock_path = f"{self.path}/{self.lock_file}"
-        self.csv_path = f"{self.path}/{self.csv_file}"
-        
         self.open_file()
 
     def open_file(self):
@@ -357,17 +337,16 @@ class csv_file:
         if file is not exist,
         system will create file with header
         '''
-        # check file path
         Path(self.path).mkdir(parents=True, exist_ok=True)
-        if Path(self.lock_path).is_file():
-            self.file = open(self.lock_path, 'a', newline="")
+        if Path(self.lock_file).is_file():
+            self.file = open(self.lock_file, 'a', newline="")
             self.writer = writer(self.file)
         else:
-            ''' avoid users crash file
-            Lock file just ORC GUI can used.
-            Prevent users from crashing the system due to file modification.
+            ''' avoid user crash file
+            Lock file, just GUI can used.
+            Prevent user from crashing the system due to file modification.
             '''
-            self.file = open(self.lock_path, 'a', newline="")
+            self.file = open(self.lock_file, 'a', newline="")
             self.writer = writer(self.file)
             print(self.header)
             self.writer.writerow(self.header)
@@ -451,7 +430,7 @@ class csv_file:
         system will copy lock file into experiment file.
         '''
         if self.file_buffer_count > buffer or close:
-            copyfile(self.lock_path, self.csv_path)
+            copyfile(self.lock_file, self.csv_file)
             self.file_buffer_count = 0
         self.file_buffer_count += 1
 
