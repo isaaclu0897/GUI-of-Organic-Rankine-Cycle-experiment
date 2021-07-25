@@ -61,12 +61,9 @@ class P_I_Diagram(Frame):
         self.set_Labels()
 
         # set label of efficiency
-        # fontTitle = tkfont.Font(
-        #     family='courier 10 pitch', size=30, weight='bold')
-        # name = "429_ORC\nEff"
-        # unit = "%"
-        # self.canvas.create_text(280, 320, text="{} {} {}".format(
-        #     name, " "*14, unit), fill='green', font=fontTitle)
+        fontTitle = font.Font(
+            family='courier 10 pitch', size=30, weight='bold')
+        self.canvas.create_text(200, 200, text="LAB429", fill='green', font=fontTitle)
         # self.canvasID["{}_value".format(name)] = self.canvas.create_text(
         #     300, 350, text="None", fill='green', font=fontTitle)
 
@@ -285,7 +282,7 @@ class Scan_button(Frame):
 
     def update_diagram(self):
         if self.is_click:
-            self.after(300, self.th_update)
+            self.after(500, self.th_update)
             self.dev.scan()
             self.calc_nodes()
             self.file.save_data()
