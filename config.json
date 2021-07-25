@@ -102,8 +102,25 @@
             }
         },
         "attribute": {
+            "count": {
+                "GUI": {
+                    "posx": 110,
+                    "posy": 10
+                }
+            },
+            "time": {
+                "GUI": {
+                    "posx": 110,
+                    "posy": 40
+                }
+            },
+            "ts": {
+                "GUI": {
+                    "posx": 110,
+                    "posy": 70
+                }
+            },
             "mDot": {
-                
                 "GUI": {
                     "posx": 110,
                     "posy": 500,
@@ -310,7 +327,7 @@
             "low_pinch": "none",
             "ORCeff(%)": "Eff",
             "mdot(kg/s)": "mDot",
-            "timestamp": "timestamp",
+            "ts": "ts",
             "operate": "operate"
         }
     }

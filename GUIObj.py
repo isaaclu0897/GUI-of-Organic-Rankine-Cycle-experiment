@@ -90,7 +90,7 @@ class P_I_Diagram(Frame):
             elif sensor_type in ["mDot"]:
                 unit = "kg/s"
             else:
-                unit = "?"
+                unit = ""
 
             if unit in ["C", "B"]:
                 self.create_text(v["posx"], v["posy"],
@@ -99,23 +99,25 @@ class P_I_Diagram(Frame):
                     v["posx"], v["posy"], f"{'None':^6}")
             else:
                 self.create_text(v["posx"], v["posy"],
-                                 f"{sensor_type:<5}{' '*16:^5}{unit:>5}")
+                                 f"{sensor_type:<5}{' '*20}{unit:>5}")
                 self.canvasID[f"{k}"] = self.create_text(
-                    v["posx"], v["posy"], f"{'None':^6}")
+                    v["posx"]+15, v["posy"], f"{'None'}")
 
-    def update_value(self, name, value, n=1):
+    def update_value(self, name, text):
         itemID = self.canvasID[name]
-        self.canvas.itemconfigure(itemID, text=str(round(value, n)))
+        self.canvas.itemconfigure(itemID, text=text)
 
     def update(self):
         # print("update P&ID")
         for name, value in data.items():
             if isinstance(value, Node):
-                self.update_value(f"{name}_T", data[name].t)
-                self.update_value(f"{name}_P", data[name].p)
+                self.update_value(f"{name}_T", round(data[name].t, 1))
+                self.update_value(f"{name}_P", round(data[name].p, 1))
+            elif isinstance(value, (int, float)):
+                self.update_value(name, round(value, 1))
             else:
                 try:
-                    self.update_value(name, value)
+                    self.update_value(name, str(value).split(".")[0])
                 except:
                     pass
 
@@ -314,7 +316,7 @@ class Scan_button(Frame):
         ''' other '''
         data["count"] = data["count"] + 1
         data["time"] = dt.now().time()
-        data["timestamp"] = dt.now().timestamp()
+        data["ts"] = dt.now().timestamp()
         print(f"{data['count']}----" * 5)
 
 
