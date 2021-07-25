@@ -13,8 +13,7 @@ from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from node import Node
-from ORC_plot import calc_SaturationofCurve
-from ORC_plot import ProcessPlot
+from ORC_plot import calc_SaturationofCurve, ProcessPlot
 
 from pathlib import Path
 from datetime import datetime as dt

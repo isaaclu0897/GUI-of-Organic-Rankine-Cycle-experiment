@@ -108,8 +108,14 @@ class Node:
 #    def d(self, value):
 #        self._d = value * 1000
 #        return self._d
+
     @property
     def over(self):
+        return self._over
+
+    @over.setter
+    def over(self, value):
+        self._over = value * 1000
         return self._over
 
 #    @d.setter
@@ -218,7 +224,6 @@ class Node:
         self._tSat = PropsSI("T", "Q", 0, "P", self._p, self.fluid)
 
         self.over = self.t - self.tSat
-
         if self._over <= 0:
             self._q = -1
         else:

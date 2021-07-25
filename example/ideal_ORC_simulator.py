@@ -7,7 +7,6 @@ Created on Thu Feb  8 20:43:53 2018
 """
 
 from CoolProp.CoolProp import PropsSI
-from unit import P, T, pps
 from node import Node
 
 
