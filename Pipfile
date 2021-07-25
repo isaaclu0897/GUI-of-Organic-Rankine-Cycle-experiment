@@ -4,15 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-spyder-kernels = "1.10.0"
-pyinstaller = "4.1"
+spyder-kernels = "==1.10.0"
+pyinstaller = "==4.1"
 
 [packages]
 pyvisa = "1.11.3"
 matplotlib = "3.3.3"
 coolprop = "6.4.1"
 tabulate = "0.8.7"
-
 
 [requires]
 python_version = "3.6"
