@@ -104,7 +104,9 @@ Ubuntu 18.04 | 3.6.9  |
 ```
 $ git clone https://github.com/t104306033/GUI-of-Organic-Rankine-Cycle-experiment.git
 $ cd GUI-of-Organic-Rankine-Cycle-experiment
-$ pipenv install Pipfile
+$ pipenv install 
+OR
+$ pipenv install --ignore-pipfile
 ```
 
 Check whether the installation is successful, you can try to execute the following command.
