@@ -13,7 +13,7 @@ from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 from thermo.node import Node
-from thermo.ORC_plot import calc_SaturationofCurve, ProcessPlot
+from thermo.plot import calc_SaturationofCurve, ProcessPlot
 
 from pathlib import Path
 from datetime import datetime as dt

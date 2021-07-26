@@ -14,7 +14,7 @@ if __name__ == "__main__":
     from matplotlib.pyplot import show
     from matplotlib.lines import Line2D
     from thermo.node import Node
-    from thermo.ORC_plot import calc_SaturationofCurve, calc_StatusofORC, ProcessPlot
+    from thermo.plot import calc_SaturationofCurve, calc_StatusofORC, ProcessPlot
 
     def set_windows():
         fig = figure()
