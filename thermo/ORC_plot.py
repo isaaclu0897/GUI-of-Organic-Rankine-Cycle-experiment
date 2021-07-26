@@ -5,14 +5,11 @@ Created on Sat Jan 27 20:40:46 2018
 
 @author: wei
 """
-# import matplotlib.pyplot as plt
 
 from matplotlib.figure import Figure
-# import matplotlib.lines as lin
 from matplotlib.lines import Line2D
 from CoolProp.CoolProp import PropsSI
 from numpy import linspace, array
-# import numpy as np
 from thermo.node import Node
 from thermo.unit import T, pps
 
