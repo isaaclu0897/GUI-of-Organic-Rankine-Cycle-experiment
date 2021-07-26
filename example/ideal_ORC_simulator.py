@@ -6,8 +6,8 @@ Created on Thu Feb  8 20:43:53 2018
 @author: wei
 """
 
-from CoolProp.CoolProp import PropsSI
-from thermo.node import Node
+import sys
+sys.path.append('../')
 
 
 def main(tl, th, delta_subcool, delta_supheat, out, wan=False):
@@ -88,6 +88,8 @@ def main(tl, th, delta_subcool, delta_supheat, out, wan=False):
 
 
 if __name__ == '__main__':
+    from thermo.node import Node
+    from CoolProp.CoolProp import PropsSI
     main(30, 100, 5, 5, 500, True)
     main(15, 100, 5, 5, 500, True)
     main(25, 100, 5, 5, 500)

@@ -31,21 +31,25 @@ P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-from thermo.node import Node
+import sys
+sys.path.append('../')
+
 
 def data():
-    pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
-    pumpo = {'name' : 'pump_ioutlet',       'nid' : 2, 'P' : 6.44, 'T' : 22.55}
-    EVPo  = {'name' : 'evaparator_outlet',  'nid' : 3, 'P' : 6.11, 'T' : 88.31}
-    EXPi  = {'name' : 'expander_inlet',     'nid' : 4, 'P' : 6.27, 'T' : 88.28}
-    EXPo  = {'name' : 'expander_outlet',    'nid' : 5, 'P' : 2.05, 'T' : 64.03}
-    CDSi  = {'name' : 'condenser_inlet',    'nid' : 6, 'P' : 1.99, 'T' : 56.68}
-    CDSo  = {'name' : 'condenser_outlet',   'nid' : 7, 'P' : 1.98, 'T' : 22.12}
-   
+    pumpi = {'name': 'pump_inlet',         'nid': 1, 'P': 2.01, 'T': 21.86}
+    pumpo = {'name': 'pump_ioutlet',       'nid': 2, 'P': 6.44, 'T': 22.55}
+    EVPo = {'name': 'evaparator_outlet',  'nid': 3, 'P': 6.11, 'T': 88.31}
+    EXPi = {'name': 'expander_inlet',     'nid': 4, 'P': 6.27, 'T': 88.28}
+    EXPo = {'name': 'expander_outlet',    'nid': 5, 'P': 2.05, 'T': 64.03}
+    CDSi = {'name': 'condenser_inlet',    'nid': 6, 'P': 1.99, 'T': 56.68}
+    CDSo = {'name': 'condenser_outlet',   'nid': 7, 'P': 1.98, 'T': 22.12}
+
     return [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo]
 
+
 def initNode(dev_list):
-        return [Node(nodes['name'], nodes['nid']) for nodes in dev_list]
+    return [Node(nodes['name'], nodes['nid']) for nodes in dev_list]
+
 
 def setAndCalcNode(nodes, dev_list):
     if ('P' or 'p') in dev_list[0].keys():
@@ -55,28 +59,19 @@ def setAndCalcNode(nodes, dev_list):
     else:
         for i, obj in enumerate(dev_list):
             nodes[i].t = obj['T']
-    
+
 
 if __name__ == '__main__':
+    from thermo.node import Node
     # define the  of all point
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
-    
+
     # init all node
 #    nodes = []
 #    for i in dev_list:
 #        nodes.append(node.Node(i['name'], i['nid']))
     nodes = initNode(dev_list)
-    
-    # set & calc Prop of point 
+
+    # set & calc Prop of point
     setAndCalcNode(nodes, dev_list)
     print(nodes)
-    
-    
-
-        
-    
-        
-
-
-
-
