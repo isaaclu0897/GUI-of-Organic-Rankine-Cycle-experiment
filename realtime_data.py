@@ -6,7 +6,7 @@ Created on Sun Nov 29 01:11:35 2020
 @author: wei
 """
 
-from node import Node
+from thermo.node import Node
 from config import config
 
 data = {}

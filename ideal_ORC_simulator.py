@@ -7,7 +7,7 @@ Created on Thu Feb  8 20:43:53 2018
 """
 
 from CoolProp.CoolProp import PropsSI
-from node import Node
+from thermo.node import Node
 
 
 def main(tl, th, delta_subcool, delta_supheat, out, wan=False):

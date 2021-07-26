@@ -31,7 +31,7 @@ P (bar)	   2.01	       6.44	   6.11	    6.27	   2.05	     1.99	   1.98
  @ author: wei
  @ e-mail: t104306033@ntut.org.tw
 """
-from node import Node
+from thermo.node import Node
 
 def data():
     pumpi = {'name' : 'pump_inlet',         'nid' : 1, 'P' : 2.01, 'T' : 21.86}
@@ -58,8 +58,6 @@ def setAndCalcNode(nodes, dev_list):
     
 
 if __name__ == '__main__':
-    from tabulate_text import ORC_status
-    
     # define the  of all point
     dev_list = [pumpi, pumpo, EVPo, EXPi, EXPo, CDSi, CDSo] = data()
     
@@ -71,9 +69,7 @@ if __name__ == '__main__':
     
     # set & calc Prop of point 
     setAndCalcNode(nodes, dev_list)
-
-    # print pretty ORC_status table
-    ORC_status([nodes[i] for i in range(len(nodes))])
+    print(nodes)
     
     
 
