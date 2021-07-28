@@ -34,14 +34,14 @@ LOGGING_CONFIG = {
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "DEBUG",
-            "filename": "./log.txt",
+            "filename": "./app.log",
             "formatter": "detail",
             "maxBytes": 1000000,  # 1 MB
             "backupCount": 5,
         },
         'time-rotating-file': {  # the name of handler
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': 'f3.log',  # the path of the log file
+            'filename': 'app2.log',  # the path of the log file
             'when': 'midnight',  # time interval
             'formatter': 'detail',  # use the above "simple" formatter
         },

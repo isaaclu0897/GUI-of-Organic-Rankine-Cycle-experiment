@@ -2,8 +2,9 @@ __pycache__
 *.csv
 *.xlsx
 *.csv
-*.lock
-test/*
+*.log
+*.log.*
+data/*
 dist/*
 build/*
 
