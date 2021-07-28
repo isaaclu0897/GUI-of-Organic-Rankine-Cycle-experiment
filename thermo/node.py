@@ -7,7 +7,9 @@ Created on Sun Jan 21 23:18:15 2018
 from CoolProp.CoolProp import PropsSI
 from json import dumps
 from thermo.unit import T, P
+from log import logger
 
+logger.info('node!')
 
 # I don't want to use refprop.
 # def fixpath():
