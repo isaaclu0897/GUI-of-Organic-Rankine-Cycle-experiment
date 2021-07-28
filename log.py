@@ -26,58 +26,43 @@ LOGGING_CONFIG = {
             "level": "DEBUG",
             "formatter": "simple",
         },
-        # "console_plain": {
-        #     "class": "logging.StreamHandler",
-        #     "level": "INFO",
-        #     "formatter": "plain"
-        # },
-        # "file": {
-        #     "class": "logging.FileHandler",
-        #     "level": "INFO",
-        #     "filename": "./log.txt",
-        #     "formatter": "detail",
-        # }
+        "console_plain": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "detail"
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "filename": "./log.txt",
+            "formatter": "detail",
+            "maxBytes": 1000000,  # 1 MB
+            "backupCount": 5,
+        },
+        'time-rotating-file': {  # the name of handler
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': 'f3.log',  # the path of the log file
+            'when': 'midnight',  # time interval
+            'formatter': 'detail',  # use the above "simple" formatter
+        },
     },
     "loggers": {
         "console_logger": {
-            "handlers": ["console"],
-            "level": "INFO",
+            "handlers": ["console", "console_plain", "file"],
+            "level": "DEBUG",
             "propagate": False,
         },
-        # "console_plain_logger": {
-        #     "handlers": ["console_plain"],
-        #     "level": "INFO",
-        #     "propagate": False,
-        # },
-        # "file_logger": {
-        #     "handlers": ["file"],
-        #     "level": "INFO",
-        #     "propagate": False,
-        # }
     },
-    # "disable_existing_loggers": False,
+    "disable_existing_loggers": False,
 }
 
-# 執行測試
 logging.config.dictConfig(LOGGING_CONFIG)
 
 logger = logging.getLogger("console_logger")
 logger.debug('debug message')
 logger.info('info message')
-logger.warning('warning message')
-logger.error('error message')
-logger.critical('critical message')
 
-# logger2 = logging.getLogger("console_plain")
-# logger2.debug('debug message')
-# logger2.info('info message')
-# logger2.warning('warning message')
-# logger2.error('error message')
-# logger2.critical('critical message')
+for i in range(100000):
+    logger.debug('debug message')
+    logger.info('info message')
 
-# logger3 = logging.getLogger("file")
-# logger3.debug('debug message')
-# logger3.info('info message')
-# logger3.warning('warning message')
-# logger3.error('error message')
-# logger3.critical('critical message')

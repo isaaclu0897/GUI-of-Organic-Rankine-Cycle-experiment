@@ -51,4 +51,8 @@ def main():
 
 
 if __name__ == '__main__':
+    from log import logger
+    
+    logger.info('program starting!')
     main()
+    logger.info('program finish.')
