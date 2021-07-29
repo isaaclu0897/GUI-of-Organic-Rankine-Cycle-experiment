@@ -6,8 +6,8 @@ Created on Mon Jul 26 23:04:07 2021
 @author: wei
 """
 
-import sys
-sys.path.append('../')
+# import sys
+# sys.path.append('../')
 
 if __name__ == "__main__":
     from matplotlib.pyplot import figure

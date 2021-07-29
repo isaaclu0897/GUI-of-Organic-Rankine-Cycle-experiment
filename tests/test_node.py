@@ -1,42 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 26 23:01:09 2021
+Created on Thu Jul 29 23:26:54 2021
 
 @author: wei
 """
 
-import sys
-sys.path.append('../')
+import unittest
+from thermo.node import Node
 
 
-#    # use Bar, C, KJ/Kg, ((KJ/Kg) * K), (Kg/m^3) to output Props list
-#    def statusProps(self):
-#        return [self.p, self.t, self.h/1000, self.s/1000, self.d, self.q, self.over]
-if __name__ == '__main__':
-    from thermo.node import Node
-    from CoolProp.CoolProp import PropsSI
-    # 配合課本或 NIST檢查
-    # 20 KPa, 800C 查表得 v = 2.475 m^3/kg, h = 4159.2 KJ/kg, s = 9.2460 (KJ/kg)*K
-    print("---test node---")
-    node1 = Node(nid=1, fluid="Water")
-    node1.p = 1.01325
-    node1.t = 120
-    node1.pt()
-    print(node1)
+class NodeTestCase(unittest.TestCase):
+    ''' online steam table
+    https://www.steamtablesonline.com/steam97web.aspx
 
-    node2 = Node(nid=2, fluid="Water")
-    node2.p = 1.01325
-    node2.q = 0.5
-    node2.pq()
-    print(node2)
+    coolprop default use IF95, so I change the fluid
+    http://www.coolprop.org/fluid_properties/IF97.html
+    '''
 
-    # test PropsSI
-    print("---test PropsSI---")
-    print(PropsSI('T', 'P', 1.01325 * 1e5, 'Q', 0, 'Water') - 273)
-    print(PropsSI('P', 'T', [25+273, 25+273], 'Q', [0, 1], "R245FA") / 1e5)
-    print(PropsSI(
-        ['H', 'S', 'D'],
-        'P', [1.01325 * 1e5, 1.01325 * 1e5],
-        'T', [20+273, 50+273],
-        'Water')/1000)
+    def setUp(self):
+        self.node = Node()
+        self.node.fluid = "IF97::Water"
+        self.node.p = 1.01325   # 1.atm = 1.01325 bar
+        self.node.t = 25        # 25 c
+        self.node.pt()
+
+    def test_node_enthalpy(self):
+        self.assertAlmostEqual(self.node.h, 104.9292946426, 4)
+
+    def test_node_entropy(self):
+        self.assertAlmostEqual(self.node.s, 0.3672310160, 4)

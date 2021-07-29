@@ -234,8 +234,7 @@ class Node:
 
     # set Props of P & T
     def set_tp(self, temperature, presspsure):
-        self.p = presspsure
-        self.t = temperature
+        self.t, self.p = temperature, presspsure
 
     # print all of Props of the node
     def __str__(self):
