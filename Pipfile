@@ -1,11 +1,12 @@
 [[source]]
 name = "pypi"
 url = "https://pypi.org/simple"
-verify_ssl = true
+verify_ssl = false
 
 [dev-packages]
 spyder-kernels = "==1.10.0"
 pyinstaller = "==4.1"
+pytest = "==6.2.4"
 
 [packages]
 pyvisa = "1.11.3"
