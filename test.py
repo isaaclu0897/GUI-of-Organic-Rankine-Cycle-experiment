@@ -8,4 +8,6 @@ Created on Thu Jul 29 23:42:07 2021
 
 import os
 
-os.system('pipenv run python -m unittest discover -v -s tests')
+# os.system('pipenv run python -m unittest discover -v -s tests')
+
+os.system('pipenv run pytest -v -rP')
