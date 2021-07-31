@@ -6,11 +6,7 @@ Created on Thu Jul 29 23:26:54 2021
 @author: wei
 """
 
-# import unittest
-# from unittest import TestCase
-from numpy.testing import assert_almost_equal
-# import unittest
-# assertions = unittest.TestCase('__init__')
+from numpy import testing
 from thermo.node import Node
 import pytest
 
@@ -24,7 +20,9 @@ http://www.coolprop.org/fluid_properties/IF97.html
 
 data = [
     (dict(fluid="IF97::Water", t=25, p=1.01325),  # 1.atm = 1.01325 bar, 25 c
-     dict(h=104.9292946426, s=0.3672310160))
+     dict(d=997.0480319717, v=0.0010029607, h=104.9292946426, s=0.3672310160, q="subcool")),
+    (dict(fluid="IF97::Water", t=120, p=1.01325),  # 1.atm = 1.01325 bar, 120 c
+     dict(d=0.5651313042, v=0.0010029607, h=2716.4707336499, s=7.4612748541, q="superheat"))
 ]
 
 
@@ -36,7 +34,8 @@ def test_node_pt(n, e):
     node.t = n["t"]
     node.p = n["p"]
     node.pt()
-    assert_almost_equal(node.h, e["h"], 10)
-    assert_almost_equal(node.s, e["s"], 10)
-
-
+    # print(node.tSat, node.pSat)
+    testing.assert_almost_equal(node.d, e["d"], 10)
+    testing.assert_almost_equal(node.h, e["h"], 10)
+    testing.assert_almost_equal(node.s, e["s"], 10)
+    testing.assert_equal(node.q, e["q"])
