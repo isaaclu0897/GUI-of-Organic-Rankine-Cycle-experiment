@@ -17,9 +17,9 @@ from thermo.plot import calc_SaturationofCurve, ProcessPlot
 
 from pathlib import Path
 from datetime import datetime as dt
-import config as cfg
+import db.config as cfg
 import dev.agilent_load as agilent
-from realtime_data import data
+from db.realtime_data import data
 from csv import writer
 from shutil import copyfile
 from threading import Thread

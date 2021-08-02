@@ -7,7 +7,7 @@ Created on Sun Nov 29 01:11:35 2020
 """
 
 from thermo.node import Node
-from config import config
+from db.config import config
 
 data = {}
 
