@@ -244,9 +244,9 @@ class Node:
 
     def __repr__(self):
         node_info = {
-            "fluid": self.fluid,
-            "name": self.name,
-            "nodeID": self.nid,
+            # "fluid": self.fluid,
+            # "name": self.name,
+            # "nodeID": self.nid,
             "pressure": self.p,
             "pressure(Sat)": self.pSat,
             "temperature": self.t,
