@@ -7,9 +7,20 @@ Created on Mon Jul  9 00:24:49 2018
 """
 
 
+def load_db():
+    import db
+    
+    return db
+    
+
 def main():
     '''layout'''
     from tkinter import Tk, Frame, Label
+    import db
+    db.good = 1
+    db.good2 = 2
+    print(db.good)
+    print(db.good2)
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
     window = Tk()
     window.title("ORC Realtime System")
@@ -55,4 +66,9 @@ if __name__ == '__main__':
     
     logger.info('program starting!')
     main()
+    # db = load_db()
+    # print(db.cfg)
+    # db.init()
+    # print(db.cfg)
+    # print(db.config)
     logger.info('program finish.')

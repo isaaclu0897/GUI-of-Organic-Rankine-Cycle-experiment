@@ -10,11 +10,6 @@ from json import load
 from PIL import Image, ImageTk
 
 
-def _resize(value):
-    ''' resize function '''
-    return int(value * config["GUI"]["scaling_factor"])
-
-
 # %%
 
 
@@ -56,6 +51,11 @@ def _make_LABEL_config():
         LABEL_config[f"{name}"] = value["GUI"]
 
     return LABEL_config
+
+
+def _resize(value):
+    ''' resize function '''
+    return int(value * config["GUI"]["scaling_factor"])
 
 
 def _resize_LABEL_config():

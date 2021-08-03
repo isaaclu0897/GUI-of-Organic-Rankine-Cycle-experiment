@@ -17,13 +17,15 @@ from thermo.plot import calc_SaturationofCurve, ProcessPlot
 
 from pathlib import Path
 from datetime import datetime as dt
-import db.config as cfg
+import db._config as cfg
 import dev.agilent_load as agilent
-from db.realtime_data import data
+from db._realtime_data import data
 from csv import writer
 from shutil import copyfile
 from threading import Thread
-
+import db
+print(db.good)
+print(db.good2)
 
 def thread_func(func, *args):
     # print("thread")
