@@ -10,7 +10,7 @@ from random import randint
 import pyvisa as visa  # you need agilent io lib
 # import config as cfg
 from db._config import SENSOR, SENSOR_SETTING, v34972A
-from db._realtime import data
+from db._realtime import shell
 
 
 class V34972A:
@@ -37,7 +37,7 @@ class V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}"].t = float(t)
+                shell[f"{name}"].t = float(t)
             elif "P" == sensor_type:
                 if "setting" in items:
                     p_range = items["setting"][0]
@@ -52,7 +52,7 @@ class V34972A:
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
                 self.device.write(query)
                 p = self.device.query(':READ?')
-                data[f"{name}"].p = float(p)
+                shell[f"{name}"].p = float(p)
             elif sensor_type in ["Ti", "To"]:
                 if "setting" in items:
                     t_probe = items["setting"][0]
@@ -60,7 +60,7 @@ class V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}_{sensor_type}"] = float(t)
+                shell[f"{name}_{sensor_type}"] = float(t)
             else:
                 print(f"sensor {name} config error")
 
@@ -143,7 +143,7 @@ class test_V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}"].t = float(t)
+                shell[f"{name}"].t = float(t)
             elif sensor_type in ["Ti", "To"]:
                 
                 if "setting" in items:
@@ -152,7 +152,7 @@ class test_V34972A:
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
                 t = self.device.query(query)
-                data[f"{name}_{sensor_type}"] = float(t)
+                shell[f"{name}_{sensor_type}"] = float(t)
             elif "P" == sensor_type:
                 if "setting" in items:
                     p_range = items["setting"][0]
@@ -168,11 +168,11 @@ class test_V34972A:
                 self.device.write(query)
                 p = self.device.query(query)
                 # p = self.device.query(':READ?')
-                data[f"{name}"].p = float(p)
+                shell[f"{name}"].p = float(p)
             else:
                 v = self.device.query(f':READ?,({ch})')
-                data[f"{name}"] = float(v)
-        return data
+                shell[f"{name}"] = float(v)
+        return shell
 
 
 if __name__ == "__main__":
@@ -196,4 +196,4 @@ if __name__ == "__main__":
 
     device = test_V34972A()
     device.scan()
-    print(data)
+    print(shell)

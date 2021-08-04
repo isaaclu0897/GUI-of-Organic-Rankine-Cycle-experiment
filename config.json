@@ -301,7 +301,7 @@
         "column": {
             "count": "count",
             "time": "time",
-            "pump-Delta(P)": "data['evaporator-in'].p-data['pump-in'].p",
+            "pump-Delta(P)": "shell['evaporator-in'].p-shell['pump-in'].p",
             "pump-in(P)": "pump-in.p",
             "pump-in(T)": "pump-in.t",
             "density": "pump-in.d",
@@ -311,7 +311,7 @@
             "evaporator-in(T)": "evaporator-in.t",
             "Sat1": "evaporator-in.tSat",
             "h2": "evaporator-in.h",
-            "expander-Delta(P)": "data['evaporator-out'].p-data['condenser-in'].p",
+            "expander-Delta(P)": "shell['evaporator-out'].p-shell['condenser-in'].p",
             "evaporator-out(P)": "evaporator-out.p",
             "evaporator-out(T)": "evaporator-out.t",
             "Sat2": "evaporator-out.tSat",

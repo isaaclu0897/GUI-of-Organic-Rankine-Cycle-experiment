@@ -16,4 +16,4 @@ from db._config import SENSOR_SETTING
 from db._config import FM
 from db._config import FILE
 
-from db._realtime import data
+from db._realtime import shell

@@ -19,11 +19,11 @@ from pathlib import Path
 from datetime import datetime as dt
 import db._config as cfg
 import dev.agilent_load as agilent
-from db._realtime import data
+from db._realtime import shell
 from csv import writer
 from shutil import copyfile
 from threading import Thread
-import db
+# import db
 
 def thread_func(func, *args):
     # print("thread")
@@ -108,10 +108,10 @@ class P_I_Diagram(Frame):
 
     def update(self):
         # print("update P&ID")
-        for name, value in data.items():
+        for name, value in shell.items():
             if isinstance(value, Node):
-                self.update_value(f"{name}_T", round(data[name].t, 1))
-                self.update_value(f"{name}_P", round(data[name].p, 1))
+                self.update_value(f"{name}_T", round(shell[name].t, 1))
+                self.update_value(f"{name}_P", round(shell[name].p, 1))
             elif isinstance(value, (int, float)):
                 self.update_value(name, round(value, 1))
             else:
@@ -194,25 +194,25 @@ class ORC_Figure(Frame):
         T = []
         if line_type == "o":
             for point_name in points:
-                s.append(data[f"{point_name}"].s)
-                T.append(data[f"{point_name}"].t)
+                s.append(shell[f"{point_name}"].s)
+                T.append(shell[f"{point_name}"].t)
         elif line_type == "s":
             process = ProcessPlot(
-                data[f"{points[0]}"], data[f"{points[1]}"], 'isos')
+                shell[f"{points[0]}"], shell[f"{points[1]}"], 'isos')
             process.test_iso_line()
             process.calc_iso()
             s = process.Isa
             T = process.Ita
         elif line_type == "p":
             process = ProcessPlot(
-                data[f"{points[0]}"], data[f"{points[1]}"], 'isop')
+                shell[f"{points[0]}"], shell[f"{points[1]}"], 'isop')
             process.test_iso_line()
             process.calc_iso()
             s = process.Isa
             T = process.Ita
         elif line_type == "l":
             s_list = []
-            for node in data.values():
+            for node in shell.values():
                 if isinstance(node, Node):
                     s_list.append(node.s)
             if line_name == "heat":
@@ -221,7 +221,7 @@ class ORC_Figure(Frame):
                 s.append([min(s_list), max(s_list)])
             else:
                 print("f{line_name} config warning")
-            T.append([data[f"{points[0]}_Ti"], data[f"{points[1]}_To"]])
+            T.append([shell[f"{points[0]}_Ti"], shell[f"{points[1]}_To"]])
         self.lines[f"{line_name}"].set_data(s, T)
         # print(self.lines[f"{line_name}"])
 
@@ -299,24 +299,24 @@ class Scan_button(Frame):
 
     def calc_nodes(self):
         ''' calc nodes '''
-        for name, value in data.items():
+        for name, value in shell.items():
             if isinstance(value, Node):
-                data[name].pt()
+                shell[name].pt()
         ''' calc WORK '''
         for name, node in cfg.FM.items():
-            item0 = data[f"{node[0]}"]
-            item1 = data[f"{node[1]}"]
-            mDot = data["mDot"]
-            data[f"{name}"] = (item1.h - item0.h) * mDot
+            item0 = shell[f"{node[0]}"]
+            item1 = shell[f"{node[1]}"]
+            mDot = shell["mDot"]
+            shell[f"{name}"] = (item1.h - item0.h) * mDot
 
         ''' calc efficiency '''
-        data["Eff"] = ((data["Wout"] - data["Win"]) / data["Qin"]) * 100
+        shell["Eff"] = ((shell["Wout"] - shell["Win"]) / shell["Qin"]) * 100
 
         ''' other '''
-        data["count"] = data["count"] + 1
-        data["time"] = dt.now().time()
-        data["ts"] = dt.now().timestamp()
-        print(f"{data['count']}----" * 5)
+        shell["count"] = shell["count"] + 1
+        shell["time"] = dt.now().time()
+        shell["ts"] = dt.now().timestamp()
+        print(f"{shell['count']}----" * 5)
 
 
 class mDot_simulation(Frame):
@@ -325,7 +325,7 @@ class mDot_simulation(Frame):
 
         def confirm():
             mDot = float(mDot_entry.get())
-            data["mDot"] = mDot
+            shell["mDot"] = mDot
 
         button = Button(
             master,
@@ -395,18 +395,18 @@ class csv_file:
                 return num
         row = []
         for value in cfg.FILE["data"]:
-            if "data" in value:
+            if "shell" in value:
                 v = myround(eval(value))
 
             elif "." in value:
                 name, attr = value.split(".")
-                v = myround(data[f"{name}"][f"{attr}"])
+                v = myround(shell[f"{name}"][f"{attr}"])
             else:
                 try:
-                    if isinstance(data[f"{value}"], float):
-                        v = myround(data[f"{value}"])  # timestamp
+                    if isinstance(shell[f"{value}"], float):
+                        v = myround(shell[f"{value}"])  # timestamp
                     else:
-                        v = data[f"{value}"]  # f"{value}" in data count time
+                        v = shell[f"{value}"]  # f"{value}" in data count time
                 except:
                     v = f"{value}"
                     # print(f"{value} can not convert")
