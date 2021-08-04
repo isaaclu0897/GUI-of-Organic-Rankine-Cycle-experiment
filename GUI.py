@@ -6,7 +6,6 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-    
 
 def main():
     '''layout'''
@@ -53,17 +52,17 @@ def main():
 
 if __name__ == '__main__':
     from log import logger
-    
+
     logger.info('program starting!')
     logger.info('load database')
     logger.info('create realtime shell')
     import db
 
     logger.info('create layout')
-    logger.info('add XXX in layout')    
+
     '''layout'''
     from tkinter import Tk, Frame, Label
-    
+
     window = Tk()
     window.title("ORC Realtime System")
 
@@ -87,9 +86,11 @@ if __name__ == '__main__':
     frm_right_bottom = Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
     Label(frm_right_bottom, text='frame right bottom').pack()
-    
-    Label(frm_left, text='developer:HW Lu, LAB:429, professor:TC Hung, agency:Taipei Tech University').pack(side='bottom')
 
+    Label(frm_left, text='developer:HW Lu, LAB:429, professor:TC Hung, agency:Taipei Tech University').pack(
+        side='bottom')
+
+    logger.info('add XXX in layout')
     ''' componement'''
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
     PID = P_I_Diagram(frm_left)
@@ -101,5 +102,5 @@ if __name__ == '__main__':
     window.bind("<Escape>", lambda x: window.destroy())
 
     window.mainloop()
-    
+
     logger.info('program finish.')
