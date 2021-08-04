@@ -42,8 +42,7 @@ class P_I_Diagram(Frame):
         self.canvasID = {}
 
         ''' load img and create canvas '''
-        print(cfg.GUI)
-        self.photo = cfg.import_photo(cfg.GUI["image"])
+        self.photo = cfg.import_photo()
         self.canvas = Canvas(master,
                              width=self.photo.width(),
                              height=self.photo.height(),

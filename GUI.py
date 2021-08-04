@@ -56,6 +56,9 @@ if __name__ == '__main__':
     
     logger.info('program starting!')
     logger.info('load database')
+    logger.info('create realtime shell')
+    logger.info('create layout')
+    logger.info('add XXX in layout')
     import db
     
     '''layout'''

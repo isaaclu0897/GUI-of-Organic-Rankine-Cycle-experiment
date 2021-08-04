@@ -79,23 +79,25 @@ def _resize_GUI_fontsize():
 
 
 def _resize_GUI_photo():
-
+    from PIL import Image
     GUI["image"] = GUI["image"].resize(
         (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
 
 
-GUI = _make_GUI_config()
-_resize_GUI_fontsize()
 
 
-def import_photo(img):
+
+def import_photo():
     from PIL import ImageTk
     ''' import photo
     load the .gif image file, put gif file here
     test gif, png and jpg, jpg can't use
     '''
-    print(img)
-    return ImageTk.PhotoImage(GUI["image"])
+    return ImageTk.PhotoImage(GUI["image"]) 
+
+GUI = _make_GUI_config()
+_resize_GUI_fontsize()
+_resize_GUI_photo()
 
 # %%
 
