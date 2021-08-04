@@ -10,7 +10,7 @@ from random import randint
 import pyvisa as visa  # you need agilent io lib
 # import config as cfg
 from db._config import SENSOR, SENSOR_SETTING, v34972A
-from db._realtime_data import data
+from db._realtime import data
 
 
 class V34972A:

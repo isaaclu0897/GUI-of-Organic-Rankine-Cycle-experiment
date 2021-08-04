@@ -102,12 +102,4 @@ if __name__ == '__main__':
 
     window.mainloop()
     
-    # main()
-    # db = load_db()
-    # db.init()
-    # main()
-    # print(db.cfg)
-    # db.init()
-    # print(db.cfg)
-    # print(db.config)
     logger.info('program finish.')
