@@ -6,14 +6,14 @@ Created on Tue Aug  3 01:21:44 2021
 @author: wei
 """
 
-print("db __init__.py")
-import db._config
+# from db.config import config
+from db._config import LABEL
+from db._config import GUI
+from db._config import LINE
+from db._config import v34972A
+from db._config import SENSOR
+from db._config import SENSOR_SETTING
+from db._config import FM
+from db._config import FILE
 
-cfg = {}
-rt = {}
-
-def init():
-    cfg["ccc"] = 1
-    cfg = db.config._import_config()
-
-print("db __init__.py")
+from db._realtime_data import data

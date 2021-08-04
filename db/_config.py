@@ -6,14 +6,12 @@ Created on Fri Nov 27 23:19:47 2020
 @author: wei
 """
 
-from json import load
-from PIL import Image, ImageTk
-
 
 # %%
 
 
 def _import_config():
+    from json import load
     ''' import config '''
     with open('config.json', 'r') as f:
         config = load(f)
@@ -71,6 +69,8 @@ _resize_LABEL_config()
 
 def _make_GUI_config():
     ''' import GUI config '''
+    from PIL import Image
+    config["GUI"]["image"] = Image.open(config["GUI"]["path"])
     return config["GUI"]
 
 
@@ -78,20 +78,23 @@ def _resize_GUI_fontsize():
     GUI["fontsize"] = _resize(GUI["fontsize"])
 
 
+def _resize_GUI_photo():
+
+    GUI["image"] = GUI["image"].resize(
+        (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
+
+
 GUI = _make_GUI_config()
 _resize_GUI_fontsize()
 
 
-GUI["image"] = Image.open(GUI["path"])
-GUI["image"] = GUI["image"].resize(
-    (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
-
-
-def import_photo():
+def import_photo(img):
+    from PIL import ImageTk
     ''' import photo
     load the .gif image file, put gif file here
     test gif, png and jpg, jpg can't use
     '''
+    print(img)
     return ImageTk.PhotoImage(GUI["image"])
 
 # %%

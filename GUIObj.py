@@ -24,8 +24,6 @@ from csv import writer
 from shutil import copyfile
 from threading import Thread
 import db
-print(db.good)
-print(db.good2)
 
 def thread_func(func, *args):
     # print("thread")
@@ -44,7 +42,8 @@ class P_I_Diagram(Frame):
         self.canvasID = {}
 
         ''' load img and create canvas '''
-        self.photo = cfg.import_photo()
+        print(cfg.GUI)
+        self.photo = cfg.import_photo(cfg.GUI["image"])
         self.canvas = Canvas(master,
                              width=self.photo.width(),
                              height=self.photo.height(),
