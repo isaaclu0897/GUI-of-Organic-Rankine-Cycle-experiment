@@ -57,13 +57,13 @@ if __name__ == '__main__':
     logger.info('program starting!')
     logger.info('load database')
     logger.info('create realtime shell')
-    logger.info('create layout')
-    logger.info('add XXX in layout')
     import db
-    
+
+    logger.info('create layout')
+    logger.info('add XXX in layout')    
     '''layout'''
     from tkinter import Tk, Frame, Label
-    from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
+    
     window = Tk()
     window.title("ORC Realtime System")
 
@@ -87,16 +87,16 @@ if __name__ == '__main__':
     frm_right_bottom = Frame(frm_right)
     frm_right_bottom.pack(side='bottom')
     Label(frm_right_bottom, text='frame right bottom').pack()
+    
+    Label(frm_left, text='developer:HW Lu, LAB:429, professor:TC Hung, agency:Taipei Tech University').pack(side='bottom')
 
     ''' componement'''
-
+    from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
     PID = P_I_Diagram(frm_left)
-    # Label(frm_left, text="mDot").pack(side='right')
-    Label(frm_left, text='developer:HW Lu, LAB:429, professor:TC Hung, agency:Taipei Tech University').pack(side='left')
-    mDot_simulation(frm_left)
-
     Ts = ORC_Figure(frm_right_top)
+    mDot_simulation(frm_left)
     Scan_button(frm_right_bottom, PID.update, Ts.update)
+    # Scan_button(frm_right_bottom)
 
     window.bind("<Escape>", lambda x: window.destroy())
 

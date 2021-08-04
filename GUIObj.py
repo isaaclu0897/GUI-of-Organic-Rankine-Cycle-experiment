@@ -426,8 +426,3 @@ class csv_file:
     def __del__(self):
         self.transfer_file(close=True)
 
-
-if __name__ == "__main__":
-    from GUI import main
-
-    main()
