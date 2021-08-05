@@ -18,10 +18,14 @@ class App(Frame):
 
     def initUI(self):
         self.master.title("ORC Realtime System")
-        self.frame = Frame(self).pack()
+        self.frame_left = Frame(self.master)
+        self.frame_left.pack(side='left')
+        
+        self.frame_right = Frame(self.master)
+        self.frame_right.pack(side='right')
 
     def add_label(self):
-        Label(self.frame, text='frame').pack()
+        Label(self, text='frame').pack()
 
 
 if __name__ == '__main__':
@@ -69,9 +73,9 @@ if __name__ == '__main__':
 
     # logger.info('add XXX in layout')
     # ''' componement'''
-    # from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
-    # PID = P_I_Diagram(frm_left)
-    # Ts = ORC_Figure(frm_right_top)
+    from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
+    PID = P_I_Diagram(app.frame_left)
+    Ts = ORC_Figure(app.frame_right)
     # mDot_simulation(frm_left)
     # Scan_button(frm_right_bottom, PID.update, Ts.update)
     # # Scan_button(frm_right_bottom)
