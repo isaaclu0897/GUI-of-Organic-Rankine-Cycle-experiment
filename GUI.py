@@ -48,15 +48,14 @@ class App(Frame):
 
 if __name__ == '__main__':
 
-    # if (window.winfo_exists()): window.destroy()
-    # from log import logger
+    from log import logger
 
-    # logger.info('program starting!')
-    # logger.info('load database')
-    # logger.info('create realtime shell')
-    # import db
+    logger.info('program starting!')
+    logger.info('load database')
+    logger.info('create realtime shell')
+    import db
 
-    # logger.info('create layout')
+    logger.info('create layout')
 
     # '''layout'''
     from tkinter import Tk, Frame, Label
@@ -66,38 +65,16 @@ if __name__ == '__main__':
     app = App()
     app.add_label()
 
-    # ''' left and right frame '''
-    # frm_right = Frame(frame)
-    # frm_right.pack(side='right')
-    # Label(frm_right, text='frame right').pack()
-
-    # frm_left = Frame(frame)
-    # frm_left.pack(side='left')
-    # Label(frm_left, text='frame left').pack()
-
-    # ''' top and bottom of right frame '''
-    # frm_right_top = Frame(frm_right)
-    # frm_right_top.pack(side='top')
-    # Label(frm_right_top, text='frame right top').pack()
-
-    # frm_right_bottom = Frame(frm_right)
-    # frm_right_bottom.pack(side='bottom')
-    # Label(frm_right_bottom, text='frame right bottom').pack()
-
-    # Label(frm_left, text='developer:HW Lu, LAB:429, professor:TC Hung, agency:Taipei Tech University').pack(
-    #     side='bottom')
-
-    # logger.info('add XXX in layout')
+    logger.info('add XXX in layout')
     # ''' componement'''
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
     PID = P_I_Diagram(app.frame_left)
     mDot_simulation(app.frame_left)
     Ts = ORC_Figure(app.frame_ts)
     Scan_button(app.frame_right, PID.update, Ts.update)
-    # # Scan_button(frm_right_bottom)
 
     window.bind("<Escape>", lambda x: window.destroy())
 
     window.mainloop()
 
-    # logger.info('program finish.')
+    logger.info('program finish.')
