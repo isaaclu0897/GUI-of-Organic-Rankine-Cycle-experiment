@@ -18,14 +18,32 @@ class App(Frame):
 
     def initUI(self):
         self.master.title("ORC Realtime System")
-        self.frame_left = Frame(self.master)
-        self.frame_left.pack(side='left')
         
-        self.frame_right = Frame(self.master)
-        self.frame_right.pack(side='right')
+        main = Frame(self.master)
+        main.pack()
+        footer = Frame(self.master)
+        footer.pack()
+        
+        Label(footer, text='developer:HW Lu, laboratory:429, professor:TC Hung, agency:National Taipei Technology University').pack()
+        
+        self.frame_left = Frame(main)
+        self.frame_left.pack(side="left")
+        
+        frame_right = Frame(main)
+        frame_right.pack(side="right")
+        
+        self.frame_ts = Frame(frame_right)
+        self.frame_ts.pack(side="top")
+        
+        self.frame_right = Frame(frame_right)
+        self.frame_right.pack(side="bottom")
+        
 
     def add_label(self):
-        Label(self, text='frame').pack()
+        Label(self.frame_left, text='frame_left').pack()
+        Label(self.frame_ts, text='frame_ts').pack()
+        Label(self.frame_right, text='frame_right').pack()
+        
 
 
 if __name__ == '__main__':
@@ -47,8 +65,6 @@ if __name__ == '__main__':
 
     app = App()
     app.add_label()
-    # frame = Frame(app).pack()
-    # Label(frame, text='frame').pack()
 
     # ''' left and right frame '''
     # frm_right = Frame(frame)
@@ -75,9 +91,9 @@ if __name__ == '__main__':
     # ''' componement'''
     from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
     PID = P_I_Diagram(app.frame_left)
-    Ts = ORC_Figure(app.frame_right)
-    # mDot_simulation(frm_left)
-    # Scan_button(frm_right_bottom, PID.update, Ts.update)
+    mDot_simulation(app.frame_left)
+    Ts = ORC_Figure(app.frame_ts)
+    Scan_button(app.frame_right, PID.update, Ts.update)
     # # Scan_button(frm_right_bottom)
 
     window.bind("<Escape>", lambda x: window.destroy())
