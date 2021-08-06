@@ -9,7 +9,7 @@ from json import dumps
 from thermo.unit import T, P
 from log import logger
 
-logger.info('node!')
+
 
 # I don't want to use refprop.
 # def fixpath():
@@ -29,6 +29,7 @@ class Node:
     '''
 
     def __init__(self, name="", nid="", fluid="R245FA"):
+        logger.info(f'create node {name}')
         self.fluid = fluid
         self.name = name
         self.nid = nid

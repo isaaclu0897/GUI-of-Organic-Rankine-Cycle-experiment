@@ -19,7 +19,7 @@ LOGGING_CONFIG = {
             'format': '%(asctime)s | %(module)s | %(filename)s %(lineno)s | %(levelname)-8s | %(message)s',
         },
         "simple": {
-            "format": "%(levelname)-8s | %(message)s",
+            "format": "%(levelname)-8s | %(module)s | %(filename)s %(lineno)s | %(message)s",
         },
     },
     "handlers": {
@@ -30,7 +30,7 @@ LOGGING_CONFIG = {
         },
         "console_plain": {
             "class": "logging.StreamHandler",
-            "level": "INFO",
+            "level": "DEBUG",
             "formatter": "detail"
         },
         "file": {
@@ -51,7 +51,8 @@ LOGGING_CONFIG = {
     },
     "loggers": {
         "console_logger": {
-            "handlers": ["console", "console_plain", "time-rotating-file"],
+            # "handlers": ["console", "console_plain", "time-rotating-file"],
+            "handlers": ["console", "time-rotating-file"],
             "level": "DEBUG",
             "propagate": True,
         },
