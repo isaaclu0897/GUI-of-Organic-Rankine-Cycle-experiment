@@ -16,7 +16,7 @@ LOGGING_CONFIG = {
     "version": 1,
     "formatters": {
         "detail": {
-            'format': '%(asctime)s | %(name)s | %(module)s | %(filename)s %(lineno)s | %(levelname)-8s | %(message)s',
+            'format': '%(asctime)s | %(module)s | %(filename)s %(lineno)s | %(levelname)-8s | %(message)s',
         },
         "simple": {
             "format": "%(levelname)-8s | %(message)s",
@@ -43,16 +43,17 @@ LOGGING_CONFIG = {
         },
         "time-rotating-file": {  # the name of handler
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': f'{log_path}/app2.log',  # the path of the log file
+            "level": "DEBUG",
+            'filename': f'{log_path}/app.log',  # the path of the log file
             'when': 'midnight',  # time interval
             'formatter': 'detail',  # use the above "simple" formatter
         },
     },
     "loggers": {
         "console_logger": {
-            "handlers": ["console", "console_plain", "file", "time-rotating-file"],
+            "handlers": ["console", "console_plain", "time-rotating-file"],
             "level": "DEBUG",
-            "propagate": False,
+            "propagate": True,
         },
     },
     # "disable_existing_loggers": False,

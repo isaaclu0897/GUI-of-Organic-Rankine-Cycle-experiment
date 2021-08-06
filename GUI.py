@@ -6,8 +6,9 @@ Created on Mon Jul  9 00:24:49 2018
 @author: wei
 """
 
-# import tkinter as tk
+from log import logger
 from tkinter import Tk, Frame, Label
+from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
 
 
 class App(Frame):
@@ -18,56 +19,46 @@ class App(Frame):
 
     def initUI(self):
         self.master.title("ORC Realtime System")
-        
+
         main = Frame(self.master)
         main.pack()
         footer = Frame(self.master)
         footer.pack()
-        
+
         Label(footer, text='developer:HW Lu, laboratory:429, professor:TC Hung, agency:National Taipei Technology University').pack()
-        
+
         self.frame_left = Frame(main)
         self.frame_left.pack(side="left")
-        
+
         frame_right = Frame(main)
         frame_right.pack(side="right")
-        
+
         self.frame_ts = Frame(frame_right)
         self.frame_ts.pack(side="top")
-        
+
         self.frame_right = Frame(frame_right)
         self.frame_right.pack(side="bottom")
-        
 
     def add_label(self):
         Label(self.frame_left, text='frame_left').pack()
         Label(self.frame_ts, text='frame_ts').pack()
         Label(self.frame_right, text='frame_right').pack()
-        
 
 
 if __name__ == '__main__':
 
-    from log import logger
-
     logger.info('program starting!')
-    logger.info('load database')
-    logger.info('create realtime shell')
+
     import db
 
-    logger.info('create layout')
-
-    # '''layout'''
-    from tkinter import Tk, Frame, Label
+    logger.info('init UI')
 
     window = Tk()
-
     app = App()
-    app.add_label()
+    # app.add_label()
 
-    logger.info('add XXX in layout')
-    # ''' componement'''
-    from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
+    logger.info('add componement in layout')
+
     PID = P_I_Diagram(app.frame_left)
     mDot_simulation(app.frame_left)
     Ts = ORC_Figure(app.frame_ts)
