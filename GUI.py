@@ -8,8 +8,8 @@ Created on Mon Jul  9 00:24:49 2018
 
 from log import logger
 from tkinter import Tk, Frame, Label
-from GUIObj import ORC_Figure, P_I_Diagram, Scan_button, mDot_simulation
-
+from GUIObj import ORC_Figure, Scan_button, mDot_simulation
+import widget
 
 class App(Frame):
     def __init__(self, master=None):
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     logger.info('program starting!')
 
-    import db
+    # import db
 
     logger.info('init UI')
 
@@ -59,10 +59,10 @@ if __name__ == '__main__':
 
     logger.info('add componement in layout')
 
-    PID = P_I_Diagram(app.frame_left)
+    PnID = widget.PnID(app.frame_left)
     mDot_simulation(app.frame_left)
     Ts = ORC_Figure(app.frame_ts)
-    Scan_button(app.frame_right, PID.update, Ts.update)
+    Scan_button(app.frame_right, PnID.update, Ts.update)
 
     window.bind("<Escape>", lambda x: window.destroy())
 
