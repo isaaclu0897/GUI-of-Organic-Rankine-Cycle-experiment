@@ -5,13 +5,14 @@ Created on Fri Nov 27 23:19:47 2020
 
 @author: wei
 """
-
+from log import logger
 
 # %%
 
 
 def _import_config():
     from json import load
+    logger.info('load database')
     ''' import config '''
     with open('config.json', 'r') as f:
         config = load(f)
@@ -84,16 +85,14 @@ def _resize_GUI_photo():
         (_resize(GUI["image"].width), _resize(GUI["image"].height)), Image.ANTIALIAS)
 
 
-
-
-
 def import_photo():
     from PIL import ImageTk
     ''' import photo
     load the .gif image file, put gif file here
     test gif, png and jpg, jpg can't use
     '''
-    return ImageTk.PhotoImage(GUI["image"]) 
+    return ImageTk.PhotoImage(GUI["image"])
+
 
 GUI = _make_GUI_config()
 _resize_GUI_fontsize()
