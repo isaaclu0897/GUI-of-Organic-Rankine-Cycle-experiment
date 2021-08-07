@@ -302,7 +302,7 @@
     "fontsize": 18
   },
   "device": {
-    "mode": "manual",
+    "mode": "test",
     "address": "USB0::0x0957::0x2007::MY49017447::0::INSTR"
   },
   "experiment-file": {

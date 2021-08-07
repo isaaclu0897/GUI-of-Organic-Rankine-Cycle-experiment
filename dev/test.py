@@ -7,64 +7,8 @@ Created on Sun Jul  8 19:31:54 2018
 """
 
 from random import randint
-import pyvisa as visa  # you need agilent io lib
-# import config as cfg
 from db._config import SENSOR, SENSOR_SETTING, device
 from db._realtime import shell
-
-
-class V34972A:
-    def __init__(self):
-        rm = visa.ResourceManager()
-        self.device = rm.open_resource(device["address"])
-
-    def scan(self):
-        for ch, items in SENSOR.items():
-            name = items["name"]
-            sensor_type = items["type"]
-
-            t_probe = SENSOR_SETTING["probe_type"]
-            t_type = SENSOR_SETTING["type"]
-            p_range = SENSOR_SETTING["range"]
-            p_resolution = SENSOR_SETTING["resolution"]
-            p_gain = SENSOR_SETTING["gain"]
-            p_offset = SENSOR_SETTING["offset"]
-
-            if "T" == sensor_type:
-                if "setting" in items:
-                    t_probe = items["setting"][0]
-                    t_type = items["setting"][1]
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    t_probe, t_type, ch)
-                t = self.device.query(query)
-                shell[f"{name}"].t = float(t)
-            elif "P" == sensor_type:
-                if "setting" in items:
-                    p_range = items["setting"][0]
-                    p_resolution = items["setting"][1]
-                    p_gain = items["setting"][2]
-                    p_offset = items["setting"][3]
-                query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (
-                    p_range, p_resolution, ch)
-                self.device.write(query)
-                query = ':CALCulate:SCALe:GAIN %G,(%s)' % (p_gain, ch)
-                self.device.write(query)
-                query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
-                self.device.write(query)
-                p = self.device.query(':READ?')
-                shell[f"{name}"].p = float(p)
-            elif sensor_type in ["Ti", "To"]:
-                if "setting" in items:
-                    t_probe = items["setting"][0]
-                    t_type = items["setting"][1]
-                query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
-                    t_probe, t_type, ch)
-                t = self.device.query(query)
-                shell[f"{name}_{sensor_type}"] = float(t)
-            else:
-                print(f"sensor {name} config error")
-
-    ''' maybe need close? __del__'''
 
 
 class test_device:
@@ -118,7 +62,7 @@ class test_device:
         pass
 
 
-class test_V34972A:
+class TEST:
 
     def __init__(self):
         self.device = test_device()
@@ -145,7 +89,7 @@ class test_V34972A:
                 t = self.device.query(query)
                 shell[f"{name}"].t = float(t)
             elif sensor_type in ["Ti", "To"]:
-                
+
                 if "setting" in items:
                     t_probe = items["setting"][0]
                     t_type = items["setting"][1]
@@ -176,23 +120,6 @@ class test_V34972A:
 
 
 if __name__ == "__main__":
-    # rm = visa.ResourceManager()
-    # usb_device = rm.open_resource('USB0::0x0957::0x2007::MY49017447::0::INSTR')
-    # temps = usb_device.query(
-    #     ':MEASure:TEMPerature? %s,%s,(%s)' % ('TCouple', 'T', "@101:110"))
-    # usb_device.write(':CONFigure:VOLTage:DC %G,%G,(%s)' %
-    #                  (10, 5.5, "@201:206"))
-    # usb_device.write(':CALCulate:SCALe:GAIN %G,(%s)' % (2.1, "@201:206"))
-    # usb_device.write(':CALCulate:SCALe:STATe %d,(%s)' % (1, "@201:206"))
-    # pressS = usb_device.query(':READ?')
-    # rm.close()
-
-    # print(temps)
-    # print(pressS)
-
-    # device = V34972A()
-    # device.scan()
-    # print(data)
 
     device = test_V34972A()
     device.scan()

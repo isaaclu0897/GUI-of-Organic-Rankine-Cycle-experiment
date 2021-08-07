@@ -18,7 +18,7 @@ from thermo.plot import calc_SaturationofCurve, ProcessPlot
 from pathlib import Path
 from datetime import datetime as dt
 import db._config as cfg
-import dev.agilent_load as agilent
+import dev
 from db._realtime import shell
 from csv import writer
 from shutil import copyfile
@@ -274,10 +274,10 @@ class Scan_button(Frame):
 
         ''' init v34970A '''
         print(db.device)
-        if db.device["mode"] == "manual":
-            self.dev = agilent.test_V34972A()
+        if db.device["mode"] == "test":
+            self.dev = dev.TEST()
         elif db.device["mode"] == "V34972A":
-            self.dev = agilent.V34972A()
+            self.dev = dev.V34972A()
         else:
             raise "ConfigError(device['mode']), please use manual/V34972A/DAQ970A"
         ''' csv file '''
