@@ -123,22 +123,7 @@ class Scan_button(Frame):
         print(f"{shell['count']}----" * 5)
 
 
-class mDot_simulation(Frame):
-    def __init__(self, master=None, *callbacks):
-        Frame.__init__(self, master=None)
 
-        def confirm():
-            mDot = float(mDot_entry.get())
-            shell["mDot"] = mDot
-
-        button = Button(
-            master,
-            text='confirm',
-            command=confirm)
-        button.pack(side="right")
-
-        mDot_entry = Entry(master, width=10)
-        mDot_entry.pack(side="right")
 
 
 class csv_file:
