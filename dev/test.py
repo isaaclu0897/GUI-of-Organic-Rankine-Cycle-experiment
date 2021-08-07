@@ -121,6 +121,6 @@ class TEST:
 
 if __name__ == "__main__":
 
-    device = test_V34972A()
+    device = TEST()
     device.scan()
     print(shell)

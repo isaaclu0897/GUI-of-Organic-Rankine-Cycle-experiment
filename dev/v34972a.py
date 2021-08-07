@@ -6,14 +6,14 @@ Created on Sun Jul  8 19:31:54 2018
 @author: wei
 """
 
-import pyvisa as visa  # you need agilent io lib
+import pyvisa  # you need agilent io lib
 from db._config import SENSOR, SENSOR_SETTING, device
 from db._realtime import shell
 
 
 class V34972A:
     def __init__(self):
-        rm = visa.ResourceManager()
+        rm = pyvisa.ResourceManager()
         self.device = rm.open_resource(device["address"])
 
     def scan(self):
