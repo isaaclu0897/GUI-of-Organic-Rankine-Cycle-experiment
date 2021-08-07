@@ -8,7 +8,7 @@ Created on Mon Jul  9 00:24:49 2018
 
 from log import logger
 from tkinter import Tk, Frame, Label
-from GUIObj import ORC_Figure, Scan_button, mDot_simulation
+from GUIObj import Scan_button, mDot_simulation
 import widget
 
 class App(Frame):
@@ -61,8 +61,8 @@ if __name__ == '__main__':
 
     PnID = widget.PnID(app.frame_left)
     mDot_simulation(app.frame_left)
-    Ts = ORC_Figure(app.frame_ts)
-    Scan_button(app.frame_right, PnID.update, Ts.update)
+    TnSD = widget.TnSD(app.frame_ts)
+    Scan_button(app.frame_right, PnID.update, TnSD.update)
 
     window.bind("<Escape>", lambda x: window.destroy())
 
