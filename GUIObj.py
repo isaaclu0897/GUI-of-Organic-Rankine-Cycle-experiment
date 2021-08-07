@@ -23,7 +23,7 @@ from db._realtime import shell
 from csv import writer
 from shutil import copyfile
 from threading import Thread
-# import db
+import db
 
 def thread_func(func, *args):
     # print("thread")
@@ -107,7 +107,7 @@ class P_I_Diagram(Frame):
         self.canvas.itemconfigure(itemID, text=text)
 
     def update(self):
-        # print("update P&ID")
+        print("update P&ID")
         for name, value in shell.items():
             if isinstance(value, Node):
                 self.update_value(f"{name}_T", round(shell[name].t, 1))
@@ -226,7 +226,7 @@ class ORC_Figure(Frame):
         # print(self.lines[f"{line_name}"])
 
     def update(self):
-        # print("update T-s Diagram")
+        print("update T-s Diagram")
         for name, attr in cfg.LINE.items():
             self.update_line(name, attr["type"], attr["point"])
         self.canvas.draw_idle()
@@ -273,12 +273,18 @@ class Scan_button(Frame):
         button.pack()
 
         ''' init v34970A '''
-        self.dev = agilent.test_V34972A()
-        # self.dev = agilents.V34972A()
+        print(db.device)
+        if db.device["mode"] == "manual":
+            self.dev = agilent.test_V34972A()
+        elif db.device["mode"] == "V34972A":
+            self.dev = agilent.V34972A()
+        else:
+            raise "ConfigError(device['mode']), please use manual/V34972A/DAQ970A"
         ''' csv file '''
         self.file = csv_file()
 
     def call_update_funcs(self):
+        print(self.update_funcs)
         for func in self.update_funcs:
             func()
 
@@ -288,8 +294,11 @@ class Scan_button(Frame):
     def update_diagram(self):
         if self.is_click:
             self.after(500, self.th_update)
+            print(1)
             self.dev.scan()
+            print(2)
             self.calc_nodes()
+            print(3)
             self.file.save_data()
             ''' update functions
             update P&ID

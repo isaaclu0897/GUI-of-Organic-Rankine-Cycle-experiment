@@ -119,11 +119,11 @@ LINE = _make_LINE_config()
 # %%
 
 
-def _import_v34972A():
-    return config["v34972A"]
+def _import_device():
+    return config["device"]
 
 
-v34972A = _import_v34972A()
+device = _import_device()
 
 # %%
 

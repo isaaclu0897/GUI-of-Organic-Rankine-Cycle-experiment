@@ -10,7 +10,7 @@ Created on Tue Aug  3 01:21:44 2021
 from db._config import LABEL
 from db._config import GUI
 from db._config import LINE
-from db._config import v34972A
+from db._config import device
 from db._config import SENSOR
 from db._config import SENSOR_SETTING
 from db._config import FM

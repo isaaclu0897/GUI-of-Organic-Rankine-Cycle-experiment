@@ -9,14 +9,14 @@ Created on Sun Jul  8 19:31:54 2018
 from random import randint
 import pyvisa as visa  # you need agilent io lib
 # import config as cfg
-from db._config import SENSOR, SENSOR_SETTING, v34972A
+from db._config import SENSOR, SENSOR_SETTING, device
 from db._realtime import shell
 
 
 class V34972A:
     def __init__(self):
         rm = visa.ResourceManager()
-        self.device = rm.open_resource(v34972A["USB_address"])
+        self.device = rm.open_resource(device["address"])
 
     def scan(self):
         for ch, items in SENSOR.items():
