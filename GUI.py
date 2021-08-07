@@ -8,9 +8,11 @@ Created on Mon Jul  9 00:24:49 2018
 
 from log import logger
 from tkinter import Tk, Frame, Label
-from GUIObj import Scan_button
-import widget
-import widget.simulation as sim
+from db._realtime import shell
+from thermo.node import Node
+import db._config as cfg
+from datetime import datetime as dt
+
 
 class App(Frame):
     def __init__(self, master=None):
@@ -46,11 +48,44 @@ class App(Frame):
         Label(self.frame_right, text='frame_right').pack()
 
 
+def calc_nodes():
+    ''' calc nodes '''
+    for name, value in shell.items():
+        if isinstance(value, Node):
+            shell[name].pt()
+    ''' calc WORK '''
+    for name, node in cfg.FM.items():
+        item0 = shell[f"{node[0]}"]
+        item1 = shell[f"{node[1]}"]
+        mDot = shell["mDot"]
+        shell[f"{name}"] = (item1.h - item0.h) * mDot
+
+    ''' calc efficiency '''
+    shell["Eff"] = ((shell["Wout"] - shell["Win"]) / shell["Qin"]) * 100
+
+    ''' other '''
+    shell["count"] = shell["count"] + 1
+    shell["time"] = dt.now().time()
+    shell["ts"] = dt.now().timestamp()
+    print(f"{shell['count']}----" * 5)
+
+
 if __name__ == '__main__':
 
     logger.info('program starting!')
 
-    # import db
+    import db
+    import dev
+    from GUIObj import Scan_button
+    import widget
+    import widget.simulation as sim
+
+    if db.device["mode"] == "test":
+        device = dev.TEST()
+    elif db.device["mode"] == "V34972A":
+        device = dev.V34972A()
+    else:
+        raise "ConfigError(device['mode']), please use manual/V34972A/DAQ970A"
 
     logger.info('init UI')
 
@@ -63,7 +98,7 @@ if __name__ == '__main__':
     PnID = widget.PnID(app.frame_left)
     sim.MDot(app.frame_left)
     TnSD = widget.TnSD(app.frame_ts)
-    Scan_button(app.frame_right, PnID.update, TnSD.update)
+    Scan_button(app.frame_right, device.scan, calc_nodes, PnID.update, TnSD.update)
 
     window.bind("<Escape>", lambda x: window.destroy())
 

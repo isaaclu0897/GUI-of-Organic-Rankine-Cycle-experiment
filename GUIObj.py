@@ -6,19 +6,15 @@ Created on Mon Nov 19 15:01:08 2018
 @author: wei
 """
 
-from tkinter import Frame, Canvas, StringVar, Label, Button, font, Entry
-
-from thermo.node import Node
+from tkinter import Frame, StringVar, Label, Button
 
 from pathlib import Path
 from datetime import datetime as dt
 import db._config as cfg
-import dev
 from db._realtime import shell
 from csv import writer
 from shutil import copyfile
 from threading import Thread
-import db
 
 
 def thread_func(func, *args):
@@ -27,9 +23,12 @@ def thread_func(func, *args):
     t.setDaemon(True)
     t.start()
 
+
 class Scan_button(Frame):
     def __init__(self, master=None, *callbacks):
         Frame.__init__(self, master=None)
+
+        # add callbacks funs into list
         self.update_funcs = []
         for func in callbacks:
             if callable(func):
@@ -67,63 +66,27 @@ class Scan_button(Frame):
             command=lambda: btn_cmd_loop(self.th_update))
         button.pack()
 
-        ''' init v34970A '''
-        print(db.device)
-        if db.device["mode"] == "test":
-            self.dev = dev.TEST()
-        elif db.device["mode"] == "V34972A":
-            self.dev = dev.V34972A()
-        else:
-            raise "ConfigError(device['mode']), please use manual/V34972A/DAQ970A"
         ''' csv file '''
         self.file = csv_file()
 
     def call_update_funcs(self):
-        print(self.update_funcs)
         for func in self.update_funcs:
             func()
 
     def th_update(self):
-        thread_func(self.update_diagram)
+        thread_func(self.update)
 
-    def update_diagram(self):
+    def update(self):
         if self.is_click:
             self.after(500, self.th_update)
-            print(1)
-            self.dev.scan()
-            print(2)
-            self.calc_nodes()
-            print(3)
-            self.file.save_data()
             ''' update functions
+            scan device 
+            calc nodes
             update P&ID
             update T-s diagram
             '''
             self.call_update_funcs()
-
-    def calc_nodes(self):
-        ''' calc nodes '''
-        for name, value in shell.items():
-            if isinstance(value, Node):
-                shell[name].pt()
-        ''' calc WORK '''
-        for name, node in cfg.FM.items():
-            item0 = shell[f"{node[0]}"]
-            item1 = shell[f"{node[1]}"]
-            mDot = shell["mDot"]
-            shell[f"{name}"] = (item1.h - item0.h) * mDot
-
-        ''' calc efficiency '''
-        shell["Eff"] = ((shell["Wout"] - shell["Win"]) / shell["Qin"]) * 100
-
-        ''' other '''
-        shell["count"] = shell["count"] + 1
-        shell["time"] = dt.now().time()
-        shell["ts"] = dt.now().timestamp()
-        print(f"{shell['count']}----" * 5)
-
-
-
+            # self.file.save_data()
 
 
 class csv_file:

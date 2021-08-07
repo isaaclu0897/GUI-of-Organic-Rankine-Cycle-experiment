@@ -65,7 +65,7 @@ class test_device:
 class TEST:
 
     def __init__(self):
-        self.device = test_device()
+        self.sim_device = test_device()
 
     def scan(self):
         # print("scan_data")
@@ -86,7 +86,7 @@ class TEST:
                     t_type = items["setting"][1]
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
-                t = self.device.query(query)
+                t = self.sim_device.query(query)
                 shell[f"{name}"].t = float(t)
             elif sensor_type in ["Ti", "To"]:
 
@@ -95,7 +95,7 @@ class TEST:
                     t_type = items["setting"][1]
                 query = ':MEASure:TEMPerature? %s,%s,(%s)' % (
                     t_probe, t_type, ch)
-                t = self.device.query(query)
+                t = self.sim_device.query(query)
                 shell[f"{name}_{sensor_type}"] = float(t)
             elif "P" == sensor_type:
                 if "setting" in items:
@@ -105,16 +105,16 @@ class TEST:
                     p_offset = items["setting"][3]
                 query = ':CONFigure:VOLTage:DC %G,%G,(%s)' % (
                     p_range, p_resolution, ch)
-                self.device.write(query)
+                self.sim_device.write(query)
                 query = ':CALCulate:SCALe:GAIN %G,(%s)' % (p_gain, ch)
-                self.device.write(query)
+                self.sim_device.write(query)
                 query = ':CALCulate:SCALe:STATe %d,(%s)' % (p_offset, ch)
-                self.device.write(query)
-                p = self.device.query(query)
+                self.sim_device.write(query)
+                p = self.sim_device.query(query)
                 # p = self.device.query(':READ?')
                 shell[f"{name}"].p = float(p)
             else:
-                v = self.device.query(f':READ?,({ch})')
+                v = self.sim_device.query(f':READ?,({ch})')
                 shell[f"{name}"] = float(v)
         return shell
 
