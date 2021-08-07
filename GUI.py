@@ -98,7 +98,11 @@ if __name__ == '__main__':
     PnID = widget.PnID(app.frame_left)
     sim.MDot(app.frame_left)
     TnSD = widget.TnSD(app.frame_ts)
-    Scan_button(app.frame_right, device.scan, calc_nodes, PnID.update, TnSD.update)
+    file = widget.CsvFile()
+    
+    logger.info('add update func in scan')
+    
+    Scan_button(app.frame_right, device.scan, calc_nodes, file.save_data, PnID.update, TnSD.update)
 
     window.bind("<Escape>", lambda x: window.destroy())
 
