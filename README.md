@@ -23,6 +23,8 @@ ORC（Organic Rankine Cycle，有機朗肯循環）是一種利用低溫熱能�
 
 P.s. 儘管我們製造的是小型實驗機組，但在實驗的過程中，系統壓力會超過10 bar，可以說其實具有一定危險性。
 
+→ 如果想看系統分析圖，您可以查看doc底下的SA文件，這裡有最終系統的目標。
+
 BenchLink DataLogger 界面
 
 <img src="https://about.keysight.com/en/newsroom/imagelibrary/2007/27nov-em07182/image002.jpg" width=600>
