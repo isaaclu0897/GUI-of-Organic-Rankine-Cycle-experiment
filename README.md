@@ -1,19 +1,34 @@
 ORC人機界面（GUI of Organic Rankine Cycle experiment）
 ===
 
-# ORC簡介【LAB429】
+# TOC
+- [ORC簡介](#orc簡介lab429)
+- [開發動機](#開發動機)
+- [開發目標](#開發目標)
+- [開發想法](#開法想法)
+- [專案歷程](#專案歷程)
+  - [文字界面](#文字界面)
+  - [圖形界面](#圖形界面)
+  - [功能演示](#功能演示)
+- [Refprop 嵌入 Excel](#refprop-嵌入-excel)
+- [Installing / Getting started](#installing--getting-started)
+  - [Requirements](#requirements)
+  - [Install](#install)
+  - [Run GUI](#run-gui)
+
+# ORC簡介(LAB429)
 
 ORC（Organic Rankine Cycle，有機朗肯循環）是一種利用低溫熱能發電的技術。它使用有機流體來轉換低溫熱能為電力或軸功率。ORC常用於處理工廠廢熱、地熱、太陽能等低溫熱能資源。它具有高效能的能源回收和幾乎無環境污染的特點。
 
 通俗地說，ORC是一種將低溫熱能轉化為電力的小型發電裝置。它的發電量一般可以達到幾十KW到數MW左右。而我們實驗室的機組為實驗性機組，發電量約為300W到30KW。
 
-# 開發人機界面的動機
+# 開發動機
 
 在實驗室內，我們需要使用溫度感測器、壓力傳感器、流量計等感測器，來觀察系統內部的變化。在熱力學中，只要我們知道兩個獨立的熱力性質，便能推估該點的其他性質，並藉此推估系統原件的熱量、作功以及系統效率等等，並在實驗結束後進行數據分析。
 
 過去我們實驗室所使用的量測設備是Keysight Agilent多功能數據擷取器（型號：34972A）。雖然Keysight公司的數據擷取器本身附帶BenchLink DataLogger數據擷取軟體，但該軟體本身並無法直接幫助我們分析熱力相關資訊。
 
-# 開發人機界面的目標
+# 開發目標
 
 為了滿足我們的需求，決定自行開發一個專用的軟體。（其實是懶得做實驗，所以想開發一個自動記錄數據的軟體。
 
@@ -34,13 +49,13 @@ BenchLink DataLogger 界面
 
 同時，系統的數據將以Excel或資料庫的方式儲存，以確保資料的保存和追蹤。軟體將自動計算並記錄系統的性能指標，方便實驗人員進行後續的數據分析和評估。
 
-# 人機界面的演化
-## 文字人機界面
+# 專案歷程
+## 文字界面
 <img src="https://i.imgur.com/WkaT3ie.gif" width=600>
 
 ---
 
-## 圖形化人機界面
+## 圖形界面
 <img src="https://i.imgur.com/xjsiQjV.gif" width=600>
 
 ----
@@ -86,7 +101,7 @@ https://youtu.be/WznF8XCsUu0
 
 ---
 
-# Installing / Getting started
+# Installing & Getting started
 * [Requirements](#requirements)
 * [Install](#install)
 * [Run GUI](#run-gui)
